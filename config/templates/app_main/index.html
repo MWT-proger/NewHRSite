@@ -1,1 +1,117 @@
 {% extends 'base.html' %}
+
+
+{% block javascript %}
+    <script type="application/javascript">
+        // Проверка - существует ли пользователь с таким номером телефона
+        let phone = '';
+        let status = false;
+        jQuery.validator.addMethod("validatePhoneUser", function(value, element) {
+                // create an AJAX call
+                if (phone != value ) {
+                    phone = value;
+                $.ajax({
+
+                    data: $(element).serialize(), // get the form data
+                    url: "{% url 'validate_username' %}",
+                    // on success
+
+                    success: function (response) {
+                        if (response.is_taken == true) {
+                            status = false;
+                            return false;
+                        }
+                        else {
+                            status = true;
+                            return true;
+                        }
+                    },
+                    // on error
+                    error: function (response) {
+                        // alert the error if any error occured
+                        status = false;
+                        return false;
+                    }
+                });
+
+                } else {
+                return status;
+                }
+                return true;
+            });
+    </script>
+<script type="application/javascript">
+        // Проверка - существует ли пользователь с таким email
+        let emailSignUp = '';
+        let statusEmail = false;
+        jQuery.validator.addMethod("validateEmailUser", function(value, element) {
+                // create an AJAX call
+                if (emailSignUp != value ) {
+                    emailSignUp = value;
+                $.ajax({
+                    data: $(element).serialize(), // get the form data
+                    url: "{% url 'validateEmailUser' %}",
+                    // on success
+                    success: function (response) {
+                        if (response.is_taken == true) {
+                            statusEmail = false;
+                            return false;
+                        }
+                        else {
+                            statusEmail = true;
+                            return true;
+                        }
+                    },
+                    // on error
+                    error: function (response) {
+                        // alert the error if any error occured
+                        statusEmail = false;
+                        return false;
+                    }
+                });
+
+                } else {
+                return statusEmail;
+                }
+                return true;
+            });
+    </script>
+<script type="application/javascript">
+        // Проверка - существует ли пользователь с таким номером телефона для сброса пароля
+        let phoneForgotPassword = '';
+        let statusForgotPassword = false;
+        jQuery.validator.addMethod("validatePhoneForgotPasswordUser", function(value, element) {
+                // create an AJAX call
+                if (phoneForgotPassword != value ) {
+                    phoneForgotPassword = value;
+                $.ajax({
+
+                    data: $(element).serialize(), // get the form data
+                    url: "{% url 'validateUsernameForgotPassword' %}",
+                    // on success
+
+                    success: function (response) {
+                        if (response.is_taken == true) {
+                            statusForgotPassword = true;
+                            return true;
+                        }
+                        else {
+                            statusForgotPassword = false;
+                            return false;
+                        }
+                    },
+                    // on error
+                    error: function (response) {
+                        // alert the error if any error occured
+                        statusForgotPassword = false;
+                        return false;
+                    }
+                });
+
+                } else {
+                return statusForgotPassword;
+                }
+                return true;
+            });
+    </script>
+    {% endblock javascript %}

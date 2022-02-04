@@ -36,9 +36,11 @@ $(function() {
         label.insertAfter(element);
       },
       highlight: function(element, errorClass) {
-        $(element).parent().addClass('has-danger');
-        $(element).addClass('form-control-danger');
-      }
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function(element, errorClass) {
+            $(element).removeClass("is-invalid").addClass('is-valid');
+        },
     });
   });
   $(function() {
@@ -50,11 +52,13 @@ $(function() {
         },
         signUpNumberPhone: {
           required: true,
-          checkMaskPhone: true
+          checkMaskPhone: true,
+          validatePhoneUser: true
         },
         signUpEmail: {
           required: true,
-          email: true
+          email: true,
+          validateEmailUser: true
         },
         signUpPassword: {
           required: true,
@@ -75,6 +79,7 @@ $(function() {
         signUpNumberPhone: {
           required: "Пожалуйста, введите номер телефона",
           checkMaskPhone: "Пожалуйста, введите правильный номер телефона",
+          validatePhoneUser: "Пользователь с таким номером телефона уже зарегестрирован",
           minlength: "Пожалуйста, введите правильный номер телефона"
         },
         signUpPassword: {
@@ -86,16 +91,22 @@ $(function() {
           minlength: "Ваш пароль должен быть не менее 8 символов",
           equalTo: "Пожалуйста, введите тот же пароль, что и выше"
         },
-        signUpEmail: "Пожалуйста, введите действительный адрес электронной почты",
+        signUpEmail: {
+          required: "Пожалуйста, адрес электронной почты",
+          email:"Пожалуйста, введите действительный адрес электронной почты",
+          validateEmailUser:"Пользователь с таким адресом электронной почтой уже зарегестрирован"
+        }
       },
       errorPlacement: function(label, element) {
         label.addClass('mt-2 text-danger');
         label.insertAfter(element);
       },
       highlight: function(element, errorClass) {
-        $(element).parent().addClass('has-danger');
-        $(element).addClass('form-control-danger');
-      }
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function(element, errorClass) {
+            $(element).removeClass("is-invalid").addClass('is-valid');
+        },
     });
   });
   $(function() {
@@ -104,13 +115,15 @@ $(function() {
       rules: {
         forgotPasswordNumberPhone: {
           required: true,
-          checkMaskPhone: true
+          checkMaskPhone: true,
+          validatePhoneForgotPasswordUser: true
         }
       },
       messages: {
         forgotPasswordNumberPhone: {
           required: "Пожалуйста, введите номер телефона",
           checkMaskPhone: "Пожалуйста, введите правильный номер телефона",
+          validatePhoneForgotPasswordUser: "Пользователь с таким номером телефона не существует",
           minlength: "Пожалуйста, введите правильный номер телефона"
         }
       },
@@ -119,9 +132,11 @@ $(function() {
         label.insertAfter(element);
       },
       highlight: function(element, errorClass) {
-        $(element).parent().addClass('has-danger');
-        $(element).addClass('form-control-danger');
-      }
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function(element, errorClass) {
+            $(element).removeClass("is-invalid").addClass('is-valid');
+        },
     });
   });
 });

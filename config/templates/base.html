@@ -35,6 +35,8 @@
 		{% include 'include/header.html' %}
 		<!-- end header -->
 		<div class="page-content">
+			{% block page_content %}
+			{% endblock page_content %}
 			<!-- Modal -->
 			{% include 'app_account/include/login_modal.html' %}
 			{% include 'app_account/include/signup_modal.html' %}
@@ -59,15 +61,18 @@
 <script src="{% static 'assets/js/template.js' %}"></script>
 <!-- endinject -->
 <!-- custom js for this page -->
+
 <script src="{% static 'new_assets/js/form-validation.js' %}"></script>
 <script src="{% static 'assets/js/inputmask.js' %}"></script>
+
 <script type="text/javascript">
 	// добавляем правило для валидации телефона
 	jQuery.validator.addMethod("checkMaskPhone", function(value, element) {
 		return /\+\d{1}\(\d{3}\)\d{3}-\d{4}/g.test(value);
 	});
 </script>
-
+{% block javascript %}
+    {% endblock javascript %}
 <script type="text/javascript" language="JavaScript">
 const checkbox = document.querySelector('#signUpCheckBox');
 const btn_submit = document.querySelector('#signUpModalFormButton');
@@ -80,6 +85,8 @@ checkbox.addEventListener('change', () => {
     }
 });
 </script>
+
+
 <!-- end custom js for this page -->
 </body>
 </html>

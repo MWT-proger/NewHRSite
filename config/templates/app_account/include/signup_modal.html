@@ -20,6 +20,7 @@
 
                     </ul>
                     <fieldset>
+                        {% csrf_token %}
 
                         <!-- Tab panes -->
                         <div class="tab-content">
@@ -34,12 +35,12 @@
 
                         <div class="form-group">
                             <label>Номер телефона</label>
-                            <input class="form-control mb-4 mb-md-0 phone-type" type="text" name="signUpNumberPhone" data-rule-required="true"
+                            <input class="form-control mb-4 mb-md-0 phone-type" type="text" id="signUpNumberPhone" name="signUpNumberPhone" data-rule-required="true"
                                    data-inputmask-alias="+7(999)999-9999"/>
                         </div>
                         <div class="form-group">
                             <label>Электронная почта</label>
-                            <input class="form-control mb-4 mb-md-0" name="signUpEmail" data-inputmask="'alias': 'email'"/>
+                            <input class="form-control mb-4 mb-md-0" type="email" name="signUpEmail" />
                         </div>
                         <div class="form-group">
                             <label for="signUpPassword">Пароль</label>
