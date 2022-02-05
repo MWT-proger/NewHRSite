@@ -100,3 +100,14 @@ MEDIA_ROOT = BASE_DIR.parent / "media"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'app_account.User'
+
+TELPHIN_APP_ID = os.environ.get('TELPHIN_APP_ID')
+
+TELPHIN_APP_SECRET = os.environ.get('TELPHIN_APP_SECRET')
+
+TELPHIN_URL_ONE = 'https://flashcall.telphin.ru/'
+
+TELPHIN_URL_TWO = 'https://flashcall.telphin.ru/auth/'
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/'

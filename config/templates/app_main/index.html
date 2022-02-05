@@ -120,11 +120,14 @@
     let DataLogin = '';
     let formLogin = $('#loginModalForm');
     let labelLogin = $('#labelLogin');
-    $( "#loginButtonSubmit" ).click(function() {
+
+    $( "#loginButtonSubmit" ).on('click', function() {
+        var statusFormLogin = $('#loginModalForm').valid();
         let newDataLogin = formLogin.serialize();
         if (DataLogin != newDataLogin ) {
             DataLogin = newDataLogin;
             // create an AJAX call
+        if (statusFormLogin == true){
             $.ajax({
                 data: DataLogin, // get the form data
                 type: formLogin.attr('method'), // GET or POST
@@ -146,6 +149,170 @@
                 }
             });
         }
+        }
     });
+</script>
+<script type="application/javascript">
+    // Регистрация
+
+    let DataSignUp = '';
+    let formSignUp = $('#signUpModalForm');
+    let labelSignUp = $('#labelSignUp');
+    let labelSignUpKey = $('#labelSignUpKey');
+    $( "#signUpModalFormButton" ).on('click', function() {
+        var statusSignUp = formSignUp.valid();
+        let newDataSignUp = formSignUp.serializeArray();
+        // newDataSignUp.push({name: "NonFormValue", value: 'vxfcbvfcb'});
+        if (statusSignUp == true){
+            if (DataSignUp != newDataSignUp ) {
+                DataSignUp = newDataSignUp;
+                alert($.param(DataSignUp));
+                // create an AJAX call
+                $.ajax({
+                    data: $.param(DataSignUp), // get the form data
+                    type: formSignUp.attr('method'), // GET or POST
+                    url: "{% url 'callRequest' %}",
+                    // on success
+                    success: function (response) {
+                        if (response.is_taken) {
+                            $('#fieldSetMainSignup').addClass('d-none');
+                            $('#signUpModalFormButton').addClass('d-none');
+                            $('#signUpModalCloseOneButton').addClass('d-none');
+
+                            $('#signUpConfirmButton').removeClass('d-none');
+                            $('#signUpConfirmButton').removeClass('d-none');
+                            $('#fieldSetTwoSignup').removeClass('d-none');
+                            // formSignUp.submit();
+                        }
+                        else {
+                            labelSignUp.removeClass("d-none");
+                            if (response.description) {
+                                labelSignUp.text(response.description);
+                            } else {
+                                labelSignUp.text('Произошла ошибка, попробуйте позже');
+                            }
+                        }
+                    },
+                    // on error
+                    error: function (response) {
+                        // alert the error if any error occured
+                        labelSignUp.removeClass("d-none");
+                        labelSignUp.text('Произошла ошибка, попробуйте позже');
+                    }
+                });
+            }}
+    });
+    $( "#signUpConfirmButton" ).on('click', function() {
+        var statusSignUp = formSignUp.valid();
+        let newDataSignUp = formSignUp.serializeArray();
+        if (statusSignUp == true){
+            if (DataSignUp != newDataSignUp ) {
+                DataSignUp = newDataSignUp;
+                alert($.param(DataSignUp));
+                // create an AJAX call
+                $.ajax({
+                    data: $.param(DataSignUp), // get the form data
+                    type: formSignUp.attr('method'), // GET or POST
+                    url: "{% url 'validateToken' %}",
+                    // on success
+                    success: function (response) {
+                        if (response.is_taken) {
+                            labelSignUpKey.addClass("d-none");
+                            formSignUp.submit();
+                        }
+                        else {
+                            labelSignUpKey.removeClass("d-none");
+                            if (response.description) {
+                                labelSignUp.text(response.description);
+                            } else {
+                                labelSignUp.text('Произошла ошибка, попробуйте позже');
+                            }
+                        }
+                    },
+                    // on error
+                    error: function (response) {
+                        // alert the error if any error occured
+                        labelSignUpKey.removeClass("d-none");
+                        labelSignUp.text('Произошла ошибка, попробуйте позже');
+                    }
+                });
+            }}
+    });
+</script>
+
+
+<script type="application/javascript">
+    // Сброс пароля
+
+    let DataForgotPassword = '';
+    let formForgotPassword = $('#forgotPasswordModalForm');
+    let labelForgotPassword = $('#labelForgotPassword');
+
+    function ajaxForgot()  {
+        alert('dsfd')
+    };
+
+    function ajaxForgotPassword(scene)  {
+        var forgot_scene = scene;
+        var forgot_url = '';
+        if (forgot_scene == 1){
+            forgot_url = "{% url 'callRequest' %}"
+        } else{
+            forgot_url = "{% url 'validateToken' %}"
+        }
+
+        var statusForgotPassword = formForgotPassword.valid();
+        let newDataForgotPassword = formForgotPassword.serializeArray();
+        if (statusForgotPassword == true){
+            if (DataForgotPassword != newDataForgotPassword ) {
+                DataForgotPassword = newDataForgotPassword;
+                alert($.param(DataForgotPassword));
+                // create an AJAX call
+                $.ajax({
+                    data: $.param(DataForgotPassword), // get the form data
+                    type: formForgotPassword.attr('method'), // GET or POST
+                    url: forgot_url,
+                    // on success
+                    success: function (response) {
+                        if (response.is_taken) {
+                            if (forgot_scene == 1){
+                                $('#fieldSetOneForgotPassword').addClass('d-none');
+                                $('#fieldSetTwoForgotPassword').removeClass('d-none');
+
+                                $('#forgotPasswordModalCloseOneButton').addClass('d-none');
+                                $('#forgotPasswordModalCloseTwoButton').removeClass('d-none');
+
+                                $('#forgotPasswordModalFormButton').addClass('d-none');
+                                $('#forgotPasswordConfirmButton').removeClass('d-none');
+
+
+                            } else if (forgot_scene == 2) {
+                                $('#fieldSetTwoForgotPassword').addClass('d-none');
+                                $('#fieldSetFreeForgotPassword').removeClass('d-none');
+
+                                $('#forgotPasswordConfirmButton').addClass('d-none');
+                                $('#forgotPasswordSubmitButton').removeClass('d-none');
+                            }
+                            labelForgotPassword.text('');
+                        }
+                        else {
+                            labelForgotPassword.removeClass("d-none");
+                            if (response.description) {
+                                labelForgotPassword.text(response.description);
+                            } else {
+                                labelForgotPassword.text('Произошла ошибка, попробуйте позже');
+                            }
+                        }
+                    },
+                    // on error
+                    error: function (response) {
+                        // alert the error if any error occured
+                        labelForgotPassword.removeClass("d-none");
+                        labelForgotPassword.text('Произошла ошибка, попробуйте позже');
+                    }
+                });
+            }}
+    }
+
 </script>
 {% endblock javascript %}

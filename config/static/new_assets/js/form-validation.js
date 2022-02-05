@@ -67,6 +67,11 @@ $(function() {
           minlength: 8,
           equalTo: "#signUpPassword"
         },
+        signUpConfirmKey: {
+          required: true,
+          number: true,
+          minlength: 4
+        },
 
 
       },
@@ -88,6 +93,11 @@ $(function() {
           required: "Пожалуйста, введите пароль",
           minlength: "Ваш пароль должен быть не менее 8 символов",
           equalTo: "Пожалуйста, введите тот же пароль, что и выше"
+        },
+        signUpConfirmKey: {
+          required: "Пожалуйста, введите код подтверждения",
+          number: "Код подтверждения должен состоять из 4 символов",
+          minlength: "Код подтверждения должен состоять из 4 символов"
         },
         signUpEmail: {
           required: "Пожалуйста, адрес электронной почты",
@@ -115,7 +125,21 @@ $(function() {
           required: true,
           checkMaskPhone: true,
           validatePhoneForgotPasswordUser: true
-        }
+        },
+        forgotPasswordPassword: {
+          required: true,
+          minlength: 8
+        },
+        forgotPasswordConfirmPassword: {
+          required: true,
+          minlength: 8,
+          equalTo: "#forgotPasswordPassword"
+        },
+        forgotPasswordConfirmKey: {
+          required: true,
+          number: true,
+          minlength: 4
+        },
       },
       messages: {
         forgotPasswordNumberPhone: {
@@ -123,7 +147,21 @@ $(function() {
           checkMaskPhone: "Пожалуйста, введите правильный номер телефона",
           validatePhoneForgotPasswordUser: "Пользователь с таким номером телефона не существует",
           minlength: "Пожалуйста, введите правильный номер телефона"
-        }
+        },
+        forgotPasswordPassword: {
+          required: "Пожалуйста, введите пароль",
+          minlength: "Ваш пароль должен быть не менее 8 символов"
+        },
+        forgotPasswordConfirmPassword: {
+          required: "Пожалуйста, введите пароль",
+          minlength: "Ваш пароль должен быть не менее 8 символов",
+          equalTo: "Пожалуйста, введите тот же пароль, что и выше"
+        },
+        forgotPasswordConfirmKey: {
+          required: "Пожалуйста, введите код подтверждения",
+          number: "Код подтверждения должен состоять из 4 символов",
+          minlength: "Код подтверждения должен состоять из 4 символов"
+        },
       },
       errorPlacement: function(label, element) {
         label.addClass('mt-2 text-danger');

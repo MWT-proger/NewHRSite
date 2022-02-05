@@ -5,15 +5,21 @@
     <div class="navbar-content">
         <a class="navbar-brand noble-ui-logo  mt-2"  href="{% url 'mainUrl' %}">{% include 'include/name_site_word.html' %}</a>
         <ul class="navbar-nav ">
-
+{% if request.user.is_authenticated %}
+            <li class="nav-item  ">
+                <a class="btn nav-link " href="{% url 'profile' %}" > <i class="link-icon" data-feather="user"></i> Профиль </a>
+            </li>
+            <li class="nav-item  ">
+                <a class="btn nav-link " href="{% url 'logout' %}"> <i class="link-icon" data-feather="log-out"></i> Выйти</a>
+            </li>
+{% else %}
             <li class="nav-item  ">
                 <a class="btn nav-link " data-toggle="modal" data-target="#loginModal" > <i class="link-icon" data-feather="log-in"></i> Войти</a>
             </li>
-
-
             <li class="nav-item  ">
                 <a class="btn nav-link " data-toggle="modal" data-target="#signUpModal" > <i class="link-icon" data-feather="user-plus"></i> Зарегистрироваться </a>
             </li>
+{% endif %}
         </ul>
     </div>
 </nav>
