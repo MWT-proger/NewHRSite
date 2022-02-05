@@ -8,9 +8,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="cmxform" id="loginModalForm"  action="" method="POST" novalidate>
+                <form class="cmxform" id="loginModalForm" name="loginModalForm" action="{% url 'ajaxLoginUrl' %}" method="POST" autocapitalize="off"  novalidate>
 
                     <fieldset>
+
                         {% csrf_token %}
                         <div class="form-group">
                             <label>Номер телефона</label>
@@ -21,7 +22,10 @@
                         <div class="form-group">
                             <label for="loginPassword">Пароль</label>
                             <input id="loginPassword" class="form-control" name="loginPassword" type="password">
+                            <label  class="error mt-2 text-danger d-none" id="labelLogin"  >Логин или пароль указаны неверно</label>
+
                         </div>
+
 
                     </fieldset>
                     <div class="md-form mb-2">
@@ -29,8 +33,9 @@
                             Восстановить пароль</a></p>
                     </div>
 
+
                     <div class="mt-3 ">
-                        <button type="submit" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">Войти</button>
+                        <button type="button" id="loginButtonSubmit" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">Войти</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть окно</button>
                     </div>
                     <a data-dismiss="modal" data-toggle="modal" data-target="#signUpModal" class="d-block mt-3 text-muted">У вас нет аккаунта? <u class="text-primary cursor-pointer">Зарегистрируйтесь</u></a>

@@ -114,4 +114,38 @@
                 return true;
             });
     </script>
-    {% endblock javascript %}
+<script type="application/javascript">
+    // Проверка - верно ли введён пароль и логин
+
+    let DataLogin = '';
+    let formLogin = $('#loginModalForm');
+    let labelLogin = $('#labelLogin');
+    $( "#loginButtonSubmit" ).click(function() {
+        let newDataLogin = formLogin.serialize();
+        if (DataLogin != newDataLogin ) {
+            DataLogin = newDataLogin;
+            // create an AJAX call
+            $.ajax({
+                data: DataLogin, // get the form data
+                type: formLogin.attr('method'), // GET or POST
+                url: "{% url 'validateAuthenticate' %}",
+                // on success
+                success: function (response) {
+                    if (response.is_taken == true) {
+                        labelLogin.addClass('d-none');
+                        formLogin.submit();
+                    }
+                    else {
+                        labelLogin.removeClass("d-none");
+                    }
+                },
+                // on error
+                error: function (response) {
+                    // alert the error if any error occured
+                    labelLogin.removeClass("d-none");
+                }
+            });
+        }
+    });
+</script>
+{% endblock javascript %}
