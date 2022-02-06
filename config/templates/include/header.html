@@ -1,9 +1,12 @@
+{% load static %}
 <nav class="navbar full-nav">
     <a href="#" class="sidebar-toggler">
         <i data-feather="menu"></i>
     </a>
+
     <div class="navbar-content">
-        <a class="navbar-brand noble-ui-logo  mt-2"  href="{% url 'mainUrl' %}">{% include 'include/name_site_word.html' %}</a>
+
+        <a class="navbar-brand noble-ui-logo  mt-2"  href="{% url 'mainUrl' %}"><img src="{% static 'new_assets/img/logo.png' %}" width="30" height="30" class="d-inline-block align-top mr-2" alt=""> {% include 'include/name_site_word.html' %}</a>
         <ul class="navbar-nav ">
 {% if request.user.is_authenticated %}
             <li class="nav-item  ">
