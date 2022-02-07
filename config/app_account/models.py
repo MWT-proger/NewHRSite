@@ -1,15 +1,52 @@
+import os
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from PIL import Image
 
 TYPE = [
     ('applicant', 'Соискатель'),
     ('employer', 'Работодатель')
 ]
+_MAX_SIZE = 200
+
+
+def get_image_name(instance, filename):
+    """Функция установки сохранения пути для изображения пользователя"""
+    directory = 'app_account/users/'
+    username = '%s' % instance.username
+    format = '_avatar.png'
+    path = directory + username + format
+    return path
 
 
 class User(AbstractUser):
+    image = models.ImageField('Аватарка', upload_to=get_image_name, blank=True, null=True)
     name_company = models.CharField('Название компании', max_length=200, blank=True, null=True)
     type = models.CharField('Тип пользователя', max_length=20, default='applicant', choices=TYPE)
+
+    def save(self, *args, **kwargs):
+        # обычное сохранение
+        super(User, self).save(*args, **kwargs)
+
+        # Проверяем, указано ли фото пользователя
+
+        # Проверяем, указано ли изображение
+        if self.image:
+            filepath = self.image.path
+            width = self.image.width
+            height = self.image.height
+            if width > height or width == height:
+                height = round((2 * width) / 3)
+            else:
+                width = round((3 * height) / 2)
+            base_width = 300
+            ratio = (base_width / float(width))
+            height = int((float(height) * float(ratio)))
+            image = Image.open(filepath)
+            image = image.resize((base_width, height), Image.ANTIALIAS)
+            dirname, fname = os.path.split(filepath)
+            image.save(filepath)
 
 
 class TokenSignUp(models.Model):

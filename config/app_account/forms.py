@@ -1,5 +1,7 @@
+from crispy_forms.helper import FormHelper
 from django.contrib.auth import get_user_model
 from django import forms
+from crispy_forms.layout import Layout, Submit, Row, Column
 
 User = get_user_model()
 
@@ -35,3 +37,62 @@ class UserResetPasswordForm(forms.Form):
         if cd['password'] != cd['password2']:
             raise forms.ValidationError('Пароль не совпадает')
         return cd['password2']
+
+
+class UserUpdateForm(forms.ModelForm):
+    username = forms.CharField(label='Номер телефона' )
+
+    def __init__(self, *args, **kwargs):
+        super(UserUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['readonly'] = True
+        self.fields['email'].widget.attrs['readonly'] = True
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('first_name', css_class='form-group col-md-6 mb-0'),
+                Column('last_name', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('username', css_class='form-group col-md-6 mb-0'),
+                Column('email', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Submit('submit', 'Сохранить')
+        )
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email']
+
+
+class UserEmployerUpdateForm(forms.ModelForm):
+    username = forms.CharField(label='Номер телефона')
+
+    def __init__(self, *args, **kwargs):
+        super(UserEmployerUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['readonly'] = True
+        self.fields['email'].widget.attrs['readonly'] = True
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('first_name', css_class='form-group col-md-6 mb-0'),
+                Column('last_name', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('username', css_class='form-group col-md-6 mb-0'),
+                Column('email', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('name_company', css_class='form-group col-md-6 mb-0'),
+                Column('', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Submit('submit', 'Сохранить')
+        )
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email', 'name_company']

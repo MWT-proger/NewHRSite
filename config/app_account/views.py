@@ -2,22 +2,64 @@ import json
 import requests
 
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from django.http import QueryDict
 from django.contrib.auth.forms import AuthenticationForm
+from django.views.generic.edit import UpdateView
+from django.utils.decorators import method_decorator
+from django.urls import reverse_lazy
 
 from django.contrib.auth import login, authenticate, logout
 from django.conf import settings
 
 
+from .decorators import checking_profile_employer, checking_profile_applicant
 from .models import TokenSignUp
-from .forms import UserRegistrationForm, UserResetPasswordForm
+from .forms import UserRegistrationForm, UserResetPasswordForm, UserUpdateForm, UserEmployerUpdateForm
 
 User = get_user_model()
 
 HEADERS = {'Content-type': 'application/json'}
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(checking_profile_applicant, name='dispatch')
+class UserUpdate(UpdateView):
+    """Общие настройки пользователя"""
+    model = User
+    form_class = UserUpdateForm
+    template_name = 'app_account/profile.html'
+    success_url = reverse_lazy('profile')
+
+    def get_object(self):
+        """Привязываем к авторизованному пользователю"""
+        return self.request.user
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(checking_profile_employer, name='dispatch')
+class UserEmployerUpdate(UpdateView):
+    """Общие настройки пользователя - работодателя"""
+    model = User
+    form_class = UserEmployerUpdateForm
+    template_name = 'app_account/profile.html'
+    success_url = reverse_lazy('profileEmployer')
+
+    def get_object(self):
+        """Привязываем к авторизованному пользователю"""
+        return self.request.user
+
+
+def add_image_avatar(request):
+    """Ajax функция _ отвечает за загрузку фотографии в общих настройках"""
+    if request.method == 'POST':
+        img = request.FILES['image']
+        users = User.objects.get(username=request.user.username)
+        users.image = img
+        users.save()
+        return HttpResponse(json.dumps({'image': str(users.image.url)}), content_type="application/json")
 
 
 def logout_view(request):
@@ -113,10 +155,8 @@ def reset_password(request):
     """Регистрация"""
     if request.method == 'POST':
         data = get_reset_password_form_ajax(request)
-        print(data)
         form = UserResetPasswordForm(data)
         if form.is_valid():
-            print(33)
             token = request.POST.get('forgotPasswordConfirmKey', None)
             if TokenSignUp.objects.filter(username=form.cleaned_data['username'], key=token).exists():
                 user = User.objects.get(username=form.cleaned_data['username'])
@@ -187,13 +227,11 @@ def call_request(request):
             username = request.POST.get('forgotPasswordNumberPhone', None)
 
         username = edit_username(username)
-        print(username)
         params = {
             "app_id": settings.TELPHIN_APP_ID,
             "app_secret": settings.TELPHIN_APP_SECRET,
             "number": username
         }
-        print(params)
 
         result = requests.post(settings.TELPHIN_URL_ONE, data=json.dumps(params), headers=HEADERS)
         response_api = result.json()

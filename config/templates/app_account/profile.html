@@ -1,11 +1,197 @@
 {% extends 'base.html' %}
-{% block page_content %}
-    <div class="row mt-5">
-          <div>
-            <h4 class="mb-3 mb-md-0">Привет {{ user.username }} ({{ user.get_type_display }}) - Компания ({{ user.name_company }})</h4>
-          </div>
+{% load crispy_forms_tags %}
+{% load static %}
+{% load i18n  %}
 
-        </div>
+
+{% block add_link %}
+<link rel="stylesheet" href="{% static 'nobleui/vendors/mdi/css/materialdesignicons.min.css' %}">
+<style>
+	.file {
+		opacity: 0;
+		width: 0.1px;
+		height: 0.1px;
+		position: absolute;
+	}
+
+	.file-name {
+		position: absolute;
+		bottom: -35px;
+		left: 10px;
+		font-size: 0.85rem;
+		color: #555;
+	}
+
+	#id_image:hover + label,
+	#id_image:focus + label {
+		transform: scale(1.02);
+	}
+
+	/* Adding an outline to the label on focus */
+	#id_image:focus + label {
+		outline: 1px solid #000;
+		outline: -webkit-focus-ring-color auto 2px;
+	}
+</style>
+{% endblock add_link %}
+
+
+
+<!--<div class="row mt-5">-->
+    <!--<div>-->
+        <!--<h4 class="mb-3 mb-md-0">Привет {{ user.username }} ({{ user.get_type_display }}) - Компания ({{ user.name_company }})</h4>-->
+    <!--</div>-->
+
+<!--</div>-->
+
+
+
+
+
+
+{% block page_content %}
+
+
+	<div class="profile-page mt-5 tx-13">
+		<div class="row mt-5 justify-content-center  ">
+			<div class="col-10 mt-5 grid-margin">
+				<div class="profile-header mt-5">
+                    					<div class="cover">
+						<div class="gray-shade"></div>
+
+						<div class="cover-body d-flex justify-content-between align-items-center">
+							<div>
+								{% if request.user.image %}
+								<img class="profile-pic" src="{{ request.user.image.url}}" id="avatar" style="height: 90px; width: 90px" alt="profile">
+								{% else %}
+								<img class="profile-pic" id="avatar" src="{% static 'new_assets/img/user_unknown.jpg' %}" alt="profile">
+								{% endif %}
+
+
+
+								{% if request.user.first_name or request.user.last_name %}
+								<span class="profile-name">{{request.user.first_name|title}} {{request.user.last_name|title}}</span>
+								{% else %}
+								<span class="profile-name">{{request.user.username|title}}</span>
+								{% endif %}
+
+
+							</div>
+
+							<div class="d-none d-lg-block  " >
+
+								<button class="btn btn-danger btn-icon-text btn-edit-profile mb-3" type="button" data-dismiss="modal" data-toggle="modal" data-target="#logoutModal">
+									<i data-feather="log-out" class="btn-icon-prepend"></i> Выйти
+								</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="header-links justify-content-between">
+                        <form class="file-input" enctype="multipart/form-data" method="post" name="ajax-form-add-image" id="image_form">
+							{% csrf_token %}
+							<input type="file" id="id_image" class="image" name="image" hidden>
+							<label for="id_image" class="btn  btn-icon-text btn-edit-profile mt-2 pt-3">
+								<i data-feather="edit" class="btn-icon-prepend"></i> Изменить фото
+								<p class="file-name"></p>
+							</label>
+							<button type="submit" id="submit_image" hidden ></button>
+						</form>
+
+
+
+
+
+
+						<ul class="links d-flex align-items-center mt-3 mt-md-0 mr-3">
+							<li class="header-link-item d-flex align-items-center {% block active_settings_url_1 %}active{% endblock active_settings_url_1 %}">
+								<a class="pt-1px row" href="{% url 'profile' %}"> <i class="mr-1 mb-2  icon-md" data-feather="settings"></i><strong class="d-none d-md-block"> Общие настройки</strong> </a>
+							</li>
+							<li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center {% block active_settings_url_2 %}{% endblock active_settings_url_2 %}">
+								<a class="pt-1px row" href="{% url 'change_password' %}"> <i class="mr-1 mb-2 icon-md" data-feather="key"></i><strong class="d-none d-md-block">  Сменить пароль</strong></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row justify-content-center">
+			<div class="col-10 grid-margin">
+
+
+
+
+                <div class="card">
+                    <div class="card-body">
+                        {% block profile_settings %}
+                        <h6 class="h5">Общие настройки профиля</h6>
+
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-danger mt-1" role="alert">
+                            {{message}}
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        <form class="forms-sample mt-2"  method="POST" action="{% url 'profile' %}" novalidate>
+                            {% csrf_token %}
+                            {% crispy form %}
+                        </form>
+						{% endblock profile_settings %}
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
 {% endblock page_content %}
 
 
+
+
+{% block javascript %}
+<!-- plugin js for this page -->
+<script src="{% static 'nobleui/vendors/select2/select2.min.js' %}"></script>
+<script src="{% static 'nobleui/js/select2.js' %}"></script>
+<!-- end plugin js for this page -->
+<!-- custom js for this page -->
+<script src="{% static 'nobleui/js/inputmask.js' %}"></script>
+<script>
+
+	// Функция для сохранения фотографии(Выбор фотки)
+	jQuery(function(){
+		$("#id_image").change(function(){
+			$(document).ready(function(){
+				$('#submit_image').click();
+			});
+		});
+	});
+
+	// Функция для сохранения фотографии
+	var forms = document.forms.namedItem("ajax-form-add-image");
+	forms.addEventListener('submit', function(ev) {
+		var Req = '';
+		var Data = '';
+		var smf = '';
+
+		Data = new FormData(forms);
+		Req = new XMLHttpRequest();
+		Req.open("POST", "{% url 'add_image' %}", true);
+		Req.responseType = 'json';
+		Req.onload = function(oEvent) {
+			if (Req.status == 200) {
+				smf = Req.response;
+				$('#avatar').attr('src', smf.image);
+				$('.avatar_mini_header').attr('src', smf.image);
+				$('#id_image').attr('value', '');
+			} else {
+				alert('Ошибка при изменении фотографии!');
+			}
+		};
+		Req.send(Data);
+		ev.preventDefault();
+	}, false);
+	// Конец Функции для сохранения фотографии
+</script>
+{% endblock javascript %}

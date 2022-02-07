@@ -36,3 +36,5 @@ docker volume ls
 ```
 docker volume rm home_postgres_data
 ```
+
+/info/registration_conditions/

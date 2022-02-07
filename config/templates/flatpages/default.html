@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %} {{ flatpage.title }} {% endblock title %}
+
+{% block page_content %}
+<main>
+
+
+
+  <div class="container  pt-5">
+    <!-- Card content -->
+            <div class="card-body card-body-cascade">
+              <!-- Title -->
+              <h4 class="card-title text-center"><strong>{{ flatpage.title }}</strong></h4>
+                <p class="card-text">{{flatpage.newflatpage.description|safe}}</p>
+                <p class="card-text">{{flatpage.newflatpage.text_block|safe}}</p>
+            </div>
+            <!-- Card content -->
+</div>
+    </main>
+{% endblock page_content %}
+
