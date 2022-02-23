@@ -1,0 +1,14 @@
+{% if true_green %}
+{% if true_status %}
+<i class="text-success" data-feather="check-circle"></i>
+% else %}
+<i class="text-danger" data-feather="minus-circle"></i>
+{% endif %}
+{% else %}
+{% if true_status %}
+<i class="text-danger" data-feather="minus-circle"></i>
+
+% else %}
+<i class="text-success" data-feather="check-circle"></i>
+{% endif %}
+{% endif %}

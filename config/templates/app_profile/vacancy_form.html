@@ -1,0 +1,24 @@
+{% extends 'app_account/profile.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block active_settings_url_1 %}{% endblock active_settings_url_1 %}
+{% block active_settings_url_4 %}active{% endblock active_settings_url_4 %}
+
+
+{% block profile_settings %}
+
+<h6 class="h5">Добавить анкету</h6>
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-danger mt-1" role="alert">
+    {{message}}
+</div>
+{% endfor %}
+{% endif %}
+
+<form class="forms-sample mt-2"  method="POST" action="{% url 'questionnaire_create' %}" id="CreateQuestionnaireForm" novalidate>
+    {% crispy form %}
+</form>
+{% endblock profile_settings %}

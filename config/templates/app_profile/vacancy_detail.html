@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n  %}
+
+
+
+{% block page_content %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-lg-10 card">
+        <div class="card-header">
+                <label class="h4 text-muted">Анкета соискателя</label>
+                <a onclick="javascript:history.back(-1); return false;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </a>
+            </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <h4 class=" text-center text-muted"></h4>
+                </div>
+            </div>
+
+
+            <div class="row">
+
+
+                <div class="col-md-12">
+                    <div class="form-group border-bottom">
+                        <label class="text-muted  "><strong>ФИО:</strong> </label>
+                        <p class="  text-muted  font-weight-light ">
+                            {% if questionnaire.user.first_name or questionnaire.user.third_name or questionnaire.user.last_name %}
+                            {{questionnaire.user.first_name|default_if_none:""}} {{questionnaire.user.third_name|default_if_none:""}} {{questionnaire.user.last_name|default_if_none:""}}
+                            {% else %}
+                            не указано
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="row">
+
+
+                <div class="col-md-6">
+                    <div class="form-group border-bottom">
+                        <label class="text-muted  "><strong>Регион:</strong> </label>
+                        <p class="  text-muted  font-weight-light ">{{questionnaire.region}}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group border-bottom ">
+                        <label class="text-muted  "><strong>Город:</strong> </label>
+                        <p class="  text-muted  font-weight-light ">
+                            {% if questionnaire.city %}
+                            {{questionnaire.city}}
+                            {% else %}
+                            не указан
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-group border-bottom">
+                        <label class="text-muted  "><strong>Профессия:</strong> </label>
+                        <p class="  text-muted  font-weight-light ">
+                            {% if questionnaire.profession %}
+                            {{questionnaire.profession}}
+                            {% else %}
+                            не указана
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group border-bottom">
+                        <label class="text-muted  "><strong>Водительское удостоверение, категории:</strong> </label>
+                        <p class="text-muted font-weight-light">
+                            {% if questionnaire.driver_license.all %}
+                            {% for driver in questionnaire.driver_license.all %}
+                            {% if forloop.last %} {{driver}}
+                            {% else %}
+                            {{driver}},
+                            {%endif%}
+                            {% endfor %}
+                            {% else %}
+                            не указано
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-group border-bottom">
+                        <label class="text-muted  "><strong>Водительский стаж, лет:</strong> </label>
+                        <p class="  text-muted  font-weight-light ">{{questionnaire.driving_experience}}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group border-bottom">
+                        <label class="text-muted  "><strong>Общий стаж, лет:</strong> </label>
+                        <p class="  text-muted  font-weight-light ">{{questionnaire.total_service}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <ul class=" col-md-6 list-group list-group-flush">
+                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_green='True' true_status=questionnaire.vaccinated %} Наличие прививки</li>
+                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_green='True' true_status=questionnaire.health_book %} Санитарная книжка</li>
+                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_status=questionnaire.not_citizen %} Гражданин РФ</li>
+                    <li class="list-group-item"></li>
+                </ul>
+
+                <ul class=" col-md-6 list-group list-group-flush">
+                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_status=questionnaire.no_profession %} Наличие профессии</li>
+                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_green='True' true_status=questionnaire.self_propelled %} Права на  управление самоходными машинами</li>
+                    <li class="list-group-item"></li>
+                </ul>
+
+
+            </div>
+            <div class="form-group ">
+                <label class="text-muted  "><strong>Краткое описание:</strong> </label>
+                <p class="text-muted mb-4 font-weight-light">{{questionnaire.description}}</p>
+            </div>
+            <hr>
+            <div class="row justify-content-start">
+                <div class="col-sm">
+                    <label class="text-muted  "><strong>Дата публикации:</strong> {{questionnaire.public_date|date:"M d, Y"}}</label>
+                </div>
+                <div class="col-md-auto">
+                    <label class="text-muted  "><strong>Просмотров:</strong> {{questionnaire.count_see.count}}</label>
+                </div>
+                <div class="col-md-auto">
+                    <label class="text-muted  "><strong>Предложений:</strong> {{questionnaire.nu}}22</label>
+                </div>
+            </div>
+            <div class="collapse" id="collapsePhone">
+                <div class="card card-body mb-2">
+                   <label class="text-muted  "><strong>Номер телефона:</strong> {{questionnaire.phone}} <a href="tel:+{{questionnaire.phone}}">Позвонить</a></label>
+                </div>
+            </div>
+
+            <div class="row justify-content-center ">
+
+                <button type="button" class="btn btn-my-outline-blue m-1 btn-icon-text" data-toggle="modal" data-target="#sendVacancyModal" ><i class="btn-icon-append" data-feather="send"></i> Отправить вакансию  </button>
+                <a type="button" class="btn btn-outline-success m-1 btn-icon-text" data-toggle="collapse" href="#collapsePhone" role="button" aria-expanded="false" aria-controls="collapsePhone"><i class="btn-icon-append" data-feather="send"></i> Показать номер телефона  </a>
+                <a   href="{{questionnaire.user.get_chat_url}}"  type="button" class="btn btn-my-outline-purple m-1  btn-icon-text"><i class="btn-icon-append" data-feather="mail"></i> Написать</a>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% include 'app_profile/include/send_vacancy_modal.html' %}
+
+
+
+{% endblock page_content %}
