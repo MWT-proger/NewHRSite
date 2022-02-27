@@ -1,23 +1,13 @@
-{% extends 'base.html' %}
+{% extends 'app_account/profile.html' %}
 {% load static %}
-{% load i18n  %}
+
+{% block active_settings_url_1 %}{% endblock active_settings_url_1 %}
 
 
+{% block profile_settings %}
 
-{% block css_link %}
-<style>
-strong{
-			color: #727cf5;
-		}
-
-</style>
-	{% endblock css_link %}
-{% block page_content %}
-
-<div class="row justify-content-center mt-5">
-    <div class="col-lg-10 card">
         <div class="card-header">
-                <label class="h4 text-muted">Анкета соискателя</label>
+                <label class="h4 text-muted">Анкета № {{questionnaire.pk}}</label>
                 <a onclick="javascript:history.back(-1); return false;" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </a>
@@ -28,6 +18,11 @@ strong{
                     <h4 class=" text-center text-muted"></h4>
                 </div>
             </div>
+
+            <form class="col-md-6" method="post" name="ajax-form-questionnaire">
+                {% csrf_token %}
+                <input type="hidden" name="ajax-questionnaire-id" value="{{questionnaire.id}}">
+            </form>
 
 
             <div class="row">
@@ -132,7 +127,14 @@ strong{
                     </div>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group border-bottom">
+                        <label class="text-muted  "><strong>Номер телефона:</strong> </label>
+                        <p class="  text-muted  font-weight-light ">{{questionnaire.phone}}</p>
+                    </div>
+                </div>
+            </div>
             <div class="row">
 
                 <ul class=" col-md-6 list-group list-group-flush">
@@ -166,26 +168,69 @@ strong{
                     <label class="text-muted  "><strong>Предложений:</strong> {{questionnaire.nu}}22</label>
                 </div>
             </div>
-            <div class="collapse" id="collapsePhone">
-                <div class="card card-body mb-2">
-                   <label class="text-muted  "><strong>Номер телефона:</strong> {{questionnaire.phone}} <a href="tel:+{{questionnaire.phone}}">Позвонить</a></label>
-                </div>
-            </div>
 
             <div class="row justify-content-center ">
 
-                <button type="button" class="btn btn-my-outline-blue m-1 btn-icon-text" data-toggle="modal" data-target="#sendVacancyModal" ><i class="btn-icon-append" data-feather="send"></i> Отправить вакансию  </button>
-                <a type="button" class="btn btn-outline-success m-1 btn-icon-text" data-toggle="collapse" href="#collapsePhone" role="button" aria-expanded="false" aria-controls="collapsePhone"><i class="btn-icon-append" data-feather="phone"></i> Показать номер телефона  </a>
-                <a   href="{{questionnaire.user.get_chat_url}}"  type="button" class="btn btn-my-outline-purple m-1  btn-icon-text"><i class="btn-icon-append" data-feather="mail"></i> Написать</a>
 
+                {% if questionnaire.status == 'removed' %}
+                <button type="button" class="btn btn-my-outline-purple m-1 btn-icon-text" id="ajax-activate-removed" ><i class="btn-icon-append" data-feather="eye"></i> Опубликовать </button>
+                <a  href="{{questionnaire.get_edit_url}}" id="ajax-edit"  type="button" class="btn btn-my-outline-blue m-1 btn-icon-text"><i class="btn-icon-append" data-feather="edit"></i> Редактировать </a>
+                {% endif %}
+                {% if questionnaire.status == 'active' %}
+                <button type="button" class="btn btn-my-outline-purple m-1 btn-icon-text" id="ajax-activate-removed" ><i class="btn-icon-append" data-feather="eye-off"></i> Снять с публикации </button>
+                <a  href="{{questionnaire.get_edit_url}}" id="ajax-edit"  type="button" class="btn btn-my-outline-blue m-1 btn-icon-text d-none"><i class="btn-icon-append" data-feather="edit"></i> Редактировать </a>
+                {% endif %}
+                {% if questionnaire.status != 'active' and  questionnaire.status != 'removed' %}
+                <a  id="ajax-activate-removed" hidden></a>
+                <a  id="ajax-edit" hidden></a>
+                {% endif %}
+                <button type="button" class="btn btn-outline-danger m-1 btn-icon-text" data-toggle="modal" data-target="#deleteQuestionnaireModal" ><i class="btn-icon-append" data-feather="trash"></i> Удалить  </button>
             </div>
 
         </div>
-    </div>
-</div>
 
-{% include 'app_profile/include/send_vacancy_modal.html' %}
-
+{% include 'app_profile/include/delete_questionnaire_modal.html' %}
+{% endblock profile_settings %}
 
 
-{% endblock page_content %}
+{% block javascript_custom_profile %}
+{% if questionnaire.status == 'active' or  questionnaire.status == 'removed' %}
+<script type="text/javascript">
+    // <!--// Функция активации и снятия анкеты-->
+    const button_activate_removed = document.body.querySelector('[id="ajax-activate-removed"]');
+    let button_edit = $('#ajax-edit');
+    let form = document.forms.namedItem("ajax-form-questionnaire");
+    button_activate_removed.onclick = function(ev) {
+        let Data = '';
+        let Req= '';
+        let smf = '';
+        Data = new FormData(form);
+        Req = new XMLHttpRequest();
+        Req.open("POST", "{% url 'ajax_questionnaire_activate_removed' %}", true);
+        Req.responseType = 'json';
+        Req.onload = function(Event) {
+            if (Req.status == 200) {
+                smf = Req.response;
+                if (smf.status == 'active')
+                {
+                    button_activate_removed.innerHTML = '<i class="btn-icon-append" data-feather="eye-off"></i> Снять с публикации';
+                    button_edit.addClass('d-none');
+                } else if (smf.status == 'removed'){
+                    button_activate_removed.innerHTML = '<i class="btn-icon-append" data-feather="eye"></i> Опубликовать';
+                    button_edit.removeClass('d-none');
+                }
+                alert('успешно')
+                // AjaxProject('error-ajax-project');
+            } else {
+                alert('не успешно')
+                // AjaxProject('error-ajax-project');
+            }
+        };
+        Req.send(Data);
+        ev.preventDefault();
+    }
+    // <!--// Конец активации и снятия анкеты-->
+</script>
+{% endif %}
+
+{% endblock javascript_custom_profile %}

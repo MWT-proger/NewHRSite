@@ -8,7 +8,7 @@
 
 {% block profile_settings %}
 
-<h6 class="h5">Добавить анкету</h6>
+<h6 class="h5">{% if questionnaire.pk %} Редактировать  анкету № {{questionnaire.pk}} {% else%} Добавить анкету {% endif %}</h6>
 
 {% if messages %}
 {% for message in messages %}
@@ -18,7 +18,7 @@
 {% endfor %}
 {% endif %}
 
-<form class="forms-sample mt-2"  method="POST" action="{% url 'questionnaire_create' %}" id="CreateQuestionnaireForm" novalidate>
+<form class="forms-sample mt-2"  method="POST" {% if questionnaire.pk %} Редактировать  анкету № action="{% url 'questionnaire_edit' questionnaire.pk %}" {% else%} action="{% url 'questionnaire_create' %}"{% endif %}  id="CreateQuestionnaireForm" novalidate>
     {% crispy form %}
 </form>
 {% endblock profile_settings %}
