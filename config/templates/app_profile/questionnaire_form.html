@@ -1,0 +1,27 @@
+{% extends 'app_account/profile.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block active_settings_url_1 %}{% endblock active_settings_url_1 %}
+{% if vacancy.pk %}
+{% else%}
+{% block active_settings_url_4 %}active{% endblock active_settings_url_4 %}
+{% endif %}
+
+
+{% block profile_settings %}
+
+<h6 class="h5">{% if questionnaire.pk %} Редактировать  анкету № {{questionnaire.pk}} {% else%} Добавить анкету {% endif %}</h6>
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-danger mt-1" role="alert">
+    {{message}}
+</div>
+{% endfor %}
+{% endif %}
+
+<form class="forms-sample mt-2"  method="POST" {% if questionnaire.pk %} Редактировать  анкету № action="{% url 'questionnaire_edit' questionnaire.pk %}" {% else%} action="{% url 'questionnaire_create' %}"{% endif %}  id="CreateQuestionnaireForm" novalidate>
+    {% crispy form %}
+</form>
+{% endblock profile_settings %}

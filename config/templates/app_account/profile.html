@@ -3,47 +3,25 @@
 {% load static %}
 {% load i18n  %}
 
-
-{% block add_link %}
-<link rel="stylesheet" href="{% static 'nobleui/vendors/mdi/css/materialdesignicons.min.css' %}">
+{% block css_link %}
+<link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
+{% block css_link_profile %}
+{% endblock css_link_profile %}
 <style>
-	.file {
-		opacity: 0;
-		width: 0.1px;
-		height: 0.1px;
-		position: absolute;
-	}
-
-	.file-name {
-		position: absolute;
-		bottom: -35px;
-		left: 10px;
-		font-size: 0.85rem;
-		color: #555;
-	}
-
 	#id_image:hover + label,
 	#id_image:focus + label {
 		transform: scale(1.02);
 	}
-
 	/* Adding an outline to the label on focus */
 	#id_image:focus + label {
 		outline: 1px solid #000;
 		outline: -webkit-focus-ring-color auto 2px;
 	}
+
+
 </style>
-{% endblock add_link %}
 
-
-
-<!--<div class="row mt-5">-->
-    <!--<div>-->
-        <!--<h4 class="mb-3 mb-md-0">Привет {{ user.username }} ({{ user.get_type_display }}) - Компания ({{ user.name_company }})</h4>-->
-    <!--</div>-->
-
-<!--</div>-->
-
+	{% endblock css_link %}
 
 
 
@@ -54,7 +32,7 @@
 
 	<div class="profile-page mt-5 tx-13">
 		<div class="row mt-5 justify-content-center  ">
-			<div class="col-10 mt-5 grid-margin">
+			<div class="col-12 col-md-10  mt-5 grid-margin">
 				<div class="profile-header mt-5">
                     					<div class="cover">
 						<div class="gray-shade"></div>
@@ -104,12 +82,35 @@
 
 
 						<ul class="links d-flex align-items-center mt-3 mt-md-0 mr-3">
+
+
 							<li class="header-link-item d-flex align-items-center {% block active_settings_url_1 %}active{% endblock active_settings_url_1 %}">
 								<a class="pt-1px row" href="{% url 'profile' %}"> <i class="mr-1 mb-2  icon-md" data-feather="settings"></i><strong class="d-none d-md-block"> Общие настройки</strong> </a>
 							</li>
 							<li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center {% block active_settings_url_2 %}{% endblock active_settings_url_2 %}">
 								<a class="pt-1px row" href="{% url 'change_password' %}"> <i class="mr-1 mb-2 icon-md" data-feather="key"></i><strong class="d-none d-md-block">  Сменить пароль</strong></a>
 							</li>
+
+							{% if user.type == 'employer' %}
+							<li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center {% block active_settings_url_5 %}{% endblock active_settings_url_5 %}">
+								<a class="pt-1px row" href="{% url 'my_vacancy_list' %}"> <i class="mr-1 mb-2 icon-md" data-feather="list"></i><strong class="d-none d-md-block">  Мои ваккансии</strong></a>
+							</li>
+							<li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center {% block active_settings_url_6 %}{% endblock active_settings_url_6 %}">
+								<a class="pt-1px row" href="{% url 'vacancy_create' %}"> <i class="mr-1 mb-2 icon-md" data-feather="plus-circle"></i><strong class="d-none d-md-block">  Добавить вакансию</strong></a>
+							</li>
+							{% else %}
+								<li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center {% block active_settings_url_3 %}{% endblock active_settings_url_3 %}">
+								<a class="pt-1px row" href="{% url 'my_questionnaire_list' %}"> <i class="mr-1 mb-2 icon-md" data-feather="list"></i><strong class="d-none d-md-block">  Мои анкеты</strong></a>
+							</li>
+							<li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center {% block active_settings_url_4 %}{% endblock active_settings_url_4 %}">
+								<a class="pt-1px row" href="{% url 'questionnaire_create' %}"> <i class="mr-1 mb-2 icon-md" data-feather="plus-circle"></i><strong class="d-none d-md-block">  Добавить анкету</strong></a>
+							</li>
+							{% endif %}
+
+
+
+
+
 						</ul>
 					</div>
 				</div>
@@ -117,7 +118,7 @@
 		</div>
 
 		<div class="row justify-content-center">
-			<div class="col-10 grid-margin">
+			<div class="col-12 col-md-10 grid-margin">
 
 
 
@@ -149,16 +150,18 @@
 
 
 
+{% block javascript_plugin %}
+<script src="{% static 'assets/vendors/select2/select2.min.js' %}"></script>
+<script src="{% static 'assets/js/select2.js' %}"></script>
 
-{% block javascript %}
-<!-- plugin js for this page -->
-<script src="{% static 'nobleui/vendors/select2/select2.min.js' %}"></script>
-<script src="{% static 'nobleui/js/select2.js' %}"></script>
-<!-- end plugin js for this page -->
-<!-- custom js for this page -->
-<script src="{% static 'nobleui/js/inputmask.js' %}"></script>
-<script>
+{% block javascript_plugin_profile %}
 
+{% endblock javascript_plugin_profile %}
+{% endblock javascript_plugin %}
+
+
+{% block javascript_custom %}
+<script type="text/javascript" language="JavaScript">
 	// Функция для сохранения фотографии(Выбор фотки)
 	jQuery(function(){
 		$("#id_image").change(function(){
@@ -167,7 +170,6 @@
 			});
 		});
 	});
-
 	// Функция для сохранения фотографии
 	var forms = document.forms.namedItem("ajax-form-add-image");
 	forms.addEventListener('submit', function(ev) {
@@ -194,4 +196,31 @@
 	}, false);
 	// Конец Функции для сохранения фотографии
 </script>
-{% endblock javascript %}
+{% block javascript_custom_profile %}
+
+{% endblock javascript_custom_profile %}
+<script>
+
+var rangeSlider = function(){
+  var slider = $('.range-slider'),
+      range = $('.range-slider__range'),
+      value = $('.range-slider__value');
+
+  slider.each(function(){
+
+    value.each(function(){
+      var value = $(this).prev().attr('value');
+      $(this).html(value);
+    });
+
+    range.on('input', function(){
+      $(this).next(value).html(this.value);
+    });
+  });
+};
+
+rangeSlider();
+
+</script>
+<!-- end custom js for this page -->
+{% endblock javascript_custom %}

@@ -12,6 +12,8 @@
 	<!-- plugin css for this page -->
 	<!-- end plugin css for this page -->
 	<!-- inject:css -->
+	{% block css_link %}
+	{% endblock css_link %}
 	<link rel="stylesheet" href="{% static 'assets/fonts/feather-font/css/iconfont.css' %}">
 	<link rel="stylesheet" href="{% static 'assets/vendors/flag-icon-css/css/flag-icon.min.css' %}">
 	<!-- endinject -->
@@ -19,8 +21,8 @@
 	<link rel="stylesheet" href="{% static 'assets/css/demo_1/style.css' %}">
 	<!-- End layout styles -->
 	<link rel="shortcut icon" href="{% static 'new_assets/img/logo.png' %}" />
-	{% block css_link %}
-	{% endblock css_link %}
+	<link rel="stylesheet" href="{% static 'new_assets/css/input_range.css' %}">
+
 	<style>
 		.full-nav {
 			width: 100%;
@@ -29,6 +31,48 @@
 		.main-wrapper .page-wrapper {
 			background-color: white!important;
 		}
+		.asteriskField {
+    display: none;
+}
+		.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #727cf5;
+			font-size: 1rem;
+}
+
+		    .btn-my-outline-blue{
+        color: #66BDCC!important;
+        border-color: #66BDCC;
+    }
+
+    .btn-my-outline-blue:hover{
+        color: white!important;
+        background-color: #66BDCC!important;
+        border-color: #66BDCC;
+    }
+
+    .btn-my-outline-orange{
+        color: #EE7C58!important;
+        border-color: #EE7C58;
+    }
+
+    .btn-my-outline-orange:hover{
+        color: white!important;
+        background-color: #EE7C58!important;
+        border-color: #EE7C58;
+    }
+
+    .btn-my-outline-purple{
+        color: #514378!important;
+        border-color: #514378;
+    }
+
+    .btn-my-outline-purple:hover{
+        color: white!important;
+        background-color: #514378!important;
+        border-color: #514378;
+    }
+
+
 	</style>
 
 
@@ -62,6 +106,8 @@
 <!-- plugin js for this page -->
 <script src="{% static 'assets/vendors/jquery-validation/jquery.validate.min.js' %}"></script>
 <script src="{% static 'assets/vendors/inputmask/jquery.inputmask.min.js' %}"></script>
+{% block javascript_plugin %}
+{% endblock javascript_plugin %}
 <!-- end plugin js for this page -->
 <!-- inject:js -->
 <script src="{% static 'assets/vendors/feather-icons/feather.min.js' %}"></script>
@@ -70,8 +116,8 @@
 <!-- custom js for this page -->
 <script src="{% static 'new_assets/js/form-validation.js' %}"></script>
 <script src="{% static 'assets/js/inputmask.js' %}"></script>
-{% block javascript %}
-{% endblock javascript %}
+{% block javascript_custom %}
+{% endblock javascript_custom %}
 <script type="text/javascript" language="JavaScript">
 	// добавляем правило для валидации телефона
 	jQuery.validator.addMethod("checkMaskPhone", function(value, element) {
@@ -223,6 +269,7 @@
             }
         }
     });
+
 </script>
 <script type="text/javascript" language="JavaScript">
     // Регистрация
@@ -388,6 +435,6 @@
         }
     });
 </script>
-<!-- end custom js for this page -->
+
 </body>
 </html>

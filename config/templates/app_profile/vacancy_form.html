@@ -3,12 +3,15 @@
 
 
 {% block active_settings_url_1 %}{% endblock active_settings_url_1 %}
-{% block active_settings_url_4 %}active{% endblock active_settings_url_4 %}
+{% if vacancy.pk %}
+{% else%}
+{% block active_settings_url_6 %}active{% endblock active_settings_url_6 %}
+{% endif %}
 
 
 {% block profile_settings %}
 
-<h6 class="h5">{% if questionnaire.pk %} Редактировать  анкету № {{questionnaire.pk}} {% else%} Добавить анкету {% endif %}</h6>
+<h6 class="h5">{% if vacancy.pk %} Редактировать  вакансию № {{vacancy.pk}} {% else%} Добавить вакансию {% endif %}</h6>
 
 {% if messages %}
 {% for message in messages %}
@@ -18,7 +21,7 @@
 {% endfor %}
 {% endif %}
 
-<form class="forms-sample mt-2"  method="POST" {% if questionnaire.pk %} Редактировать  анкету № action="{% url 'questionnaire_edit' questionnaire.pk %}" {% else%} action="{% url 'questionnaire_create' %}"{% endif %}  id="CreateQuestionnaireForm" novalidate>
+<form class="forms-sample mt-2"  method="POST" {% if vacancy.pk %} Редактировать  анкету № action="{% url 'vacancy_edit' vacancy.pk %}" {% else%} action="{% url 'vacancy_create' %}"{% endif %}  id="CreateVacancyForm" novalidate>
     {% crispy form %}
 </form>
 {% endblock profile_settings %}

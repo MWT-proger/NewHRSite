@@ -1,4 +1,4 @@
 {% extends 'app_profile/include/base_field_range.html' %}
 {% block range_field %}
-<input type="range" name="total_service" step="1" value="0" class="range-slider__range" min="0" max="50" id="id_total_service">
+<input type="range" name="total_service" step="1" {% if questionnaire.total_service %} value="{{questionnaire.total_service}}" {% else %} value="0" {% endif %}  class="range-slider__range" min="0" max="50" id="id_total_service">
 {% endblock range_field %}

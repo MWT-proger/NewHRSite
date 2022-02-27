@@ -23,7 +23,9 @@ def get_image_name(instance, filename):
 class User(AbstractUser):
     image = models.ImageField('Аватарка', upload_to=get_image_name, blank=True, null=True)
     name_company = models.CharField('Название компании', max_length=200, blank=True, null=True)
+    third_name = models.CharField('Отчество', max_length=200, blank=True, null=True)
     type = models.CharField('Тип пользователя', max_length=20, default='applicant', choices=TYPE)
+    age = models.PositiveIntegerField("Полных лет", blank=True, null=True)
 
     def save(self, *args, **kwargs):
         # обычное сохранение

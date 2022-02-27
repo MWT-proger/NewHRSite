@@ -9,6 +9,14 @@
         <a class="navbar-brand noble-ui-logo  mt-2"  href="{% url 'mainUrl' %}"><img src="{% static 'new_assets/img/logo.png' %}" width="30" height="30" class="d-inline-block align-top mr-2" alt=""> {% include 'include/name_site_word.html' %}</a>
         <ul class="navbar-nav ">
 {% if request.user.is_authenticated %}
+            {% if request.user_agent.is_mobile %}
+            <li class="nav-item  ">
+                <a class="btn nav-link " data-toggle="modal" data-target="#filterFormModal" > <i class="link-icon" data-feather="filter"></i> Фильтр</a>
+            </li>
+            {% endif %}
+            <li class="nav-item  ">
+                <a class="btn nav-link " href="{% url 'all_vacancy_list' %}" > <i class="link-icon" data-feather="list"></i> Вакансии </a>
+            </li>
             <li class="nav-item  ">
                 <a class="btn nav-link " href="{% url 'profile' %}" > <i class="link-icon" data-feather="user"></i> Профиль </a>
             </li>

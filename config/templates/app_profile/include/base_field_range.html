@@ -14,6 +14,9 @@
         {# not f_labeield|is_radioselect in row below can be removed once Django 3.2 is no longer supported #}
         <label {% if field.id_forl and not field|is_radioselect %}for="{{ field.id_for_label }}" {% endif %}class="{% if 'form-horizontal' in form_class %}col-form-label {% endif %}{{ label_class }}{% if field.field.required %} requiredField{% endif %}">
                 {{ field.label|safe }}{% if field.field.required %}<span class="asteriskField">*</span>{% endif %}
+            {% block range_field_span_new %}
+
+                {% endblock range_field_span_new  %}
             </label>
         {% endif %}
 
@@ -48,10 +51,14 @@
                 {% include 'bootstrap4/layout/field_file.html' %}
             {% else %}
                 <div{% if field_class %} class="{{ field_class }} range-slider"{% endif %} class="range-slider">
+                {% block range_field %}
+                {% endblock range_field %}
 
-                <input type="range" name="driving_experience" step="1" value="0" class="range-slider__range" min="0" max="50"  placeholder="concern" id="id_driving_experience">
                     {% include 'bootstrap4/layout/help_text_and_errors.html' %}
+                {% block range_field_span %}
+
                 <span class="range-slider__value">0</span>
+                {% endblock range_field_span  %}
                 </div>
             {% endif %}
         {% endif %}

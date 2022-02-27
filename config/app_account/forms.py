@@ -1,7 +1,7 @@
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import get_user_model
 from django import forms
-from crispy_forms.layout import Layout, Submit, Row, Column
+from crispy_forms.layout import Layout, Submit, Row, Column, Button
 
 User = get_user_model()
 
@@ -49,8 +49,13 @@ class UserUpdateForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('first_name', css_class='form-group col-md-6 mb-0'),
                 Column('last_name', css_class='form-group col-md-6 mb-0'),
+                Column('first_name', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('third_name', css_class='form-group col-md-6 mb-0'),
+                Column('age', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(
@@ -58,12 +63,13 @@ class UserUpdateForm(forms.ModelForm):
                 Column('email', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
-            Submit('submit', 'Сохранить')
+            Submit('submit', 'Сохранить'),
+            Button('cancel', 'Сменить номер телефона', css_class='btn btn-outline-danger m-1')
         )
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email']
+        fields = ['first_name', 'last_name', 'third_name', 'age', 'username', 'email']
 
 
 class UserEmployerUpdateForm(forms.ModelForm):
@@ -76,18 +82,18 @@ class UserEmployerUpdateForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('first_name', css_class='form-group col-md-6 mb-0'),
                 Column('last_name', css_class='form-group col-md-6 mb-0'),
+                Column('first_name', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(
+                Column('third_name', css_class='form-group col-md-6 mb-0'),
                 Column('username', css_class='form-group col-md-6 mb-0'),
-                Column('email', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(
                 Column('name_company', css_class='form-group col-md-6 mb-0'),
-                Column('', css_class='form-group col-md-6 mb-0'),
+                Column('email', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Submit('submit', 'Сохранить')
@@ -95,4 +101,4 @@ class UserEmployerUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'name_company']
+        fields = ['first_name', 'last_name', 'third_name', 'username', 'email', 'name_company']

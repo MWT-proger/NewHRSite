@@ -1,33 +1,22 @@
-<div class="modal fade" id="sendVacancyModal" tabindex="-1" role="dialog" aria-labelledby="sendVacancyModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteQuestionnaireModal" tabindex="-1" role="dialog" aria-labelledby="deleteQuestionnaireModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="sendVacancyModalLabel">Отправить вакансию</h5>
+                <h5 class="modal-title" id="deleteQuestionnaireModalLabel">Удалить анкету</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form class="cmxform" id="sendVacancyModalForm" name="sendVacancyModalForm" action="" method="POST" autocapitalize="off"  novalidate>
-
+                <form class="cmxform" action="{{questionnaire.get_delete_url}}" method="POST" autocapitalize="off">
                     <fieldset>
-
                         {% csrf_token %}
-
-
-                        <div class="form-group">
-                            <label for="loginPassword">Пароль</label>
-                            <input id="loginPassword" class="form-control" name="loginPassword" type="password">
-                            <label  class="mt-2 text-danger d-none" id="labelLogin"  >Логин или пароль указаны неверно</label>
-
-                        </div>
-
-
+                            <input type="hidden" name="ajax-questionnaire-id" value="{{questionnaire.id}}">
+                        <p  class=" h6" >Вы хотите удалить анкету?</p>
                     </fieldset>
 
-
                     <div class="mt-3 ">
-                        <button type="button" id="loginButtonSubmit" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">Отправить</button>
+                        <button type="submit" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">Да, всё верно</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть окно</button>
                     </div>
                 </form>

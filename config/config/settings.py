@@ -24,6 +24,9 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'app_account',
     'app_flatpage',
+    'app_profile',
+    'import_export',
+    'django_user_agents',
 
 ]
 
@@ -35,6 +38,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -187,3 +191,12 @@ CKEDITOR_CONFIGS = {
         ]),
     }
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
+USER_AGENTS_CACHE = 'default'

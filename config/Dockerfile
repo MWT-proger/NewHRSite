@@ -11,6 +11,8 @@ RUN pip install --upgrade pip
 
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
+RUN pip install django-user-agents
+RUN pip install python-memcached
 
 # copy project
 COPY . .

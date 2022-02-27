@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block active_settings_url_1 %}{% endblock active_settings_url_1 %}
-{% block active_settings_url_3 %}active{% endblock active_settings_url_3 %}
+{% block active_settings_url_5 %}active{% endblock active_settings_url_5 %}
 
 {% block css_link_profile %}
 <link rel="stylesheet" href="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
@@ -14,7 +14,7 @@
 <div class="row">
 					<div class=" col-12 col-md-12 ">
 
-                <h6 class="card-title">Мои анкеты</h6>
+                <h6 class="card-title">Мои вакансии</h6>
                         {% if messages %}
                         {% for message in messages %}
                         <div class="alert alert-danger mt-1" role="alert">
@@ -23,7 +23,7 @@
                         {% endfor %}
                         {% endif %}
                 <div class="table-responsive">
-                  <table id="dataTableMyQuestionnaire" class="table">
+                  <table id="dataTableMyVacancy" class="table">
                     <thead>
                       <tr>
                         <th>ID</th>
@@ -31,18 +31,18 @@
                         <th>Дата<br> размещения</th>
                         <th>Статус</th>
                         <th>Просмотры</th>
-                        <th>Предложения</th>
+                        <th>Откликов</th>
                       </tr>
                     </thead>
                     <tbody>
-                    {% for questionnaire in questionnaire_list %}
+                    {% for vacancy in vacancy_list %}
                     <tr>
-                        <td><a href="{{questionnaire.get_absolute_url}}">{{questionnaire.pk}}</a></td>
-                        <td>{{questionnaire.profession|default_if_none:"Не указана"}}</td>
-                        <td>{{questionnaire.public_date|date:"d/m/Y"}}</td>
-                        <td>{{questionnaire.get_status_display}}</td>
-                        <td>{{questionnaire.count_see.count}}</td>
-                        <td>{{questionnaire.count_see.count}}</td>
+                        <td><a href="{{vacancy.get_absolute_url}}">{{vacancy.pk}}</a></td>
+                        <td>{{vacancy.profession|default_if_none:"Не указана"}}</td>
+                        <td>{{vacancy.public_date|date:"d/m/Y"}}</td>
+                        <td>{{vacancy.get_status_display}}</td>
+                        <td>{{vacancy.count_see.count}}</td>
+                        <td>{{vacancy.count_see.count}}</td>
 
                       </tr>
                     {% endfor %}

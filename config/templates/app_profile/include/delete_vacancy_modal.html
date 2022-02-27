@@ -1,18 +1,18 @@
-<div class="modal fade" id="deleteQuestionnaireModal" tabindex="-1" role="dialog" aria-labelledby="deleteQuestionnaireModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteVacancyModal" tabindex="-1" role="dialog" aria-labelledby="deleteVacancyModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteQuestionnaireModalLabel">Удалить анкету</h5>
+                <h5 class="modal-title" id="deleteVacancyModalLabel">Удалить вакансию</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form class="cmxform" action="{{questionnaire.get_delete_url}}" method="POST" autocapitalize="off">
+                <form class="cmxform" action="{{vacancy.get_delete_url}}" method="POST" autocapitalize="off">
                     <fieldset>
                         {% csrf_token %}
-                            <input type="hidden" name="ajax-questionnaire-id" value="{{questionnaire.id}}">
-                        <p  class=" h6" >Вы хотите удалить анкету?</p>
+                            <input type="hidden" name="ajax-vacancy-id" value="{{vacancy.id}}">
+                        <p  class=" h6" >Вы хотите удалить вакансию?</p>
                     </fieldset>
 
                     <div class="mt-3 ">

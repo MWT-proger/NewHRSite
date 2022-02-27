@@ -7,21 +7,17 @@
 {% block profile_settings %}
 
         <div class="card-header">
-                <label class="h4 text-muted">Анкета № {{questionnaire.pk}}</label>
+                <label class="h4 text-muted">Вакансия № {{vacancy.pk}}</label>
                 <a onclick="javascript:history.back(-1); return false;" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </a>
             </div>
         <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <h4 class=" text-center text-muted"></h4>
-                </div>
-            </div>
 
-            <form class="col-md-6" method="post" name="ajax-form-questionnaire">
+
+            <form class="col-md-6" method="post" name="ajax-form-vacancy">
                 {% csrf_token %}
-                <input type="hidden" name="ajax-questionnaire-id" value="{{questionnaire.id}}">
+                <input type="hidden" name="ajax-vacancy-id" value="{{vacancy.id}}">
             </form>
 
 
@@ -30,13 +26,9 @@
 
                 <div class="col-md-6">
                     <div class="form-group border-bottom">
-                        <label class="text-muted  "><strong>ФИО:</strong> </label>
+                        <label class="text-muted  "><strong>Наименование вакансии:</strong> </label>
                         <p class="  text-muted  font-weight-light ">
-                            {% if questionnaire.user.first_name or questionnaire.user.third_name or questionnaire.user.last_name %}
-                            {{questionnaire.user.first_name|default_if_none:""}} {{questionnaire.user.third_name|default_if_none:""}} {{questionnaire.user.last_name|default_if_none:""}}
-                            {% else %}
-                            не указано
-                            {% endif %}
+                            {{vacancy.name|default_if_none:"не указано"}}
                         </p>
                     </div>
                 </div>
@@ -44,9 +36,11 @@
 
                 <div class="col-md-6">
                     <div class="form-group border-bottom">
-                        <label class="text-muted  "><strong>Полных лет:</strong> </label>
+                        <label class="text-muted  "><strong>Профессия:</strong> </label>
                         <p class="  text-muted  font-weight-light ">
-                            {{questionnaire.user.age|default_if_none:"не указано"}}
+
+                            {{vacancy.profession|default_if_none:"не указано"}}
+
                         </p>
                     </div>
                 </div>
@@ -60,18 +54,14 @@
                 <div class="col-md-6">
                     <div class="form-group border-bottom">
                         <label class="text-muted  "><strong>Регион:</strong> </label>
-                        <p class="  text-muted  font-weight-light ">{{questionnaire.region}}</p>
+                        <p class="  text-muted  font-weight-light ">{{vacancy.region|default_if_none:"не указан"}}</p>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group border-bottom ">
                         <label class="text-muted  "><strong>Город:</strong> </label>
                         <p class="  text-muted  font-weight-light ">
-                            {% if questionnaire.city %}
-                            {{questionnaire.city}}
-                            {% else %}
-                            не указан
-                            {% endif %}
+                            {{vacancy.city|default_if_none:"не указан"}}
                         </p>
                     </div>
                 </div>
@@ -82,138 +72,104 @@
 
                 <div class="col-md-6">
                     <div class="form-group border-bottom">
-                        <label class="text-muted  "><strong>Профессия:</strong> </label>
+                        <label class="text-muted  "><strong>Режим работы:</strong> </label>
                         <p class="  text-muted  font-weight-light ">
-                            {% if questionnaire.profession %}
-                            {{questionnaire.profession}}
-                            {% else %}
-                            не указана
-                            {% endif %}
+                            {{vacancy.work_mode|default_if_none:"не указан"}}
                         </p>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group border-bottom">
-                        <label class="text-muted  "><strong>Водительское удостоверение, категории:</strong> </label>
+                        <label class="text-muted  "><strong>Размер заработной платы:</strong> </label>
                         <p class="text-muted font-weight-light">
-                            {% if questionnaire.driver_license.all %}
-                            {% for driver in questionnaire.driver_license.all %}
-                            {% if forloop.last %} {{driver}}
-                            {% else %}
-                            {{driver}},
-                            {%endif%}
-                            {% endfor %}
-                            {% else %}
-                            не указано
-                            {% endif %}
+                            {{vacancy.money|default_if_none:"не указан"}}
                         </p>
                     </div>
                 </div>
 
             </div>
-            <div class="row">
 
-                <div class="col-md-6">
-                    <div class="form-group border-bottom">
-                        <label class="text-muted  "><strong>Водительский стаж, лет:</strong> </label>
-                        <p class="  text-muted  font-weight-light ">{{questionnaire.driving_experience}}</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group border-bottom">
-                        <label class="text-muted  "><strong>Общий стаж, лет:</strong> </label>
-                        <p class="  text-muted  font-weight-light ">{{questionnaire.total_service}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group border-bottom">
-                        <label class="text-muted  "><strong>Номер телефона:</strong> </label>
-                        <p class="  text-muted  font-weight-light ">{{questionnaire.phone}}</p>
-                    </div>
-                </div>
-            </div>
             <div class="row">
 
                 <ul class=" col-md-6 list-group list-group-flush">
-                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_green='True' true_status=questionnaire.vaccinated %} Наличие прививки</li>
-                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_green='True' true_status=questionnaire.health_book %} Санитарная книжка</li>
-                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_status=questionnaire.not_citizen %} Гражданин РФ</li>
-                    <li class="list-group-item"></li>
+                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_green='True' true_status=vacancy.accommodation %} Проживание</li>
+                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_green='True' true_status=vacancy.food %} Питание</li>
+
                 </ul>
 
                 <ul class=" col-md-6 list-group list-group-flush">
-                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_status=questionnaire.no_profession %} Наличие профессии</li>
-                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_green='True' true_status=questionnaire.self_propelled %} Права на  управление самоходными машинами</li>
+                    <li class="list-group-item text-muted">{% include 'app_profile/include/status_questionnaire.html' with true_green='True' true_status=vacancy.drive %} Проезд</li>
                     <li class="list-group-item"></li>
                 </ul>
 
 
+            </div>
+            <div class="form-group border-bottom">
+                <label class="text-muted  "><strong>Требования:</strong> </label>
+                <p class="text-muted mb-4 font-weight-light">{{vacancy.requirements}}</p>
             </div>
             <div class="form-group ">
-                <label class="text-muted  "><strong>Краткое описание:</strong> </label>
-                <p class="text-muted mb-4 font-weight-light">{{questionnaire.description}}</p>
+                <label class="text-muted  "><strong>Условия:</strong> </label>
+                <p class="text-muted mb-4 font-weight-light">{{vacancy.conditions}}</p>
             </div>
             <hr>
             <div class="row justify-content-start">
                 <div class="col-sm">
-                    <label class="text-muted  "><strong>Дата публикации:</strong> {{questionnaire.public_date|date:"M d, Y"}}</label>
+                    <label class="text-muted  "><strong>Дата публикации:</strong> {{vacancy.public_date|date:"M d, Y"}}</label>
                 </div>
                 <div class="col-md-auto">
-                    <label class="text-muted  "><strong>Просмотров:</strong> {{questionnaire.count_see.count}}</label>
+                    <label class="text-muted  "><strong>Просмотров:</strong> {{vacancy.count_see.count}}</label>
                 </div>
                 <div class="col-md-auto">
-                    <label class="text-muted  "><strong>Предложений:</strong> {{questionnaire.nu}}22</label>
+                    <label class="text-muted  "><strong>Предложений:</strong> {{vacancy.nu}}22</label>
                 </div>
             </div>
 
             <div class="row justify-content-center ">
 
 
-                {% if questionnaire.status == 'removed' %}
+                {% if vacancy.status == 'removed' %}
                 <button type="button" class="btn btn-my-outline-purple m-1 btn-icon-text" id="ajax-activate-removed" ><i class="btn-icon-append" data-feather="eye"></i> Опубликовать </button>
-                <a  href="{{questionnaire.get_edit_url}}" id="ajax-edit"  type="button" class="btn btn-my-outline-blue m-1 btn-icon-text"><i class="btn-icon-append" data-feather="edit"></i> Редактировать </a>
+                <a  href="{{vacancy.get_edit_url}}" id="ajax-edit"  type="button" class="btn btn-my-outline-blue m-1 btn-icon-text"><i class="btn-icon-append" data-feather="edit"></i> Редактировать </a>
                 {% endif %}
-                {% if questionnaire.status == 'active' %}
-                <button type="button" class="btn btn-my-outline-purple m-1 btn-icon-text" id="ajax-activate-removed" ><i class="btn-icon-append" data-feather="eye-off"></i> Снять с публикации </button>
-                <a  href="{{questionnaire.get_edit_url}}" id="ajax-edit"  type="button" class="btn btn-my-outline-blue m-1 btn-icon-text d-none"><i class="btn-icon-append" data-feather="edit"></i> Редактировать </a>
+                {% if vacancy.status == 'active' %}
+                <button type="button" class="btn btn-my-outline-purple m-1 btn-icon-text" id="ajax-activate-removed" ><i class="btn-icon-append" data-feather="eye-off"></i> Приостановить размещение </button>
+                <a  href="{{vacancy.get_edit_url}}" id="ajax-edit"  type="button" class="btn btn-my-outline-blue m-1 btn-icon-text d-none"><i class="btn-icon-append" data-feather="edit"></i> Редактировать </a>
                 {% endif %}
-                {% if questionnaire.status != 'active' and  questionnaire.status != 'removed' %}
+                {% if vacancy.status != 'active' and  vacancy.status != 'removed' %}
                 <a  id="ajax-activate-removed" hidden></a>
                 <a  id="ajax-edit" hidden></a>
                 {% endif %}
-                <button type="button" class="btn btn-outline-danger m-1 btn-icon-text" data-toggle="modal" data-target="#deleteQuestionnaireModal" ><i class="btn-icon-append" data-feather="trash"></i> Удалить  </button>
+                <button type="button" class="btn btn-outline-danger m-1 btn-icon-text" data-toggle="modal" data-target="#deleteVacancyModal" ><i class="btn-icon-append" data-feather="trash"></i> Удалить  </button>
             </div>
 
         </div>
 
-{% include 'app_profile/include/delete_questionnaire_modal.html' %}
+{% include 'app_profile/include/delete_vacancy_modal.html' %}
 {% endblock profile_settings %}
 
 
 {% block javascript_custom_profile %}
-{% if questionnaire.status == 'active' or  questionnaire.status == 'removed' %}
+{% if vacancy.status == 'active' or  vacancy.status == 'removed' %}
 <script type="text/javascript">
     // <!--// Функция активации и снятия анкеты-->
     const button_activate_removed = document.body.querySelector('[id="ajax-activate-removed"]');
     let button_edit = $('#ajax-edit');
-    let form = document.forms.namedItem("ajax-form-questionnaire");
+    let form = document.forms.namedItem("ajax-form-vacancy");
     button_activate_removed.onclick = function(ev) {
         let Data = '';
         let Req= '';
         let smf = '';
         Data = new FormData(form);
         Req = new XMLHttpRequest();
-        Req.open("POST", "{% url 'ajax_questionnaire_activate_removed' %}", true);
+        Req.open("POST", "{% url 'ajax_vacancy_activate_removed' %}", true);
         Req.responseType = 'json';
         Req.onload = function(Event) {
             if (Req.status == 200) {
                 smf = Req.response;
                 if (smf.status == 'active')
                 {
-                    button_activate_removed.innerHTML = '<i class="btn-icon-append" data-feather="eye-off"></i> Снять с публикации';
+                    button_activate_removed.innerHTML = '<i class="btn-icon-append" data-feather="eye-off"></i> Приостановить размещение';
                     button_edit.addClass('d-none');
                 } else if (smf.status == 'removed'){
                     button_activate_removed.innerHTML = '<i class="btn-icon-append" data-feather="eye"></i> Опубликовать';

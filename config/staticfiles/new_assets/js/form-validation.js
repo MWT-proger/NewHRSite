@@ -175,4 +175,32 @@ $(function() {
         },
     });
   });
+  $(function() {
+    // validate signup form on keyup and submit
+    $("#CreateQuestionnaireForm").validate({
+      rules: {
+        phone: {
+          required: true,
+          checkMaskPhone: true,
+        }
+      },
+      messages: {
+        phone: {
+          required: "Пожалуйста, введите номер телефона",
+          checkMaskPhone: "Пожалуйста, введите правильный номер телефона",
+          minlength: "Пожалуйста, введите правильный номер телефона"
+        }
+      },
+      errorPlacement: function(label, element) {
+        label.addClass('mt-2 text-danger');
+        label.insertAfter(element);
+      },
+      highlight: function(element, errorClass) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function(element, errorClass) {
+            $(element).removeClass("is-invalid").addClass('is-valid');
+        },
+    });
+  });
 });

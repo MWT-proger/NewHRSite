@@ -1,32 +1,28 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-    path('profile/applicant/', views.UserUpdate.as_view(), name='profile'),
-    path('profile/employer/', views.UserEmployerUpdate.as_view(), name='profileEmployer'),
+    path('my_questionnaire/', views.MyQuestionnaireListView.as_view(), name='my_questionnaire_list'),
+    path('create_questionnaire/', views.QuestionnaireCreateView.as_view(), name='questionnaire_create'),
+    path('edit_questionnaire/<int:pk>/', views.QuestionnaireUpdateView.as_view(), name='questionnaire_edit'),
+    path('detail_questionnaire/<int:pk>/', views.QuestionnaireDetailView.as_view(), name='questionnaire_detail'),
+    path('delete_questionnaire/<int:pk>/', views.QuestionnaireDeleteView.as_view(), name='questionnaire_delete'),
+    path('detail_questionnaire_my/<int:pk>/', views.MyQuestionnaireDetailView.as_view(), name='my_questionnaire_detail'),
+
+    path('ajax/questionnaire_activate_removed/', views.questionnaire_activate_removed,
+         name="ajax_questionnaire_activate_removed"),
 
 
-    path('login/', views.login_request, name='ajaxLoginUrl'),
-    path('logout/', views.logout_view, name='logout'),
-    path('signup/', views.register, name='signUpUrl'),
-    path('reset_password/', views.reset_password, name='resetPasswordUrl'),
-    path(
-        'change-password/',
-        auth_views.PasswordChangeView.as_view(
-            template_name='app_account/change-password.html',
-            success_url='/profile/applicant/'
-        ),
-        name='change_password'
-    ),
+    path('my_vacancy/', views.MyVacancyListView.as_view(), name='my_vacancy_list'),
+    path('create_vacancy/', views.VacancyCreateView.as_view(), name='vacancy_create'),
+    path('edit_vacancy/<int:pk>/', views.VacancyUpdateView.as_view(), name='vacancy_edit'),
+    path('detail_vacancy/<int:pk>/', views.VacancyDetailView.as_view(), name='vacancy_detail'),
+    path('delete_vacancy/<int:pk>/', views.VacancyDeleteView.as_view(), name='vacancy_delete'),
+    path('detail_vacancy_my/<int:pk>/', views.MyVacancyDetailView.as_view(), name='my_vacancy_detail'),
 
-    path('ajax/validate_username/', views.validate_username, name='validate_username'),
-    path('ajax/validate_username_forgot/', views.validate_username_forgot_password,
-         name='validateUsernameForgotPassword'),
-    path('ajax/validate_email/', views.validate_email, name='validateEmailUser'),
-    path('ajax/validate_authenticate/', views.validate_authenticate, name='validateAuthenticate'),
-    path('ajax/call_request/', views.call_request, name='callRequest'),
-    path('ajax/validate_token/', views.validate_token, name='validateToken'),
+    path('ajax/vacancy_activate_removed/', views.vacancy_activate_removed,
+         name="ajax_vacancy_activate_removed"),
 
-    path('ajax/add_image/', views.add_image_avatar, name="add_image"),
+
+    path('all_vacancy/', views.AllVacancyListView.as_view(), name='all_vacancy_list'),
 ]
