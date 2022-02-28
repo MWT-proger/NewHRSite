@@ -37,11 +37,6 @@ strong{
                     <div class="form-group border-bottom">
                         <label class="text-muted  "><strong>ФИО:</strong> </label>
                         <p class="  text-muted  font-weight-light ">
-                            {% if questionnaire.user.first_name or questionnaire.user.third_name or questionnaire.user.last_name %}
-                            {{questionnaire.user.first_name|default_if_none:""}} {{questionnaire.user.third_name|default_if_none:""}} {{questionnaire.user.last_name|default_if_none:""}}
-                            {% else %}
-                            не указано
-                            {% endif %}
                         </p>
                     </div>
                 </div>

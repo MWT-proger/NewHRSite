@@ -9,7 +9,7 @@ from app_account.decorators import checking_profile_employer, checking_profile_a
 
 from .utils import set_if_not_none, true_if_not_none, set_if_value
 from .forms import QuestionnaireCreateForm, QuestionnaireUpdateForm, QuestionnaireDeleteForm, VacancyCreateForm, \
-    VacancyUpdateForm, VacancyDeleteForm, FilterVacancyForm
+    VacancyUpdateForm, VacancyDeleteForm, FilterVacancyForm, FilterQuestionnaireForm
 from .models import Questionnaire, Vacancy
 from .decorators import checking_my_questionnaire, checking_my_questionnaire_edit, checking_my_limit_questionnaire, \
     checking_my_vacancy_edit, checking_my_vacancy
@@ -183,7 +183,7 @@ class AllVacancyListView(ListView):
     """Список всех вакансий"""
     model = Vacancy
     template_name = 'app_profile/all_vacancy_list.html'
-    paginate_by = 2
+    paginate_by = 20
 
     def get_queryset(self):
 
@@ -202,8 +202,6 @@ class AllVacancyListView(ListView):
         true_if_not_none(sort_params, 'drive', self.request.GET.get('drive'))
 
         set_if_not_none(sort_params, 'status', 'active')
-
-        print(sort_params)
 
         queryset = Vacancy.objects.filter(**sort_params).order_by('-public_date')
 
@@ -216,11 +214,11 @@ class AllVacancyListView(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-class AllVacancyListView(ListView):
-    """Список рекомендованных вакансий"""
-    model = Vacancy
-    template_name = 'app_profile/all_vacancy_list.html'
-    paginate_by = 2
+class AllQuestionnaireListView(ListView):
+    """Список всех анкет"""
+    model = Questionnaire
+    template_name = 'app_profile/all_questionnaire_list.html'
+    paginate_by = 20
 
     def get_queryset(self):
 
@@ -229,26 +227,24 @@ class AllVacancyListView(ListView):
         set_if_value(sort_params, 'region__in', self.request.GET.getlist('regions'))
         set_if_value(sort_params, 'city__in', self.request.GET.getlist('citys'))
         set_if_value(sort_params, 'profession__in', self.request.GET.getlist('professions'))
-        set_if_value(sort_params, 'work_mode__in', self.request.GET.getlist('work_modes'))
+        set_if_value(sort_params, 'driver_license__in', self.request.GET.getlist('driver_licenses'))
 
-        set_if_value(sort_params, 'money__gte', self.request.GET.get('money_from'))
-        set_if_value(sort_params, 'money__lte', self.request.GET.get('money_to'))
+        set_if_value(sort_params, 'user__age__gte', self.request.GET.get('age_from'))
+        set_if_value(sort_params, 'user__age__lte', self.request.GET.get('age_to'))
 
-        true_if_not_none(sort_params, 'accommodation', self.request.GET.get('accommodation'))
-        true_if_not_none(sort_params, 'food', self.request.GET.get('food'))
-        true_if_not_none(sort_params, 'drive', self.request.GET.get('drive'))
+        true_if_not_none(sort_params, 'vaccinated', self.request.GET.get('vaccinated'))
 
         set_if_not_none(sort_params, 'status', 'active')
 
         print(sort_params)
 
-        queryset = Vacancy.objects.filter(**sort_params).order_by('-public_date')
+        queryset = Questionnaire.objects.filter(**sort_params).select_related('user').order_by('-public_date')
 
         return queryset
 
     def get_context_data(self, **kwargs):
-        context = super(AllVacancyListView, self).get_context_data(**kwargs)
-        context['form'] = FilterVacancyForm(self.request.GET)
+        context = super(AllQuestionnaireListView, self).get_context_data(**kwargs)
+        context['form'] = FilterQuestionnaireForm(self.request.GET)
         return context
 
 

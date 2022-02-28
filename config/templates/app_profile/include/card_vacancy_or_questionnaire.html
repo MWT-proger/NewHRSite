@@ -1,0 +1,62 @@
+{% if vacancy.pk %}
+<div class="col-12 col-md-6 p-0">
+    <div class="card mr-2 mt-2">
+        <div class="card-body m-0">
+            <h5 class="card-title">{{vacancy.name|default_if_none:"Не указано"}}</h5>
+            <p class="card-text border-bottom"><strong>Регион: </strong>{{vacancy.region|default_if_none:"Не указан"}}</p>
+            <p class="card-text border-bottom"><strong>Город: </strong>{{vacancy.city|default_if_none:"Не указан"}}</p>
+            <p class="card-text border-bottom"><strong>Профессия: </strong>{{vacancy.profession|default_if_none:"Не указана"}}</p>
+            <p class="card-text border-bottom"><strong>ЗП: </strong>{{vacancy.money|default_if_none:"Не указана"}}</p>
+        </div>
+        <a href="{{vacancy.get_absolute_other_url}}" class="btn btn-primary  ml-4 mr-4 ">Перейти</a>
+        <div class="card-footer">
+
+            <span>{{vacancy.public_date|date:"d/m/Y"}}</span>
+            <span class="float-right  ml-2" data-toggle="tooltip" data-placement="left" title="Количество откликов">{{vacancy.count_see.count}} <i class="link-icon icon-lg"  data-feather="user-check"></i></span>
+
+            <span class="float-right" data-toggle="tooltip" data-placement="left" title="Количество просмотров">{{vacancy.count_see.count}} <i class="link-icon icon-lg"  data-feather="eye"></i> </span>
+        </div>
+
+
+    </div>
+</div>
+{% else %}
+<div class="col-12 col-md-6 p-0">
+    <div class="card mr-2 mt-2">
+        <div class="card-body m-0">
+            <h5 class="card-title">
+                {% if questionnaire.user.first_name or questionnaire.user.third_name or questionnaire.user.last_name %}
+                {{questionnaire.user.first_name|default_if_none:""}} {{questionnaire.user.third_name|default_if_none:""}} {{questionnaire.user.last_name|default_if_none:""}}
+                {% else %}
+                ФИО не указано
+                {% endif %}
+            </h5>
+            <p class="card-text border-bottom"><strong>Возраст: </strong>{{questionnaire.user.age|default_if_none:"Не указан"}}</p>
+            <p class="card-text border-bottom"><strong>Регион: </strong>{{questionnaire.region|default_if_none:"Не указан"}}</p>
+            <p class="card-text border-bottom"><strong>Город: </strong>{{questionnaire.city|default_if_none:"Не указан"}}</p>
+            <p class="card-text border-bottom"><strong>Профессия: </strong>{{questionnaire.profession|default_if_none:"Не указана"}}</p>
+            <p class="card-text border-bottom"><strong>Водительское удостоверение: </strong>
+                {% if questionnaire.driver_license.all %}
+                {% for driver in questionnaire.driver_license.all %}
+                {% if forloop.last %} {{driver}}
+                {% else %}
+                {{driver}},
+                {%endif%}
+                {% endfor %}
+                {% else %}
+                не указано
+                {% endif %}
+            </p>
+            <p class="card-text border-bottom">{% include 'app_profile/include/status_questionnaire.html' with true_green='True' true_status=questionnaire.vaccinated %} Наличие прививки
+            </p>
+        </div>
+        <a href="{{questionnaire.get_absolute_other_url}}" class="btn btn-primary  ml-4 mr-4 ">Перейти</a>
+        <div class="card-footer">
+            <span>{{questionnaire.public_date|date:"d/m/Y"}}</span>
+            <span class="float-right  ml-2" data-toggle="tooltip" data-placement="left" title="Количество откликов">{{questionnaire.count_see.count}} <i class="link-icon icon-lg"  data-feather="user-check"></i></span>
+
+            <span class="float-right" data-toggle="tooltip" data-placement="left" title="Количество просмотров">{{questionnaire.count_see.count}} <i class="link-icon icon-lg"  data-feather="eye"></i> </span>
+        </div>
+    </div>
+</div>
+{% endif %}

@@ -28,7 +28,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="forms-sample mt-2" action="{% url 'all_vacancy_list'%}" >
+                <form class="forms-sample mt-2" action="{% block action_form_filter %}{% endblock action_form_filter %}" >
                     {% crispy form %}
                 </form>
             </div>
@@ -44,7 +44,7 @@
             <div class="card-body">
                 <p class="card-text">Фильтр</p>
                 <hr>
-                <form class="forms-sample mt-2" action="{% url 'all_vacancy_list'%}" >
+                <form class="forms-sample mt-2" action="{% block action_form_filter_2 %}{% endblock action_form_filter_2 %}" >
                     {% crispy form %}
                 </form>
             </div>
@@ -58,7 +58,11 @@
 <div class="col-12">
         <div class="card  ">
             <div class="card-body">
-                <h4 class="page-title">Список вакансий</h4>
+                <h4 class="page-title">
+                    {% block list_title %}
+                    {% endblock list_title %}
+
+                </h4>
             </div>
         </div>
         </div>
@@ -66,33 +70,9 @@
             <div class="row">
 
 
-                {% for o in '000000' %}
-                {% for vacancy in vacancy_list %}
 
-                <div class="col-12 col-md-6 p-0">
-                    <div class="card mr-2 mt-2">
-                        <div class="card-body m-0">
-                            <h5 class="card-title">{{vacancy.name|default_if_none:"Не указано"}}</h5>
-                            <p class="card-text border-bottom"><strong>Регион: </strong>{{vacancy.region|default_if_none:"Не указан"}}</p>
-                            <p class="card-text border-bottom"><strong>Город: </strong>{{vacancy.city|default_if_none:"Не указан"}}</p>
-                            <p class="card-text border-bottom"><strong>Профессия: </strong>{{vacancy.profession|default_if_none:"Не указана"}}</p>
-                            <p class="card-text border-bottom"><strong>ЗП: </strong>{{vacancy.money|default_if_none:"Не указана"}}</p>
-                        </div>
-                        <a href="{{vacancy.get_absolute_other_url}}" class="btn btn-primary  ml-4 mr-4 ">Перейти</a>
-                        <div class="card-footer">
-                            <!--<a href="{{vacancy.get_absolute_url}}">{{vacancy.pk}}</a></td>-->
-
-                            <span>{{vacancy.public_date|date:"d/m/Y"}}</span>
-                            <span class="float-right  ml-2" data-toggle="tooltip" data-placement="left" title="Количество откликов">{{vacancy.count_see.count}} <i class="link-icon icon-lg"  data-feather="user-check"></i></span>
-
-                            <span class="float-right" data-toggle="tooltip" data-placement="left" title="Количество просмотров">{{vacancy.count_see.count}} <i class="link-icon icon-lg"  data-feather="eye"></i> </span>
-                        </div>
-
-
-                    </div>
-                </div>
-                {% endfor %}
-                {% endfor %}
+                {% block list_card %}
+                {% endblock list_card %}
 
 
 

@@ -25,4 +25,5 @@ urlpatterns = [
 
 
     path('all_vacancy/', views.AllVacancyListView.as_view(), name='all_vacancy_list'),
+    path('all_questionnaire/', views.AllQuestionnaireListView.as_view(), name='all_questionnaire_list'),
 ]

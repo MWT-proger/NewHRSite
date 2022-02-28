@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Field
 from django.core.exceptions import ValidationError
 
-from .models import Questionnaire, Vacancy, WorkMode, City, Region, Profession
+from .models import Questionnaire, Vacancy, WorkMode, City, Region, Profession, DriverLicense
 
 
 class RangeField(Field):
@@ -22,6 +22,14 @@ class RangeFieldMoneyFrom(Field):
 
 class RangeFieldMoneyTo(Field):
     template = "app_profile/include/field_range_money_to.html"
+
+
+class RangeFieldAgeFrom(Field):
+    template = "app_profile/include/field_range_age.html"
+
+
+class RangeFieldAgeToFrom(Field):
+    template = "app_profile/include/field_range_age_to.html"
 
 
 class QuestionnaireBaseForm(forms.ModelForm):
@@ -304,3 +312,80 @@ class FilterVacancyForm(forms.ModelForm):
     class Meta:
         model = Vacancy
         exclude = ('user', 'status', 'count_see', 'region', 'city', 'profession', 'work_mode',)
+
+
+class FilterQuestionnaireForm(forms.ModelForm):
+    regions = forms.ModelMultipleChoiceField(label='Регион',
+                                             required=False,
+                                             queryset=Region.objects.all(),
+                                             )
+    citys = forms.ModelMultipleChoiceField(label='Город',
+                                           required=False,
+                                           queryset=City.objects.all(),
+                                           )
+    professions = forms.ModelMultipleChoiceField(label='Профессия',
+                                                 required=False,
+                                                 queryset=Profession.objects.all(),
+                                                 )
+    driver_licenses = forms.ModelMultipleChoiceField(label='Водительское удостоверение',
+                                                 required=False,
+                                                 queryset=DriverLicense.objects.all(),
+                                                 )
+    age_from = forms.IntegerField(label='Возраст от', required=False)
+    age_to = forms.IntegerField(label='Возраст до', required=False, initial=70)
+
+    def __init__(self, *args, **kwargs):
+        super(FilterQuestionnaireForm, self).__init__(*args, **kwargs)
+
+        self.fields['regions'].widget.attrs.update({'class': 'js-example-basic-single w-100'})
+        self.fields['regions'].widget.attrs.update({'data-width': '100%'})
+        self.fields['regions'].widget.attrs.update({'multiple': 'multiple'})
+
+        self.fields['citys'].widget.attrs.update({'class': 'js-example-basic-single w-100'})
+        self.fields['citys'].widget.attrs.update({'data-width': '100%'})
+        self.fields['citys'].widget.attrs.update({'multiple': 'multiple'})
+
+        self.fields['professions'].widget.attrs.update({'class': 'js-example-basic-single w-100'})
+        self.fields['professions'].widget.attrs.update({'data-width': '100%'})
+        self.fields['professions'].widget.attrs.update({'multiple': 'multiple'})
+
+        self.fields['driver_licenses'].widget.attrs.update({'class': 'js-example-basic-single w-100'})
+        self.fields['driver_licenses'].widget.attrs.update({'data-width': '100%'})
+        self.fields['driver_licenses'].widget.attrs.update({'multiple': 'multiple'})
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('regions', css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('citys', css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('professions', css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('driver_licenses', css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column(RangeFieldAgeFrom('age_from'), css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column(RangeFieldAgeToFrom('age_to'), css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('vaccinated', css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            ),
+            Submit('submit', 'Показать')
+        )
+
+    class Meta:
+        model = Questionnaire
+        fields = ('vaccinated', 'age_from',  'age_to', 'regions', 'citys', 'professions', 'driver_licenses',)

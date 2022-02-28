@@ -136,7 +136,7 @@
                         {% endfor %}
                         {% endif %}
 
-                        <form class="forms-sample mt-2"  method="POST" action="{% url 'profile' %}" novalidate>
+                        <form class="forms-sample mt-2"  method="POST" action="{% if user.type == 'applicant' %} {% url 'profile' %}   {% else %} {% url 'profileEmployer' %} {% endif %}" novalidate>
                             {% csrf_token %}
                             {% crispy form %}
                         </form>

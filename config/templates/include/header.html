@@ -14,9 +14,19 @@
                 <a class="btn nav-link " data-toggle="modal" data-target="#filterFormModal" > <i class="link-icon" data-feather="filter"></i> Фильтр</a>
             </li>
             {% endif %}
+
+
+            {% if user.type == 'applicant' %}
             <li class="nav-item  ">
                 <a class="btn nav-link " href="{% url 'all_vacancy_list' %}" > <i class="link-icon" data-feather="list"></i> Вакансии </a>
             </li>
+            {% else %}
+            <li class="nav-item  ">
+                <a class="btn nav-link " href="{% url 'all_questionnaire_list' %}" > <i class="link-icon" data-feather="list"></i> Анкеты </a>
+            </li>
+            {% endif %}
+
+
             <li class="nav-item  ">
                 <a class="btn nav-link " href="{% url 'profile' %}" > <i class="link-icon" data-feather="user"></i> Профиль </a>
             </li>
