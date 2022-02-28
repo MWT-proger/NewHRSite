@@ -1,0 +1,15 @@
+{% extends 'app_profile/include/base_field_range.html' %}
+
+
+
+
+{% block range_field %}
+<input oninput="rangeInputFilter('{{ field.id_for_label }}')"  type="range" name="{{ field.name }}" step="1" value="{{ field.value|default_if_none:'0' }}" class="range-slider__range" min="0" max="70" id="{{ field.id_for_label }}">
+{% endblock range_field %}
+
+
+{% block range_field_span %}
+{% endblock range_field_span  %}
+{% block range_field_span_new %}
+:<span class="range-slider__value_new" id="{{ field.id_for_label }}_range_value">{{ field.value|default_if_none:"0" }}</span>
+{% endblock range_field_span_new  %}
