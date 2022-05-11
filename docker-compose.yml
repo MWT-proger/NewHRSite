@@ -1,9 +1,21 @@
 version: '3.3'
-
 services:
-  web:
-    build: ./config
-    command: python manage.py runserver 0.0.0.0:8000
+  web_dev:
+    build: config
+    command: python manage.py runserver 0.0.0.0:9000
+    volumes:
+      - ./config/:/home/config/
+    ports:
+      - 9000:9000
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db_dev
+
+  daphne_dev:
+    build:
+      context: config
+    command: daphne -b 0.0.0.0 -p 8000 config.asgi:application
     volumes:
       - ./config/:/home/config/
     ports:
@@ -11,15 +23,29 @@ services:
     env_file:
       - ./.env.dev
     depends_on:
-      - db
-  db:
+      - db_dev
+      - redis_dev
+
+  redis_dev:
+    image: redis:alpine
+    restart: always
+
+  db_dev:
     image: postgres:13.0-alpine
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    ports:
-      - 5432:5432
+      - postgres_data_dev:/var/lib/postgresql/data/
     env_file:
       - ./.env.dev.db
+    ports:
+      - 5432:5432
 
+  nginx_dev:
+    build: ./nginx_dev
+    ports:
+      - 80:80
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - daphne_dev
 volumes:
-  postgres_data:
+  postgres_data_dev:

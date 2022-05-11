@@ -69,7 +69,7 @@ def logout_view(request):
 
 def edit_username(username):
     if username:
-        username = username.replace('(', '').replace(')', '').replace('-', '')
+        username = username.replace('(', '').replace(')', '').replace('-', '').replace('+', '')
     return username
 
 
@@ -230,13 +230,13 @@ def call_request(request):
         params = {
             "app_id": settings.TELPHIN_APP_ID,
             "app_secret": settings.TELPHIN_APP_SECRET,
-            "number": username
+            "number": '+' + username
         }
 
         result = requests.post(settings.TELPHIN_URL_ONE, data=json.dumps(params), headers=HEADERS)
         response_api = result.json()
 
-        if response_api['status'] == "succes":
+        if response_api['status'] == "success":
             status = True
             description = False
         else:
@@ -269,7 +269,7 @@ def validate_token(request):
         params = {
             "app_id": settings.TELPHIN_APP_ID,
             "app_secret": settings.TELPHIN_APP_SECRET,
-            "number": username,
+            "number": '+' + username,
             "auth_code": key
         }
 

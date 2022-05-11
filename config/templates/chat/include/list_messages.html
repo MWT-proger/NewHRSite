@@ -1,0 +1,10 @@
+{% load static %}
+{% load i18n %}
+<ul id="list-messages">
+    {% for msg in active_dialog.messages.all %}
+    <li id="message-{{ msg.id }}-id">
+        <span id="message-{{ msg.id }}-read">{{msg.read}}</span>######{{ msg.id }}####{% if msg.sender == request.user %}pull-left{% else %}pull-right{% endif %}
+        #####{{ msg.sender.username }}#####{{ msg.get_formatted_create_datetime }}#####{{ msg.text }}
+    </li>
+    {% endfor %}
+</ul >

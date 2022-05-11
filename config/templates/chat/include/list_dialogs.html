@@ -1,0 +1,32 @@
+{% load static %}
+{% load i18n %}
+<ul id="list-dialogs">
+    {% for dialog in object_list %}
+    <li id="dialog-{{ dialog.id }}-li" class="active_dialog">
+        {% if dialog.owner == request.user %}
+        {% with dialog.opponent as contact %}
+        <a href="{% url 'dialogs_detail' contact.username %}" id="user-{{ contact.username }}"
+           class="btn btn-danger">{% trans "Chat with" %} {{ contact.username }}</a>
+        <p>Кол-во новых: <span id="dialog-{{ dialog.id }}-sum_new_messages">{{ dialog.get_sum_new_messages_owner}}</span></p>
+
+        {% endwith %}
+
+        {% else %}
+        {% with dialog.owner as contact %}
+        <a href="{% url 'dialogs_detail' contact.username %}" id="user-{{ contact.username }}"
+           class="btn btn-danger">{% trans "Chat with" %} {{ contact.username }} </a>
+        <p>Кол-во новых: <span id="dialog-{{ dialog.id }}-sum_new_messages">{{ dialog.get_sum_new_messages}}</span></p>
+
+        {% endwith %}
+        {% endif %}
+        <p>{{ dialog.get_message_chat.sender}}: <span id="dialog-{{ dialog.id }}-text">{{ dialog.get_message_chat.text|slice:20}} </span></p>
+        <p>время: <span id="dialog-{{ dialog.id }}-created">{{ dialog.get_message_chat.get_formatted_create_datetime}}</span></p>
+
+        <p> Статус: <span id="dialog-{{ dialog.id }}-read">{{ dialog.get_message_chat.read}}</span></p>
+        <p>-</p>
+        <hr>
+    </li>
+    {% endfor %}
+</ul>
+
+

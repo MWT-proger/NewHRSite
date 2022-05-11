@@ -5,15 +5,30 @@
 
 
 {% block css_link %}
+<link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
+
 <style>
-    strong{
-        color: #727cf5;
-    }
+strong{
+			color: #727cf5;
+		}
 
 </style>
-{% endblock css_link %}
+	{% endblock css_link %}
 {% block page_content %}
+{% if user.is_superuser %}
+<div class="d-flex justify-content-end align-items-center flex-wrap grid-margin mt-5">
 
+
+            <a href="{{vacancy.user.get_admin_url}}" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0">
+              <i class="btn-icon-prepend" data-feather="user"></i>
+              Открыть пользователя в Админ Панель
+            </a>
+            <a  href="{{vacancy.get_admin_url}}" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
+              <i class="btn-icon-prepend" data-feather="list"></i>
+              Открыть вакансию в Админ Панель
+            </a>
+    </div>
+{% endif %}
 <div class="row justify-content-center mt-5">
     <div class="col-lg-10 card">
         <div class="card-header">
@@ -122,11 +137,177 @@
                     <label class="text-muted  "><strong>Просмотров:</strong> {{vacancy.count_see.count}}</label>
                 </div>
                 <div class="col-md-auto">
-                    <label class="text-muted  "><strong>Предложений:</strong> {{vacancy.nu}}22</label>
+                    <label class="text-muted  "><strong>Предложений:</strong> {{vacancy.count_sentence.count}}</label>
                 </div>
+            </div>
+            <div class="row justify-content-center ">
+                {% if request.user not in vacancy.count_sentence.all %}
+                                <button type="button" id="btn-application" class="btn btn-my-outline-blue m-1 btn-icon-text" data-toggle="modal" data-target="#sendApplicationModal" ><i class="btn-icon-append" data-feather="check-square"></i> Откликнуться  </button>
+
+                {% endif %}
+                <a   href="{{vacancy.get_chat_url}}"  type="button" class="btn btn-my-outline-purple m-1  btn-icon-text"><i class="btn-icon-append" data-feather="mail"></i> Написать</a>
+
             </div>
 
         </div>
     </div>
 </div>
+{% if user.is_superuser %}
+<div class="row justify-content-center mt-5">
+    <div class="col-lg-10 card">
+        <div class="card-header">
+                <label class="h4 text-muted">Все вакансии соискателя</label>
+            </div>
+        <div class="card-body">
+
+
+            <div class="table-responsive">
+                  <table id="dataTableMyVacancy" class="table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Профессия</th>
+                        <th>Дата<br> размещения</th>
+                        <th>Статус</th>
+                        <th>Просмотры</th>
+                        <th>Откликов</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for vac in vacancy.user.vacancy.all %}
+                    <tr>
+                        <td><a href="{{vac.get_absolute_url}}">{{vac.pk}}</a></td>
+                        <td>{{vac.profession|default_if_none:"Не указана"}}</td>
+                        <td>{{vac.public_date|date:"d/m/Y"}}</td>
+                        <td>{{vac.get_status_display}}</td>
+                        <td>{{vac.count_see.count}}</td>
+                        <td>{{vac.count_see.count}}</td>
+
+                      </tr>
+                    {% endfor %}
+
+
+
+                    </tbody>
+                  </table>
+                </div>
+
+    </div>
+</div>
+</div>
+{% endif %}
+{% include 'app_profile/include/send_application_modal.html' with title_application='Отправить анкету' %}
 {% endblock page_content %}
+
+{% block javascript_web_socket %}
+<script src="{% static 'new_assets/js/soundmanager2.js' %}"></script>
+<script type="text/javascript">
+	// Функционал чата основанный на WebSocket
+	$(document).ready(function(){
+		const my_username = '{{request.user.username}}';
+		const opponent_username = '{{vacancy.user}}';
+		let unread_indicator = $('#unread-indicator');
+
+		var url_ws = my_username + '/';
+
+        if (opponent_username !== '') {
+            url_ws = opponent_username + '/'
+        }
+
+		const chatSocket = new WebSocket(
+				'ws://'
+				+ window.location.host
+				+ '/ws/chat/'
+				+ url_ws
+		);
+		chatSocket.onopen = function (event) {
+		};
+		function playMusicChat(){
+			soundManager.url = "{% static 'new_assets/js/soundmanager2.js' %}";
+
+			soundManager.onready(function() {
+				soundManager.createSound({
+					id: 'mySound',
+					url: "{% static 'new_assets/music/sms.mp3' %}"
+				});
+				// ...and play it
+				soundManager.play('mySound');
+			});
+		}
+		    function addNewMessage(packet) {
+        // Вызываем при необходимости добавить новое сообщение в диалог с оппонентом
+        let new_dialog_text = packet['message'];
+        if(packet['message'].length > 20) new_dialog_text = packet['message'].substring(0,20) + '...';
+
+      let msgElem = "" +
+              "<a href='/dialogs/" + packet['sender_username'] +  "' class='dropdown-item'>\n" +
+				"    <div class='figure'>\n" +
+				"        <img src='/static/new_assets/img/user_unknown.jpg' style='width: 30px!important; height: 30px!important;' >\n" +
+				"    </div>\n" +
+				"    <div class='content'>\n" +
+				"        <div class='d-flex justify-content-between align-items-center'>\n" +
+				"            <p >" + packet['sender_username'] + "</p>\n" +
+				"            <p class='sub-text text-muted'>"  + packet['created'] + "</p>\n" +
+				"        </div>\n" +
+				"        <p class='sub-text text-muted'>"  + new_dialog_text + "</p>\n" +
+				"    </div>\n" +
+				"</a>";
+      document.querySelector('#unread-list').innerHTML +=msgElem;
+    }
+		chatSocket.onmessage = function(e) {
+			const packet = JSON.parse(e.data);
+
+			switch (packet['type']) {
+				case 'new_message':
+					//Здесь выполняются инструкции, если результат выражения равен 'new_message'
+					if (packet['sender_username'] !== my_username ) {
+						playMusicChat();
+						addNewMessage(packet);
+						unread_indicator.removeClass('d-none');
+
+						}
+					break;
+			}
+		};
+
+		chatSocket.onclose = function(e) {
+			console.error('Chat socket closed unexpectedly');
+		};
+
+        document.querySelector('#btn-send-application').onclick = function(e) {
+                  // sendApplicationModalForm
+            const messageInputDom = document.querySelector('#id_questionnaire');
+            if (messageInputDom.value !== ''){
+
+
+                let text_message = 'Отклик на вакансию {{vacancy.name}},<br> анкеты:';
+                var listQuestionnaire = $('#id_questionnaire').val();
+                for (let i in listQuestionnaire) {
+
+                    text_message += '<br> <a href="/profile/detail_questionnaire/' +
+                    listQuestionnaire[i] +
+                    '/" data-toggle="tooltip" data-placement="left" title="Перейти">id № '  +
+                    $('#id_questionnaire option[value=' + listQuestionnaire[i] +']').text() +
+                    '</a>'
+                }
+                 chatSocket.send(JSON.stringify({
+                    'type': 'new_message',
+                    'message': text_message,
+                     'application': 'questionnaire',
+                     'application_id': '{{vacancy.pk}}'
+                }));
+                $("#id_questionnaire").val(null).trigger('change');
+                $("#sendApplicationModalClose").click();
+                $('#btn-application').addClass('d-none');
+
+
+            }};
+    });
+
+</script>
+{% endblock javascript_web_socket %}
+
+{% block javascript_plugin %}
+<script src="{% static 'assets/vendors/select2/select2.min.js' %}"></script>
+<script src="{% static 'assets/js/select2.js' %}"></script>
+{% endblock javascript_plugin %}

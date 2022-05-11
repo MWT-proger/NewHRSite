@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n  %}
+{% load page_tag %}
 {% load crispy_forms_tags %}
 
 
@@ -8,16 +9,20 @@
 <link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
 <style>
     .range-slider__range {
-    width: 100% !important;
-}
+        width: 100% !important;
+    }
 </style>
 {% endblock css_link %}
 
 {% block page_content %}
 
 
+        {% block recommended_title %}
+{% endblock recommended_title %}
+{% block not_form %}
 
-    {% if request.user_agent.is_mobile %}
+
+{% if request.user_agent.is_mobile %}
 <div class="modal fade" id="filterFormModal" tabindex="-1" role="dialog" aria-labelledby="filterFormModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -37,65 +42,101 @@
 </div>
 <div class="row justify-content-center mt-5">
     <div class="col-12 p-0 mr-0">
-    {% else %}
-<div class="row justify-content-center mt-5">
-    <div class="col-12 col-md-3">
-        <div class="card">
-            <div class="card-body">
-                <p class="card-text">Фильтр</p>
-                <hr>
-                <form class="forms-sample mt-2" action="{% block action_form_filter_2 %}{% endblock action_form_filter_2 %}" >
-                    {% crispy form %}
-                </form>
+        {% else %}
+        <div class="row justify-content-center mt-5">
+            <div class="col-11">
+                <div class="card  ">
+                    <div class="card-body">
+                        <h4 class="page-title ">
+                            {% block list_title %}
+                            {% endblock list_title %}
+
+                        </h4>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-12 col-md-8">
-
-    {% endif %}
 
 
-<div class="col-12">
-        <div class="card  ">
-            <div class="card-body">
-                <h4 class="page-title">
-                    {% block list_title %}
-                    {% endblock list_title %}
-
-                </h4>
+        <div class="row justify-content-center mt-1 mb-1">
+            <div class="col-11">
+                <div class="card ">
+                    {% if general_settings.show_2 %}
+                    {% if general_settings.advertising_2  %}
+                    {{general_settings.advertising_2|safe}}
+                    {% else %}
+                    <div class="card-body  ">
+                        <h5 class="card-title text-center">Разместим банер</h5>
+                        <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
+                        <div class="row justify-content-center mt-3"><a href="#" class="btn btn-primary "  >Перейти</a></div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </div>
-        </div>
-        <div class="col-12">
-            <div class="row">
+        <form class="forms-sample mt-2" action="{% block action_form_filter_2 %}{% endblock action_form_filter_2 %}" >
+            <div class="row justify-content-center mt-1">
+
+                <div class="col-12 col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-text">Фильтр</p>
+                            <hr>
+
+                            {% crispy form %}
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-8">
+
+                    {% endif %}
+
+                    {% endblock not_form %}
+                    {% block search_form %}
+
+                    <div class="card  ">
+                        <div class="card-body p-2">
+                            {{ form.search_query|as_crispy_field  }}
+                            <input type="submit" name="submit" value="Найти" class="btn btn-primary" >
+                        </div>
+                    </div>
+                    {% endblock search_form %}
+                    <div class="col-12">
+                        <div class="row ">
 
 
 
-                {% block list_card %}
-                {% endblock list_card %}
+                            {% block list_card %}
+                            {% endblock list_card %}
 
 
 
+                        </div>
+                        {% include 'include/paginator.html' %}
+                    </div>
+                </div>
             </div>
-            {% include 'include/paginator.html' %}
-        </div>
-    </div>
-</div>
+            {% if not request.user_agent.is_mobile %}
+        </form>
+        {% endif %}
 
 
-{% endblock page_content %}
+        {% endblock page_content %}
 
-{% block javascript_plugin %}
-<script src="{% static 'assets/vendors/select2/select2.min.js' %}"></script>
-<script src="{% static 'assets/js/select2.js' %}"></script>
-{% endblock javascript_plugin %}
-{% block javascript_custom %}
-<script>
+        {% block javascript_plugin %}
+        <script src="{% static 'assets/vendors/select2/select2.min.js' %}"></script>
+        <script src="{% static 'assets/js/select2.js' %}"></script>
+        {% endblock javascript_plugin %}
+        {% block javascript_custom %}
+        <script>
 
-function rangeInputFilter(rangeId) {
-   var rng=document.getElementById(rangeId); //rng - это ползунок
-   var i1=document.getElementById(rangeId + '_range_value'); // i1 - input
-  i1.innerHTML=rng.value;
-}
-</script>
-{% endblock javascript_custom %}
+            function rangeInputFilter(rangeId) {
+                var rng=document.getElementById(rangeId); //rng - это ползунок
+                var i1=document.getElementById(rangeId + '_range_value'); // i1 - input
+                i1.innerHTML=rng.value;
+            }
+        </script>
+        {% endblock javascript_custom %}

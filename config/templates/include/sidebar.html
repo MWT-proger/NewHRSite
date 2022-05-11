@@ -1,0 +1,149 @@
+{% load static %}
+{% load i18n  %}
+<nav class="sidebar ">
+  <div class="sidebar-header">
+    <a href="{% url 'mainUrl' %}" class="sidebar-brand" style="font-size: 20px!important;">
+      {% include 'include/name_site_word.html' %}
+    </a>
+    <div class="sidebar-toggler not-active">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <div class="sidebar-body">
+    <ul class="nav">
+
+
+      <li class="nav-item nav-category">Основное</li>
+      <li class="nav-item">
+        <a href="{% url 'mainUrl' %}" class="nav-link">
+          <i class="link-icon" data-feather="home"></i>
+          <span class="link-title">Главная</span>
+        </a>
+      </li>
+      {% if request.user.is_authenticated %}
+
+      {% if request.user.is_superuser %}
+      <li class="nav-item nav-category">Администратор</li>
+      <li class="nav-item">
+        <a href="/admin" class="nav-link">
+          <i class="link-icon" data-feather="monitor"></i>
+          <span class="link-title">Панель администратора</span>
+        </a>
+      </li>
+
+      <li class="nav-item  ">
+        <a class="nav-link " href="{% url 'all_vacancy_list' %}" >
+          <i class="link-icon" data-feather="list"></i>
+          <span class="link-title">Вакансии </span>
+        </a>
+      </li>
+      <li class="nav-item  ">
+        <a class="nav-link " href="{% url 'all_questionnaire_list' %}" >
+          <i class="link-icon" data-feather="list"></i>
+          <span class="link-title">Анкеты </span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'dialogs' %}" class="nav-link">
+          <i class="link-icon" data-feather="mail"></i>
+          <span class="link-title">Сообщения</span>
+        </a>
+      </li>
+
+
+      {% else %}
+
+      {% if user.type == 'applicant' %}
+      <li class="nav-item  ">
+        <a class="nav-link " href="{% url 'all_vacancy_list' %}" >
+          <i class="link-icon" data-feather="list"></i>
+          <span class="link-title">Вакансии </span>
+        </a>
+      </li>
+      <li class="nav-item  ">
+        <a class="nav-link " href="{% url 'recommended_vacancy_list' %}" >
+          <i class="link-icon" data-feather="thumbs-up"></i>
+          <span class="link-title">Рекомендованные </span>
+        </a>
+      </li>
+      {% else %}
+
+      <li class="nav-item  ">
+        <a class="nav-link " href="{% url 'all_questionnaire_list' %}" >
+          <i class="link-icon" data-feather="list"></i>
+          <span class="link-title">Анкеты </span>
+        </a>
+      </li>
+
+      {% endif %}
+
+      <li class="nav-item nav-category">{{request.user.get_type_display}}</li>
+      <li class="nav-item">
+        <a href="{% url 'dialogs' %}" class="nav-link">
+          <i class="link-icon" data-feather="mail"></i>
+          <span class="link-title">Сообщения</span>
+        </a>
+      </li>
+      {% if user.type == 'employer' %}
+      <li class="nav-item">
+        <a href="{% url 'my_vacancy_list' %}" class="nav-link">
+          <i class="link-icon" data-feather="list"></i>
+          <span class="link-title">Мои ваккансии</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'vacancy_create' %}" class="nav-link">
+          <i class="link-icon" data-feather="plus-circle"></i>
+          <span class="link-title">Добавить вакансию</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a href="{% url 'my_questionnaire_list' %}" class="nav-link">
+          <i class="link-icon" data-feather="list"></i>
+          <span class="link-title">Мои анкеты</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'questionnaire_create' %}" class="nav-link">
+          <i class="link-icon" data-feather="plus-circle"></i>
+          <span class="link-title">Добавить анкету</span>
+        </a>
+      </li>
+      {% endif %}
+      <li class="nav-item">
+        <a href="{% url 'profile' %}" class="nav-link">
+          <i class="link-icon" data-feather="settings"></i>
+          <span class="link-title">Настройки</span>
+        </a>
+      </li>
+      <li class="nav-item  ">
+        <a class="nav-link " href="{% if user.type == 'applicant' %}/info/applicant_conditions/{% else %}/info/employer_conditions/{% endif %}">
+          <i class="link-icon" data-feather="alert-circle"></i>
+          <span class="link-title">Правила</span>
+        </a>
+      </li>
+
+      {% endif %}
+      {% else %}
+      <li class="nav-item  ">
+        <a class="nav-link " data-toggle="modal" data-target="#loginModal" > <i class="link-icon" data-feather="log-in"></i>
+          <span class="link-title">Войти </span>
+        </a>
+      </li>
+      <li class="nav-item  ">
+        <a class="nav-link " data-toggle="modal" data-target="#signUpModal" > <i class="link-icon" data-feather="user-plus"></i>
+          <span class="link-title">Зарегистрироваться  </span>
+        </a>
+      </li>
+      {% endif %}
+
+
+
+    </ul>
+
+
+  </div>
+</nav>

@@ -1,0 +1,49 @@
+{% load static %}
+{% load i18n %}
+<li id="dialog-{{ dialog.id }}-li" class="chat-item pr-1 pl-1 {% if contact.username == opponent_username %} active_dialog {% endif %}">
+    <a href="{% url 'dialogs_detail' contact.username %}" id="user-{{ contact.username }}" class="d-flex align-items-center">
+        <figure class="mb-0 mr-2">
+            {% if contact.image %}
+            <img src="{{contact.image.url}}" class="img-xs rounded-circle" alt="avatar">
+            {% else %}
+            <img src="{% static 'new_assets/img/user_unknown.jpg' %}" class="img-xs rounded-circle" alt="user">
+            {% endif %}
+
+
+            {% if contact.is_online %}
+            <div class="status online"></div>
+            {% else %}
+            <div class="status offline"></div>
+            {% endif %}
+        </figure>
+        <div class="d-flex justify-content-between flex-grow border-bottom">
+            <div>
+                <p class="text-body font-weight-bold">{% if contact.first_name or contact.last_name %}{{ contact.first_name| title }} {{ contact.last_name| title }} {% else %}{{ contact.username| title }}{% endif %}</p>
+                <p class="text-muted tx-13"><span id="dialog-{{ dialog.id }}-text">{% if dialog.get_message_chat.sender == request.user %}Вы: {% endif %}{{ dialog.get_message_chat.text|slice:20}} </span></p>
+            </div>
+            <div class="d-flex flex-column align-items-end">
+                <p class="text-muted tx-13 mb-1" id="dialog-{{ dialog.id }}-created">{{ dialog.get_message_chat.get_formatted_create_datetime}}</p>
+                <div id="dialog-{{ dialog.id }}-container">
+                    {% if owner %}
+                    {% if dialog.get_sum_new_messages_owner != 0 %}
+                    <div class="badge badge-pill badge-primary ml-auto"><span id="dialog-{{ dialog.id }}-sum_new_messages">{{ dialog.get_sum_new_messages_owner}}</span></div>
+                    {% else %}
+                    {% if dialog.get_message_chat.sender != contact and dialog.get_message_chat.read %}
+                    <div class="text-primary"><i style="width: 15px; height: 15px;" data-feather="check"></i></div>
+                    {% endif%}
+                    {% endif%}
+                    {% else %}
+                    {% if dialog.get_sum_new_messages != 0 %}
+                    <div class="badge badge-pill badge-primary ml-auto"><span id="dialog-{{ dialog.id }}-sum_new_messages">{{ dialog.get_sum_new_messages}}</span></div>
+                    {% else %}
+                    {% if dialog.get_message_chat.sender != contact and dialog.get_message_chat.read %}
+                    <div class="text-primary"><i style="width: 15px; height: 15px;" data-feather="check"></i></div>
+                    {% endif%}
+                    {% endif%}
+                    {% endif%}
+                </div>
+
+            </div>
+        </div>
+    </a>
+</li>

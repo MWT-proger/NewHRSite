@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -79,6 +81,7 @@ class Questionnaire(models.Model):
     """Анкета соискателя"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="questionnaire",
                              verbose_name="Соискатель")
+    slug = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     public_date = models.DateTimeField(verbose_name="Дата публикации", default=timezone.now)
     status = models.CharField('Статус', max_length=100, default='inspection', choices=STATUS)
     # Информация Которую все видят
@@ -103,17 +106,30 @@ class Questionnaire(models.Model):
                                        verbose_name="Просмотры", blank=True,
                                        related_name="questionnaire_see")
 
+    count_sentence = models.ManyToManyField(User,
+                                            verbose_name="Предложения", blank=True,
+                                            related_name="questionnaire_sentence")
+
+    def get_admin_url(self):
+        return reverse("admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name), args=(self.id,))
+
     def __str__(self):
-        return str(self.user)
+        return str(self.pk)
 
     def get_absolute_url(self):
-        return reverse("my_questionnaire_detail", kwargs={'pk': self.pk})
+        return reverse("my_questionnaire_detail", kwargs={'slug': self.slug})
 
     def get_edit_url(self):
-        return reverse("questionnaire_edit", kwargs={'pk': self.pk})
+        return reverse("questionnaire_edit", kwargs={'slug': self.slug})
 
     def get_delete_url(self):
-        return reverse("questionnaire_delete", kwargs={'pk': self.pk})
+        return reverse("questionnaire_delete", kwargs={'slug': self.slug})
+
+    def get_absolute_other_url(self):
+        return reverse("questionnaire_detail", kwargs={'slug': self.slug})
+
+    def get_chat_url(self):
+        return reverse("dialogs_detail", kwargs={'username': self.user.username})
 
     class Meta:
         verbose_name = "Анкета соискателя"
@@ -124,6 +140,7 @@ class Vacancy(models.Model):
     """Вакансии"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="vacancy",
                              verbose_name="Работодатель")
+    slug = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     public_date = models.DateTimeField(verbose_name="Дата публикации", default=timezone.now)
     status = models.CharField('Статус', max_length=100, default='inspection', choices=STATUS)
     # Информация Которую все видят
@@ -146,21 +163,29 @@ class Vacancy(models.Model):
     count_see = models.ManyToManyField(User,
                                        verbose_name="Просмотры", blank=True,
                                        related_name="vacancy_see")
+    count_sentence = models.ManyToManyField(User,
+                                            verbose_name="Предложения", blank=True,
+                                            related_name="vacancy_sentence")
+    def get_admin_url(self):
+        return reverse("admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name), args=(self.id,))
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("my_vacancy_detail", kwargs={'pk': self.pk})
+        return reverse("my_vacancy_detail", kwargs={'slug': self.slug})
 
     def get_absolute_other_url(self):
-        return reverse("vacancy_detail", kwargs={'pk': self.pk})
+        return reverse("vacancy_detail", kwargs={'slug': self.slug})
 
     def get_edit_url(self):
-        return reverse("vacancy_edit", kwargs={'pk': self.pk})
+        return reverse("vacancy_edit", kwargs={'slug': self.slug})
 
     def get_delete_url(self):
-        return reverse("vacancy_delete", kwargs={'pk': self.pk})
+        return reverse("vacancy_delete", kwargs={'slug': self.slug})
+
+    def get_chat_url(self):
+        return reverse("dialogs_detail", kwargs={'username': self.user.username})
 
     class Meta:
         verbose_name = "Вакансия"

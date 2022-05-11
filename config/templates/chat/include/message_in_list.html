@@ -1,0 +1,26 @@
+
+{% load static %}
+{% load i18n %}
+<li class="message-item {% if msg_my %} me {% else %} friend {% endif %}{% if not msg.read %} msg-unread {% endif %}" id="message-{{ msg.id }}-id" data-id="{{ msg.id }}">
+
+    {% if msg.sender.image %}
+    <img src="{{msg.sender.image.url}}" class="img-xs rounded-circle" alt="avatar">
+    {% else %}
+    <img src="{% static 'new_assets/img/user_unknown.jpg' %}" class="img-xs rounded-circle" alt="user">
+    {% endif %}
+
+
+    <div class="content">
+        <div class="message">
+            <div class="bubble">
+                <p>{{msg.text|safe}}</p>
+            </div>
+            <div class="row"><span>{{msg.get_formatted_create_datetime}}</span>
+                <div class="text-primary pb-2 pl-2" id="message-{{ msg.id }}-read">
+                    {% if msg.read %}<i style="width: 15px; height: 15px;" data-feather="check"></i>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
+

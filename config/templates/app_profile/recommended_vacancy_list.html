@@ -1,0 +1,33 @@
+{% extends 'app_profile/all_base_list.html' %}
+
+{% block not_form %}
+<div class="row justify-content-center mt-5">
+    <div class="col-12 col-md-10">
+{% endblock not_form %}
+
+
+{% block list_title %}
+
+{% endblock list_title %}
+{% block search_form %}
+
+        {% endblock search_form %}
+{% block list_card %}
+{% for vacancy in vacancy_list %}
+{% include 'app_profile/include/card_vacancy_or_questionnaire.html' %}
+{% endfor %}
+{% endblock list_card %}
+        {% block recommended_title %}
+<div class="row justify-content-center mt-5">
+            <div class="col-10">
+                <div class="card  ">
+                    <div class="card-body">
+                        <h4 class="page-title ">
+                            Список рекомендованных вакансий
+
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock recommended_title %}

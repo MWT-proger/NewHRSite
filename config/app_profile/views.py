@@ -4,12 +4,14 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.utils.translation import gettext_lazy as _
+from django.contrib.postgres.search import SearchQuery, SearchVector, SearchRank
 
 from app_account.decorators import checking_profile_employer, checking_profile_applicant
 
 from .utils import set_if_not_none, true_if_not_none, set_if_value
 from .forms import QuestionnaireCreateForm, QuestionnaireUpdateForm, QuestionnaireDeleteForm, VacancyCreateForm, \
-    VacancyUpdateForm, VacancyDeleteForm, FilterVacancyForm, FilterQuestionnaireForm
+    VacancyUpdateForm, VacancyDeleteForm, FilterVacancyForm, FilterQuestionnaireForm, SendVacancyForm, \
+    SendQuestionnaireForm
 from .models import Questionnaire, Vacancy
 from .decorators import checking_my_questionnaire, checking_my_questionnaire_edit, checking_my_limit_questionnaire, \
     checking_my_vacancy_edit, checking_my_vacancy
@@ -102,41 +104,6 @@ class QuestionnaireDeleteView(UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class QuestionnaireDetailView(DetailView):
-    """Переходим на вакансию и отмечаем как просмотренная"""
-    model = Questionnaire
-
-    def get_object(self, queryset=None):
-        if queryset is None:
-            queryset = self.get_queryset()
-        # Next, try looking up by primary key.
-        pk = self.kwargs.get(self.pk_url_kwarg)
-        slug = self.kwargs.get(self.slug_url_kwarg)
-        if pk is not None:
-            queryset = queryset.filter(pk=pk)
-
-        # Next, try looking up by slug.
-        if slug is not None and (pk is None or self.query_pk_and_slug):
-            slug_field = self.get_slug_field()
-            queryset = queryset.filter(**{slug_field: slug})
-        # If none of those are defined, it's an error.
-        if pk is None and slug is None:
-            raise AttributeError(
-                "Generic detail view %s must be called with either an object "
-                "pk or a slug in the URLconf." % self.__class__.__name__
-            )
-
-        try:
-            # Get the single item from the filtered queryset
-            obj = queryset.get()
-        except queryset.model.DoesNotExist:
-            raise Http404(_("No %(verbose_name)s found matching the query") %
-                          {'verbose_name': queryset.model._meta.verbose_name})
-        obj.count_see.add(self.request.user)
-        return obj
-
-
-@method_decorator(login_required, name='dispatch')
 @method_decorator(checking_profile_applicant, name='dispatch')
 @method_decorator(checking_my_questionnaire, name='dispatch')
 class MyQuestionnaireDetailView(DetailView):
@@ -200,17 +167,51 @@ class AllVacancyListView(ListView):
         true_if_not_none(sort_params, 'accommodation', self.request.GET.get('accommodation'))
         true_if_not_none(sort_params, 'food', self.request.GET.get('food'))
         true_if_not_none(sort_params, 'drive', self.request.GET.get('drive'))
-
-        set_if_not_none(sort_params, 'status', 'active')
-
-        queryset = Vacancy.objects.filter(**sort_params).order_by('-public_date')
+        if not self.request.user.is_superuser:
+            set_if_not_none(sort_params, 'status', 'active')
+        searcher = self.request.GET.get('search_query')
+        if searcher:
+            search_query = SearchQuery(searcher)
+            search_vector = SearchVector("id", "requirements", "name", "conditions")
+            search_rank = SearchRank(search_vector, search_query)
+            queryset = Vacancy.objects.filter(**sort_params).select_related('user') \
+                .annotate(rank=search_rank).order_by('-rank')
+        else:
+            queryset = Vacancy.objects.filter(**sort_params).order_by('-public_date')
 
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super(AllVacancyListView, self).get_context_data(**kwargs)
         context['form'] = FilterVacancyForm(self.request.GET)
+        context['filter_status'] = True
         return context
+
+
+@method_decorator(login_required, name='dispatch')
+class RecommendedVacancyListView(ListView):
+    """Список рекомендованных вакансий"""
+    model = Vacancy
+    template_name = 'app_profile/recommended_vacancy_list.html'
+    paginate_by = 20
+
+    def get_queryset(self):
+        user_questionnaire = self.request.user.questionnaire.select_related('region', 'city', 'profession').filter(status='active')
+        sort_params = {}
+        if user_questionnaire.exists():
+            set_if_value(sort_params, 'region__in', [value.region.pk for value in user_questionnaire])
+            set_if_value(sort_params, 'city__in', [value.city.pk for value in user_questionnaire])
+            profession_list = []
+            for value in user_questionnaire:
+                if value.profession:
+                    profession_list.append(value.profession.pk)
+            set_if_value(sort_params, 'profession__in', profession_list)
+
+        set_if_not_none(sort_params, 'status', 'active')
+
+        queryset = Vacancy.objects.filter(**sort_params).order_by('-public_date')
+
+        return queryset
 
 
 @method_decorator(login_required, name='dispatch')
@@ -233,18 +234,25 @@ class AllQuestionnaireListView(ListView):
         set_if_value(sort_params, 'user__age__lte', self.request.GET.get('age_to'))
 
         true_if_not_none(sort_params, 'vaccinated', self.request.GET.get('vaccinated'))
+        if not self.request.user.is_superuser:
+            set_if_not_none(sort_params, 'status', 'active')
 
-        set_if_not_none(sort_params, 'status', 'active')
-
-        print(sort_params)
-
-        queryset = Questionnaire.objects.filter(**sort_params).select_related('user').order_by('-public_date')
+        searcher = self.request.GET.get('search_query')
+        if searcher:
+            search_query = SearchQuery(searcher)
+            search_vector = SearchVector('id', 'description')
+            search_rank = SearchRank(search_vector, search_query)
+            queryset = Questionnaire.objects.filter(**sort_params).select_related('user')\
+                .annotate(rank=search_rank).order_by('-rank')
+        else:
+            queryset = Questionnaire.objects.filter(**sort_params).select_related('user').order_by('-public_date')
 
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super(AllQuestionnaireListView, self).get_context_data(**kwargs)
         context['form'] = FilterQuestionnaireForm(self.request.GET)
+        context['filter_status'] = True
         return context
 
 
@@ -296,9 +304,34 @@ class VacancyDeleteView(UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class VacancyDetailView(DetailView):
-    """Переходим на вакансию и отмечаем как просмотренная"""
+@method_decorator(checking_profile_employer, name='dispatch')
+@method_decorator(checking_my_vacancy, name='dispatch')
+class MyVacancyDetailView(DetailView):
+    """Переходим на свою вакансию"""
     model = Vacancy
+    template_name = 'app_profile/my_vacancy_detail.html'
+
+
+def vacancy_activate_removed(request):
+    """Ajax функция _ отвечает за добавление и снятие вакансии с публикации"""
+    if request.method == 'POST':
+        vacancy_id = request.POST['ajax-vacancy-id']
+        vacancy = Vacancy.objects.filter(pk=int(vacancy_id), user=request.user)
+        status = 'defined'
+        print(22)
+        if vacancy.exists():
+            vacancy = vacancy[0]
+            if vacancy.status == 'active' or vacancy.status == 'removed':
+                if vacancy.status == 'active':
+                    vacancy.status = 'removed'
+                elif vacancy.status == 'removed':
+                    vacancy.status = 'active'
+                status = vacancy.status
+                vacancy.save()
+        return JsonResponse({'status': status})
+
+
+class UpgradeDetailView(DetailView):
 
     def get_object(self, queryset=None):
         if queryset is None:
@@ -331,28 +364,26 @@ class VacancyDetailView(DetailView):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(checking_profile_employer, name='dispatch')
-@method_decorator(checking_my_vacancy, name='dispatch')
-class MyVacancyDetailView(DetailView):
-    """Переходим на свою вакансию"""
+class VacancyDetailView(UpgradeDetailView):
+    """Переходим на вакансию и отмечаем как просмотренная"""
     model = Vacancy
-    template_name = 'app_profile/my_vacancy_detail.html'
+    form = SendQuestionnaireForm()
+
+    def get_context_data(self, **kwargs):
+        context = super(VacancyDetailView, self).get_context_data(**kwargs)
+        self.form.fields['questionnaire'].queryset = Questionnaire.objects.filter(user=self.request.user)
+        context['form'] = self.form
+        return context
 
 
-def vacancy_activate_removed(request):
-    """Ajax функция _ отвечает за добавление и снятие вакансии с публикации"""
-    if request.method == 'POST':
-        vacancy_id = request.POST['ajax-vacancy-id']
-        vacancy = Vacancy.objects.filter(pk=int(vacancy_id), user=request.user)
-        status = 'defined'
-        print(22)
-        if vacancy.exists():
-            vacancy = vacancy[0]
-            if vacancy.status == 'active' or vacancy.status == 'removed':
-                if vacancy.status == 'active':
-                    vacancy.status = 'removed'
-                elif vacancy.status == 'removed':
-                    vacancy.status = 'active'
-                status = vacancy.status
-                vacancy.save()
-        return JsonResponse({'status': status})
+@method_decorator(login_required, name='dispatch')
+class QuestionnaireDetailView(UpgradeDetailView):
+    """Переходим на анкету и отмечаем как просмотренная"""
+    model = Questionnaire
+    form = SendVacancyForm()
+
+    def get_context_data(self, **kwargs):
+        context = super(QuestionnaireDetailView, self).get_context_data(**kwargs)
+        self.form.fields['vacancy'].queryset = Vacancy.objects.filter(user=self.request.user)
+        context['form'] = self.form
+        return context

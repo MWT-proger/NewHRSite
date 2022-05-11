@@ -1,0 +1,57 @@
+###########
+# BUILDER #
+###########
+
+FROM python:3.8.1 as builder
+
+WORKDIR /home/config
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN pip install --upgrade pip
+
+COPY ./requirements.txt .
+#RUN pip install -r requirements.txt
+
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /home/config/wheels -r requirements.txt
+RUN pip install django-user-agents
+RUN pip install python-memcached
+
+#########
+# FINAL #
+#########
+
+FROM python:3.8.1
+
+RUN mkdir -p /home/app/config
+
+RUN useradd -ms /bin/bash app
+RUN usermod -a -G app app
+
+ENV HOME=/home/app/config
+ENV DAPHNE=/home/app/config/daphne
+ENV APP_HOME=/home/app/config/config
+RUN mkdir $HOME/staticfiles
+RUN mkdir $HOME/media
+RUN mkdir $APP_HOME
+RUN mkdir $DAPHNE
+WORKDIR $APP_HOME
+
+# install dependencies
+COPY --from=builder /home/config/wheels /wheels
+COPY --from=builder /home/config/requirements.txt .
+RUN pip install --no-cache /wheels/*
+RUN pip install django-user-agents
+RUN pip install python-memcached
+
+# copy project
+COPY . $APP_HOME
+
+# chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+RUN chown -R app:app $HOME
+RUN chown -R app:app $DAPHNE
+
+# change to the app user
+USER app

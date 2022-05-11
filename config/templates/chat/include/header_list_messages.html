@@ -1,0 +1,31 @@
+{% load static %}
+{% load i18n %}
+<div class="chat-header border-bottom pb-2">
+                      <div class="d-flex justify-content-between">
+                        <div class="d-flex align-items-center">
+                          <i data-feather="corner-up-left" id="backToChatList" class="icon-lg mr-2 ml-n2 text-muted d-lg-none"></i>
+                          <figure class="mb-0 mr-2">
+                            {% if opponent_user.image %}
+                            <img src="{{opponent_user.image.url}}" class="img-sm rounded-circle image-opponent" alt="avatar">
+                            {% else %}
+                            <img src="{% static 'new_assets/img/user_unknown.jpg' %}" class="img-sm rounded-circle image-opponent" alt="user">
+                            {% endif %}
+                            {% if opponent_user.is_online %}
+                            <div class="status online"></div>
+                            {% else %}
+                            <div class="status offline"></div>
+                            {% endif %}
+                          </figure>
+                          <div>
+                            <p>{% if opponent_user.first_name or opponent_user.last_name %}{{ opponent_user.first_name| title }} {{ opponent_user.last_name| title }} {% else %}{{ opponent_user.username| title }}{% endif %}</p>
+                            <p class="text-muted tx-13">{{ opponent_user.position }}</p>
+                          </div>
+                        </div>
+                        <div class="d-flex align-items-center mr-n1">
+
+                          <a href="#" class="d-none d-sm-block">
+                            <i data-feather="user" class="icon-lg text-muted" data-toggle="tooltip" title="Перейти в профиль"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>

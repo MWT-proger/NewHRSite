@@ -1,45 +1,162 @@
 {% load static %}
-<nav class="navbar full-nav">
+{% load humanize %}
+{% load chat_message  %}
+
+<nav class="navbar ">
     <a href="#" class="sidebar-toggler">
         <i data-feather="menu"></i>
     </a>
 
     <div class="navbar-content">
 
-        <a class="navbar-brand noble-ui-logo  mt-2"  href="{% url 'mainUrl' %}"><img src="{% static 'new_assets/img/logo.png' %}" width="30" height="30" class="d-inline-block align-top mr-2" alt=""> {% include 'include/name_site_word.html' %}</a>
-        <ul class="navbar-nav ">
+
+		{% if not request.user_agent.is_mobile %}
+        <a class="navbar-brand noble-ui-logo  mt-2"  href="{% url 'mainUrl' %}">
+			<img src="{% static 'new_assets/img/logo.png' %}" width="30" height="30" class="d-inline-block align-top mr-2" alt="">
+		</a>
+        {% endif %}
+		<ul class="navbar-nav ">
+
+
 {% if request.user.is_authenticated %}
-            {% if request.user_agent.is_mobile %}
+            {% if filter_status and request.user_agent.is_mobile %}
             <li class="nav-item  ">
                 <a class="btn nav-link " data-toggle="modal" data-target="#filterFormModal" > <i class="link-icon" data-feather="filter"></i> Фильтр</a>
             </li>
             {% endif %}
 
+             {% get_unread_msg as msg_unread %}
+            <li class="nav-item dropdown nav-messages">
+							<a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-            {% if user.type == 'applicant' %}
-            <li class="nav-item  ">
-                <a class="btn nav-link " href="{% url 'all_vacancy_list' %}" > <i class="link-icon" data-feather="list"></i> Вакансии </a>
-            </li>
-            {% else %}
-            <li class="nav-item  ">
-                <a class="btn nav-link " href="{% url 'all_questionnaire_list' %}" > <i class="link-icon" data-feather="list"></i> Анкеты </a>
-            </li>
-            {% endif %}
+                                <span id="unread-count">
+                                        {% if msg_unread %}
+								{{ msg_unread.count }}
+								{% endif %}
+                                </span>
+								<i data-feather="mail"></i>
+
+								<div id="unread-indicator" class="indicator {% if not msg_unread %}d-none {% endif %}">
+									<div class="circle"></div>
+								</div>
+
+							</a>
+							{% if msg_unread %}
+							<div class="dropdown-menu" aria-labelledby="messageDropdown">
+								<div class="dropdown-header d-flex align-items-center justify-content-between">
+									<p class="mb-0 font-weight-medium">Сообщения</p>
+								</div>
+								<div id="unread-list" class="dropdown-body scrollable" >
+									{% for foo in msg_unread  %}
+                                    <a href="/dialogs/{{foo.sender.username}}" class="dropdown-item">
+                                        <div class="figure">
+                                            {% if foo.sender.image %}
+                                            <img src="{{foo.sender.image.url}}"  style="width: 30px!important; height: 30px!important;" alt="userr">
+                                            {% else %}
+                                            <img src="{% static 'new_assets/img/user_unknown.jpg' %}" style="width: 30px!important; height: 30px!important;" >
+                                            {% endif %}
+                                        </div>
+                                        <div class="content">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                {% if foo.sender.first_name or foo.sender.last_name %}
+                                                <p >{{foo.sender.first_name}} {{foo.sender.last_name}} {{foo.sender.last_2_name}}</p>
+                                                {% else %}
+                                                <p >{{foo.sender.username|title}}</p>
+                                                {% endif %}
+                                                <p class="sub-text text-muted">{{foo.created|naturaltime}}</p>
+                                            </div>
+                                            <p class="sub-text text-muted">{{foo.text|truncatechars:20 }} </p>
+                                        </div>
+                                    </a>
+									{% endfor %}
+
+								</div>
+
+							</div>
+							{% else %}
+							<div class="dropdown-menu" aria-labelledby="messageDropdown">
+								<div class="dropdown-header d-flex align-items-center justify-content-between">
+									<p class="mb-0 font-weight-medium">Сообщения</p>
+								</div>
+                                 <div id="unread-list" class="dropdown-body scrollable" >
+
+								</div>
+							</div>
+							{% endif %}
+						</li>
+			{% if not request.user.is_superuser %}
+            <li class="nav-item dropdown nav-profile">
+				<a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					{% if request.user.image %}
+					<img src="{{request.user.image.url}}" class="avatar_mini_header" alt="profile" >
+					{% else %}
+					<img src="{% static 'new_assets/img/user_unknown.jpg' %}" class="avatar_mini_header" alt="profile" >
+					{% endif %}
 
 
-            <li class="nav-item  ">
-                <a class="btn nav-link " href="{% url 'profile' %}" > <i class="link-icon" data-feather="user"></i> Профиль </a>
-            </li>
-            <li class="nav-item  ">
-                <a class="btn nav-link " data-dismiss="modal" data-toggle="modal" data-target="#logoutModal"> <i class="link-icon" data-feather="log-out"></i> Выйти</a>
-            </li>
+				</a>
+				<div class="dropdown-menu" aria-labelledby="profileDropdown">
+					<div class="dropdown-header d-flex flex-column align-items-center">
+						<div class="figure mb-3">
+							{% if request.user.image %}
+							<img src="{{request.user.image.url}}" class="avatar_mini_header" alt="">
+							{% else %}
+							<img src="{% static 'new_assets/img/user_unknown.jpg' %}" class="avatar_mini_header" alt="">
+							{% endif %}
+						</div>
+						<div class="info text-center">
+							{% if request.user.first_name or request.user.last_name %}
+							<p class="name font-weight-bold mb-0">{{request.user.first_name|title}} {{request.user.last_name|title}}</p>
+							{% else %}
+							<p class="name font-weight-bold mb-0">{{request.user.username|title}}</p>
+							{% endif %}
+
+							<p class="email text-muted mb-3">{{request.user.email}}</p>
+
+						</div>
+					</div>
+					<div class="dropdown-body">
+						<ul class="profile-nav p-0 pt-3">
+							<li class="nav-item">
+								<a href="{% url 'profile' %}" class="nav-link">
+									<i data-feather="user"></i>
+									<span>Профиль</span>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a href="{% url 'dialogs' %}" class="nav-link">
+									<i data-feather="mail"></i>
+									<span>Сообщения</span>
+								</a>
+
+							</li>
+                            <li class="nav-item  ">
+                                <a class="nav-link " href="{% if user.type == 'applicant' %}/info/applicant_conditions/{% else %}/info/employer_conditions/{% endif %}">
+                                    <i class="link-icon" data-feather="alert-circle"></i> Правила </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " data-dismiss="modal" data-toggle="modal" data-target="#logoutModal"> <i class="link-icon" data-feather="log-out"></i> Выйти</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			{% else %}
+			{% if request.user.image %}
+					<img src="{{request.user.image.url}}" class="avatar_mini_header" hidden >
+					{% else %}
+					<img src="{% static 'new_assets/img/user_unknown.jpg' %}" class="avatar_mini_header" hidden>
+					{% endif %}
+			{% endif %}
 {% else %}
-            <li class="nav-item  ">
-                <a class="btn nav-link " data-toggle="modal" data-target="#loginModal" > <i class="link-icon" data-feather="log-in"></i> Войти</a>
-            </li>
-            <li class="nav-item  ">
-                <a class="btn nav-link " data-toggle="modal" data-target="#signUpModal" > <i class="link-icon" data-feather="user-plus"></i> Зарегистрироваться </a>
-            </li>
+			<li class="nav-item d-flex align-items-center mr-2 mr-md-5 mt-3">
+				<a class="nav-link  "  data-toggle="modal" data-target="#loginModal">
+					Войти <i class="link-icon text-primary" data-feather="log-in"></i> </a>
+			</li>
+
+			<li class="nav-item  d-flex align-items-center ml-2 ml-md-5 mt-3">
+				<a class="nav-link " data-toggle="modal" data-target="#signUpModal" >  Регистрация <i class="link-icon text-primary" data-feather="user-plus"></i></a>
+			</li>
 {% endif %}
         </ul>
     </div>

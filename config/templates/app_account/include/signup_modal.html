@@ -51,12 +51,14 @@
                             <label for="signUpConfirmPassword">Пароль ещё раз</label>
                             <input id="signUpConfirmPassword"  class="form-control" name="signUpConfirmPassword" type="password">
                         </div>
-                        <div class="form-check form-check-flat form-check-primary">
-                            <label class="form-check-label" >
 
+                        <div id="div_id_health_book"  class="custom-control custom-checkbox">
+                            <input type="checkbox" name="health_book" class="checkboxinput custom-control-input" id="signUpCheckBox">
+                            <label for="signUpCheckBox" class="custom-control-label pt-1">
                                 Согласен с  <a href="/info/registration_conditions/" target="_blank">условиями </a> регистрации
-                                <input type="checkbox" id="signUpCheckBox" name="signUpCheckBox" class="form-check-input" >
                             </label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
                             <label  class="mt-2 text-danger d-none" id="labelSignUp"  >Произошла ошибка, попробуйте позже</label>
                         </div>
 
@@ -75,7 +77,7 @@
                     <div class="mt-3 row justify-content-center ">
                         <button disabled  id="signUpModalFormButton" type="button"  class="btn btn-primary mr-2 mb-2 mb-md-0 text-white ">Зарегистрироваться</button>
                         <button  id="signUpConfirmButton" type="button"  class="btn btn-primary mr-2 mb-2 mb-md-0 text-white d-none">Подтвердить</button>
-                        <button type="button" id="signUpModalCloseOneButton" class="btn btn-secondary" data-dismiss="modal">Закрыть окно</button>
+                        <button type="button" id="signUpModalCloseOneButton" class="btn btn-secondary mb-2 mb-md-0 " data-dismiss="modal">Закрыть окно</button>
                         <button type="button" id="signUpModalCloseTwoButton" class="btn btn-secondary  d-none" data-dismiss="modal" onclick="location.reload(); return false;">Закрыть окно</button>
                     </div>
                     <a  data-dismiss="modal" data-toggle="modal" data-target="#loginModal"  class="d-block mt-3 text-muted" >Уже зарегистрированы? <u class="text-primary cursor-pointer">Войти</u></a>

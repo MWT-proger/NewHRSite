@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load page_tag %}
+
+{% block sidebar_none %}
+{% if request.user_agent.is_mobile or request.user.is_authenticated  %}
+{% include 'include/sidebar.html' %}
+{% else %}
+{% endif %}
+{% endblock sidebar_none %}
+
+{% block header_none %}
+{% if request.user_agent.is_mobile %}
+{% include 'include/header.html' %}
+{% else %}
+{% if  not request.user.is_authenticated %}
+<ul class="nav justify-content-center">
+
+    <li class="nav-item d-flex align-items-center mr-2 mr-md-5 mt-3">
+        <a class="nav-link  "  data-toggle="modal" data-target="#loginModal">
+            Войти <i class="link-icon text-primary" data-feather="log-in"></i> </a>
+    </li>
+    <a class="navbar-brand noble-ui-logo  mt-3"  href="{% url 'mainUrl' %}">
+        <img src="{% static 'new_assets/img/logo_new.png' %}" class="img-lg rounded-circle" alt="image">
+    </a>
+    <li class="nav-item  d-flex align-items-center ml-2 ml-md-5 mt-3">
+        <a class="nav-link " data-toggle="modal" data-target="#signUpModal" >  Регистрация <i class="link-icon text-primary" data-feather="user-plus"></i></a>
+    </li>
+</ul>
+{% endif %}
+{% endif %}
+{% endblock header_none %}
+
+
+{% block css_link %}
+<link rel="stylesheet" href="{% static 'assets/vendors/owl.carousel/owl.carousel.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/vendors/owl.carousel/owl.theme.default.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/vendors/animate.css/animate.min.css' %}">
+{% endblock css_link %}
+{% block main_style  %}
+{% if not request.user.is_authenticated  %}
+<style>
+    .main-wrapper .page-wrapper {
+        width: 100%!important;
+        margin-left: 0!important;
+    }
+</style>
+{% endif  %}
+
+
+{% endblock main_style %}
+
+
+{% block page_content %}
+{% include 'include/content_main.html' %}
+
+
+{% endblock page_content %}
+
+{% block javascript_custom %}
+<script src="{% static 'assets/vendors/owl.carousel/owl.carousel.min.js' %}"></script>
+<script src="{% static 'assets/js/carousel.js' %}"></script>
+{% endblock javascript_custom %}

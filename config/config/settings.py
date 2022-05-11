@@ -17,14 +17,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'django.contrib.sites',
+    'channels',
+    'chat',
     'django.contrib.flatpages',
+
     'crispy_forms',
     'ckeditor',
     'ckeditor_uploader',
     'app_account',
     'app_flatpage',
     'app_profile',
+    'app_main',
     'import_export',
     'django_user_agents',
 
@@ -60,6 +65,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+ASGI_APPLICATION = 'config.asgi.application'
 
 DATABASES = {
     'default': {
@@ -200,3 +207,12 @@ CACHES = {
 }
 
 USER_AGENTS_CACHE = 'default'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}

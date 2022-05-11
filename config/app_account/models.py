@@ -3,6 +3,7 @@ import os
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from PIL import Image
+from django.urls import reverse
 
 TYPE = [
     ('applicant', 'Соискатель'),
@@ -49,6 +50,9 @@ class User(AbstractUser):
             image = image.resize((base_width, height), Image.ANTIALIAS)
             dirname, fname = os.path.split(filepath)
             image.save(filepath)
+
+    def get_admin_url(self):
+        return reverse("admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name), args=(self.id,))
 
 
 class TokenSignUp(models.Model):

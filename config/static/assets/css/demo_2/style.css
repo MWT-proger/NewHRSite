@@ -16,20 +16,8 @@
   --teal: #58d8a3;
   --cyan: #57c7d4;
   --white: #ffffff;
-  --gray: #6c757d;
   --gray-dark: #0f1531;
-  --blue: #5E50F9;
-  --indigo: #6610f2;
-  --purple: #6a008a;
-  --pink: #E91E63;
-  --red: #f96868;
-  --orange: #f2a654;
-  --yellow: #f6e84e;
-  --green: #46c35f;
-  --teal: #58d8a3;
-  --cyan: #57c7d4;
-  --white: #ffffff;
-  --gray: #434a54;
+
   --gray-light: #aab2bd;
   --gray-lighter: #e8eff4;
   --gray-lightest: #e6e9ed;
@@ -73,7 +61,7 @@ body {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #eef4ff;
+  color: #ffae1f;
   text-align: left;
   background-color: #fff; }
 

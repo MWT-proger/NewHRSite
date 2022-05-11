@@ -1,3 +1,16 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 
-# Register your models here.
+from app_main.models import GeneralSettings, Image
+
+User = get_user_model()
+
+
+@admin.register(GeneralSettings)
+class GeneralSettingsAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Image)
+class ImageAdmin(admin.ModelAdmin):
+    pass

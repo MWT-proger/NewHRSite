@@ -228,6 +228,7 @@ class VacancyDeleteForm(forms.ModelForm):
 
 
 class FilterVacancyForm(forms.ModelForm):
+    search_query = forms.CharField(label='Поиск', required=False)
     regions = forms.ModelMultipleChoiceField(label='Регион',
                                              required=False,
                                              queryset=Region.objects.all(),
@@ -311,10 +312,11 @@ class FilterVacancyForm(forms.ModelForm):
 
     class Meta:
         model = Vacancy
-        exclude = ('user', 'status', 'count_see', 'region', 'city', 'profession', 'work_mode',)
+        exclude = ('user', 'status', 'count_see', 'region', 'city', 'profession', 'work_mode', 'search_query',)
 
 
 class FilterQuestionnaireForm(forms.ModelForm):
+    search_query = forms.CharField(label='Поиск', required=False)
     regions = forms.ModelMultipleChoiceField(label='Регион',
                                              required=False,
                                              queryset=Region.objects.all(),
@@ -388,4 +390,53 @@ class FilterQuestionnaireForm(forms.ModelForm):
 
     class Meta:
         model = Questionnaire
-        fields = ('vaccinated', 'age_from',  'age_to', 'regions', 'citys', 'professions', 'driver_licenses',)
+        fields = ('vaccinated', 'age_from',  'age_to', 'regions', 'citys', 'professions', 'driver_licenses', 'search_query',)
+
+
+class SendVacancyForm(forms.Form):
+    vacancy = forms.ModelMultipleChoiceField(label='Вакансии', required=False, queryset=Vacancy.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super(SendVacancyForm, self).__init__(*args, **kwargs)
+
+        self.fields['vacancy'].widget.attrs.update({'class': 'js-example-basic-single w-100'})
+        self.fields['vacancy'].widget.attrs.update({'data-width': '100%'})
+        self.fields['vacancy'].widget.attrs.update({'multiple': 'multiple'})
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+
+            Row(
+                Column('vacancy', css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            )
+        )
+
+    class Meta:
+        model = Questionnaire
+        fields = ('vacancy',)
+
+
+class SendQuestionnaireForm(forms.Form):
+    questionnaire = forms.ModelMultipleChoiceField(label='Анкеты', required=False, queryset=Questionnaire.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super(SendQuestionnaireForm, self).__init__(*args, **kwargs)
+
+        self.fields['questionnaire'].widget.attrs.update({'class': 'js-example-basic-single w-100'})
+        self.fields['questionnaire'].widget.attrs.update({'data-width': '100%'})
+        self.fields['questionnaire'].widget.attrs.update({'multiple': 'multiple'})
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+
+            Row(
+                Column('questionnaire', css_class='form-group col-md-12 mb-0'),
+                css_class='form-row'
+            )
+        )
+
+    class Meta:
+        model = Questionnaire
+        fields = ('questionnaire',)
+

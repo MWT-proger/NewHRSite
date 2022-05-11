@@ -1,0 +1,34 @@
+{% load static %}
+{% load i18n %}
+
+<ul class="messages" id="list-messages">
+    {% if active_dialog %}
+    {% if active_dialog.messages.all.count == 0 %}
+    <li class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Начни диалог первым!</h4>
+        <p>Сообщений нет. Кто то из вас хотел написать первым, но передумал.</p>
+        <hr>
+        <p class="mb-0">Если возникли вопросы, напишите в службу поддержки.</p>
+    </li>
+    {% else %}
+    {% for msg in active_dialog.get_list_message %}
+
+    {% if msg.sender == request.user %}
+    {% include 'chat/include/message_in_list.html' with msg_my=True %}
+    {% else %}
+    {% include 'chat/include/message_in_list.html'%}
+    {% endif %}
+
+
+
+    {% endfor %}
+    {% endif %}
+    {% else %}
+    <li class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Начни диалог первым!</h4>
+        <p> У вас нет диалогов. Вы можете написать кому нибудь первым.</p>
+        <hr>
+        <p class="mb-0">Если возникли вопросы, напишите в службу поддержки.</p>
+    </li>
+    {% endif %}
+</ul>

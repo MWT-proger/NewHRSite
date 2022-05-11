@@ -1,71 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
-<!--<div class="page-content" style="padding: 0!important;">-->
-<!--<img src="{% static 'new_assets/img/fon.png' %}" class="card-img mt-2 gray-shade" style="background-color: transparent;" alt="...">-->
-<!--<div class="gray-shade"></div>-->
-<!--<div class="card-img-overlay">-->
-<!--<div class="row mt-5 justify-content-center">-->
-<!--<div class="col-10 col-md-10 col-xl-10">-->
-<!--<div class="card ">-->
-<!--<div class="card-body  ">-->
-<!--<h5 class="card-title text-center">Разместим банер</h5>-->
-<!--<p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>-->
-<!--<div class="row justify-content-center mt-1"><a href="#" class="btn btn-primary "  >Перейти</a></div>-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->
-<!--<div class="row justify-content-center mb-5">-->
-<!--<div class="col-md-10 main-content  ">-->
-<!--<div class="text-10 main-content  ">-->
-<!--<div class="text-center mt-5 mb-5">-->
-<!--<img src="{% static 'new_assets/img/main_white.png' %}" class="card-img-top text-center" alt="image" style="width: 150px">-->
-<!--</div>-->
-<!--&lt;!&ndash;<h1 class="page-title text-center">Крупнейшая база спорт-тех стартапов</h1>&ndash;&gt;-->
-<!--<h1 class="page-title text-center text-white">VAHTOWEEK </h1>-->
-<!--<p class="lead text-center text-white" >Твоя работа </p>-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->
+
 {% block page_content %}
 
-<div class="row mt-5 justify-content-center">
-    <div class="col-12 col-md-10 col-xl-10">
-        <div class="card ">
-            <div class="card-body  ">
-                <h5 class="card-title text-center">Разместим банер</h5>
-                <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
-                <div class="row justify-content-center mt-1"><a href="#" class="btn btn-primary "  >Перейти</a></div>
-
-            </div>
-        </div>
-    </div>
-
-</div>
-
-
-<div class="row justify-content-center mb-5">
-    <div class="col-md-10 main-content  ">
-
-        <div class="text-10 main-content  ">
-
-            <div class="text-center mt-5 mb-5">
-                <img src="{% static 'new_assets/img/main.png' %}" class="card-img-top text-center" alt="image" style="width: 150px">
-            </div>
-
-            <!--<h1 class="page-title text-center">Крупнейшая база спорт-тех стартапов</h1>-->
-            <h1 class="page-title text-center">VAHTO<span style="color: #727cf5;">WEEK</span> </h1>
-            <p class="lead text-center" >Твоя работа </p>
-
-
-
-        </div>
-
-    </div>
-</div>
-
+{% include 'include/content_main.html' %}
 
 
 {% endblock page_content %}

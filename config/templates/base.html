@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load page_tag %}
 <html lang="ru">
 <head>
 	<meta charset="UTF-8">
@@ -18,19 +19,121 @@
 	<link rel="stylesheet" href="{% static 'assets/vendors/flag-icon-css/css/flag-icon.min.css' %}">
 	<!-- endinject -->
 	<!-- Layout styles -->
-	<link rel="stylesheet" href="{% static 'assets/css/demo_1/style.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/demo_2/style.css' %}">
 	<!-- End layout styles -->
-	<link rel="shortcut icon" href="{% static 'new_assets/img/logo.png' %}" />
+	<link rel="shortcut icon" href="{% static 'new_assets/img/logo_new.png' %}" />
 	<link rel="stylesheet" href="{% static 'new_assets/css/input_range.css' %}">
-
+	{% get_general_settings as general_settings %}
+	{{general_settings.head|safe}}
 	<style>
 		.full-nav {
 			width: 100%;
 			left: 0;
 		}
-		.main-wrapper .page-wrapper {
-			background-color: white!important;
+		/*.main-wrapper .page-wrapper {*/
+			/*background-color: white!important;*/
+		/*}*/
+
+
+
+/*#################################################################################################################*/
+		body {
+			color: #ED833C;
+
 		}
+		.card {
+
+			background-color: #2D2D2D;
+
+		}
+		.btn-primary, .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk .fc-button-group .fc-button.fc-button-active, .swal2-modal .swal2-actions button.swal2-confirm, .wizard > .actions a, .wizard > .actions a:hover {
+    background-color: #F27F3C;
+    border-color: #d76c36;
+}
+.btn-primary:not(:disabled):not(.disabled):active, .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk .fc-button-group .fc-button.fc-button-active:not(:disabled):not(.disabled):active, .swal2-modal .swal2-actions button.swal2-confirm:not(:disabled):not(.disabled):active, .wizard > .actions a:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk .fc-button-group .fc-button.fc-button-active:not(:disabled):not(.disabled).active, .swal2-modal .swal2-actions button.swal2-confirm:not(:disabled):not(.disabled).active, .wizard > .actions a:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle, .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk .fc-button-group .show > .dropdown-toggle.fc-button.fc-button-active, .swal2-modal .swal2-actions .show > button.dropdown-toggle.swal2-confirm, .wizard > .actions .show > a.dropdown-toggle {
+    color: #ED833C;
+    background-color: #2D2D2D;
+    border-color: #F27F3C;
+}
+
+.btn-primary:hover, .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk .fc-button-group .fc-button.fc-button-active:hover, .swal2-modal .swal2-actions button.swal2-confirm:hover, .wizard > .actions a:hover {
+   color: #ED833C;
+    background-color: #2D2D2D;
+    border-color: #F27F3C;
+}
+.card .card-title {
+    color: #ED833C;
+
+}
+.card  {
+    border: 1px solid #000000;
+
+}
+.main-wrapper .page-wrapper {
+    background: #000000;
+}
+
+.nav-link {
+
+    color: #ED833C!important;
+}
+.text-muted{
+	color: #ED833C!important;
+}
+.footer {
+	background: #000000;
+}
+.modal-content {
+
+    background-color: #000000;
+
+}
+
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset;
+	color: #000000!important;
+}
+.form-control, select, .email-compose-fields .select2-container--default .select2-selection--multiple, .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--single .select2-search__field, .typeahead, .tt-query, .tt-hint {
+    color: #000000;
+    background-color:  white;
+
+}
+.btn-primary.disabled, .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk .fc-button-group .disabled.fc-button.fc-button-active, .swal2-modal .swal2-actions button.disabled.swal2-confirm, .wizard > .actions a.disabled, .btn-primary:disabled, .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk .fc-button-group .fc-button.fc-button-active:disabled, .swal2-modal .swal2-actions button.swal2-confirm:disabled, .wizard > .actions a:disabled {
+    color: #fff;
+    background-color: #814129;
+    border-color: #814129;
+}
+
+a {
+    color: #727cf5;
+    text-decoration: none;
+    background-color: transparent;
+}
+.navbar-brand {
+
+     margin-right: 0!important;
+
+}
+h2, .h2 {
+    font-size: 2.3rem!important;
+}
+.sidebar .sidebar-body {
+
+    background: #2D2D2D;
+}
+.navbar {
+
+    background: #000000;
+
+}
+.sidebar .sidebar-header {
+    background: #2D2D2D;
+
+}
+/*#################################################################################################################*/
+
+
+
 		.asteriskField {
     display: none;
 }
@@ -72,18 +175,61 @@
         border-color: #514378;
     }
 
+		        .dropdown-body.scrollable {
+    height: auto;
+    max-height: 60em;
+    overflow-x: hidden;
 
+
+}
+
+
+
+        .dropdown-body.scrollable::-webkit-scrollbar {
+  width: 5px;
+}
+        h3{
+    font-size: 1.5rem;
+}
+
+.dropdown-body.scrollable::-webkit-scrollbar-track {
+  -webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.2) inset;
+  background-color: #f9f9fd;
+  border-radius: 5px;
+}
+
+.dropdown-body.scrollable::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #66BDCC;
+}
+.main-wrapper .page-wrapper .page-content {
+    margin-top: 0px!important;
+}
 	</style>
+{% block css_style %}
+	{% endblock css_style %}
+	{% block main_style  %}
+	{% endblock main_style %}
 
 
 </head>
-<body>
+<body class="overflow-hidden"  style="overflow: visible!important;">
 <div class="main-wrapper ">
-	<div class="page-wrapper   full-page">
+	<!-- partial:partials/_sidebar.html -->
+	{% block sidebar_none %}
+    {% include 'include/sidebar.html' %}
+		{% endblock sidebar_none %}
+
+    <!-- partial -->
+	<div class="page-wrapper ">
 		<!-- header -->
+		{% block header_none %}
+
 		{% include 'include/header.html' %}
+		{% endblock header_none %}
 		<!-- end header -->
 		<div class="page-content" >
+
 			{% block page_content %}
 			{% endblock page_content %}
 		</div>
@@ -118,6 +264,80 @@
 <script src="{% static 'assets/js/inputmask.js' %}"></script>
 {% block javascript_custom %}
 {% endblock javascript_custom %}
+{% block javascript_web_socket %}
+{% if request.user.is_authenticated %}
+<script src="{% static 'new_assets/js/soundmanager2.js' %}"></script>
+<script type="text/javascript">
+	// Функционал чата основанный на WebSocket
+	$(document).ready(function(){
+		const my_username = '{{request.user.username}}';
+		let unread_indicator = $('#unread-indicator');
+		var url_ws = my_username + '/';
+
+		const chatSocket = new WebSocket(
+				'wss://'
+				+ window.location.host
+				+ '/ws/chat/'
+				+ url_ws
+		);
+		chatSocket.onopen = function (event) {
+		};
+		function playMusicChat(){
+			soundManager.url = "{% static 'new_assets/js/soundmanager2.js' %}";
+
+			soundManager.onready(function() {
+				soundManager.createSound({
+					id: 'mySound',
+					url: "{% static 'new_assets/music/sms.mp3' %}"
+				});
+				// ...and play it
+				soundManager.play('mySound');
+			});
+		}
+		    function addNewMessage(packet) {
+        // Вызываем при необходимости добавить новое сообщение в диалог с оппонентом
+        let new_dialog_text = packet['message'];
+        if(packet['message'].length > 20) new_dialog_text = packet['message'].substring(0,20) + '...';
+
+      let msgElem = "" +
+              "<a href='/dialogs/" + packet['sender_username'] +  "' class='dropdown-item'>\n" +
+				"    <div class='figure'>\n" +
+				"        <img src='/static/new_assets/img/user_unknown.jpg' style='width: 30px!important; height: 30px!important;' >\n" +
+				"    </div>\n" +
+				"    <div class='content'>\n" +
+				"        <div class='d-flex justify-content-between align-items-center'>\n" +
+				"            <p >" + packet['sender_username'] + "</p>\n" +
+				"            <p class='sub-text text-muted'>"  + packet['created'] + "</p>\n" +
+				"        </div>\n" +
+				"        <p class='sub-text text-muted'>"  + new_dialog_text + "</p>\n" +
+				"    </div>\n" +
+				"</a>";
+      document.querySelector('#unread-list').innerHTML +=msgElem;
+    }
+		chatSocket.onmessage = function(e) {
+			const packet = JSON.parse(e.data);
+
+			switch (packet['type']) {
+				case 'new_message':
+					//Здесь выполняются инструкции, если результат выражения равен 'new_message'
+					if (packet['sender_username'] !== my_username ) {
+						playMusicChat();
+						addNewMessage(packet);
+						unread_indicator.removeClass('d-none');
+						}
+					break;
+			}
+		};
+
+		chatSocket.onclose = function(e) {
+			console.error('Chat socket closed unexpectedly');
+		};
+	});
+
+</script>
+{% endif %}
+{% endblock javascript_web_socket %}
+
 <script type="text/javascript" language="JavaScript">
 	// добавляем правило для валидации телефона
 	jQuery.validator.addMethod("checkMaskPhone", function(value, element) {

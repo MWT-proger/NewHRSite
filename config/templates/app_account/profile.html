@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% load i18n  %}
+{% load page_tag %}
 
 {% block css_link %}
 <link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
@@ -87,6 +88,7 @@
 							<li class="header-link-item d-flex align-items-center {% block active_settings_url_1 %}active{% endblock active_settings_url_1 %}">
 								<a class="pt-1px row" href="{% url 'profile' %}"> <i class="mr-1 mb-2  icon-md" data-feather="settings"></i><strong class="d-none d-md-block"> Общие настройки</strong> </a>
 							</li>
+							{% if not request.user.is_superuser %}
 							<li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center {% block active_settings_url_2 %}{% endblock active_settings_url_2 %}">
 								<a class="pt-1px row" href="{% url 'change_password' %}"> <i class="mr-1 mb-2 icon-md" data-feather="key"></i><strong class="d-none d-md-block">  Сменить пароль</strong></a>
 							</li>
@@ -106,12 +108,14 @@
 								<a class="pt-1px row" href="{% url 'questionnaire_create' %}"> <i class="mr-1 mb-2 icon-md" data-feather="plus-circle"></i><strong class="d-none d-md-block">  Добавить анкету</strong></a>
 							</li>
 							{% endif %}
+							{% endif %}
 
 
 
 
 
 						</ul>
+
 					</div>
 				</div>
 			</div>
@@ -145,6 +149,23 @@
 				</div>
 			</div>
 		</div>
+		<div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-xl-10">
+        <div class="card ">
+            {% if general_settings.show_3 %}
+                    {% if general_settings.advertising_3 %}
+                    {{general_settings.advertising_3|safe }}
+                    {% else %}
+                    <div class="card-body  ">
+                        <h5 class="card-title text-center">Разместим банер</h5>
+                        <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
+                        <div class="row justify-content-center mt-3"><a href="#" class="btn btn-primary "  >Перейти</a></div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+        </div>
+    </div>
+</div>
     </div>
 {% endblock page_content %}
 

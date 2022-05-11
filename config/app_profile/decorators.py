@@ -8,13 +8,13 @@ from .models import Questionnaire, Vacancy
 def checking_my_questionnaire(f):
     """Проверяем на наличие уже созданной модели и наша ли она, если нет то выдаём ошибку"""
     def wrap(request, *args, **kwargs):
-        model = Questionnaire.objects.filter(id=kwargs['pk'], user=request.user)
+        model = Questionnaire.objects.filter(slug=kwargs['slug'], user=request.user)
 
         if model.exists():
             if model[0].status == 'deleted':
                 return HttpResponseRedirect(reverse('my_questionnaire_list'))
         else:
-            return HttpResponseRedirect(reverse('questionnaire_detail', kwargs={'pk': kwargs['pk']}))
+            return HttpResponseRedirect(reverse('questionnaire_detail', kwargs={'slug': kwargs['slug']}))
         return f(request, *args, **kwargs)
     return wrap
 
@@ -22,12 +22,12 @@ def checking_my_questionnaire(f):
 def checking_my_questionnaire_edit(f):
     """Проверяем на наличие уже созданной модели и наша ли она, если нет то выдаём ошибку"""
     def wrap(request, *args, **kwargs):
-        model = Questionnaire.objects.filter(id=kwargs['pk'], user=request.user).exclude(status='active')
+        model = Questionnaire.objects.filter(slug=kwargs['slug'], user=request.user).exclude(status='active')
         if model.exists():
             if model[0].status == 'deleted':
                 return HttpResponseRedirect(reverse('my_questionnaire'))
         else:
-            return HttpResponseRedirect(reverse('my_questionnaire_detail', kwargs={'pk': kwargs['pk']}))
+            return HttpResponseRedirect(reverse('my_questionnaire_detail', kwargs={'slug': kwargs['slug']}))
         return f(request, *args, **kwargs)
     return wrap
 
@@ -47,13 +47,13 @@ def checking_my_limit_questionnaire(f):
 def checking_my_vacancy(f):
     """Проверяем на наличие уже созданной модели и наша ли она, если нет то выдаём ошибку"""
     def wrap(request, *args, **kwargs):
-        model = Vacancy.objects.filter(id=kwargs['pk'], user=request.user)
+        model = Vacancy.objects.filter(slug=kwargs['slug'], user=request.user)
 
         if model.exists():
             if model[0].status == 'deleted':
                 return HttpResponseRedirect(reverse('my_vacancy_list'))
         else:
-            return HttpResponseRedirect(reverse('vacancy_detail', kwargs={'pk': kwargs['pk']}))
+            return HttpResponseRedirect(reverse('vacancy_detail', kwargs={'slug': kwargs['slug']}))
         return f(request, *args, **kwargs)
     return wrap
 
@@ -61,11 +61,11 @@ def checking_my_vacancy(f):
 def checking_my_vacancy_edit(f):
     """Проверяем на наличие уже созданной модели и наша ли она, если нет то выдаём ошибку"""
     def wrap(request, *args, **kwargs):
-        model = Vacancy.objects.filter(id=kwargs['pk'], user=request.user).exclude(status='active')
+        model = Vacancy.objects.filter(slug=kwargs['slug'], user=request.user).exclude(status='active')
         if model.exists():
             if model[0].status == 'deleted':
                 return HttpResponseRedirect(reverse('my_vacancy'))
         else:
-            return HttpResponseRedirect(reverse('my_vacancy_detail', kwargs={'pk': kwargs['pk']}))
+            return HttpResponseRedirect(reverse('my_vacancy_detail', kwargs={'slug': kwargs['slug']}))
         return f(request, *args, **kwargs)
     return wrap

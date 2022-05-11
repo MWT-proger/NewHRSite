@@ -1,0 +1,13 @@
+{% load static %}
+{% load i18n %}
+
+
+<ul class="list-unstyled chat-list px-1" id="list-dialogs">
+    {% for dialog in object_list %}
+        {% if dialog.owner == request.user %}
+        {% include 'chat/include/dialog_in_list.html' with contact=dialog.opponent  owner=True  %}
+        {% else %}
+        {% include 'chat/include/dialog_in_list.html' with contact=dialog.owner  %}
+        {% endif %}
+    {% endfor %}
+</ul>

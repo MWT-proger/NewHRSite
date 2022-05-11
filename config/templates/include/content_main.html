@@ -1,0 +1,100 @@
+{% load static %}
+{% load page_tag %}
+{% get_general_settings as general_settings %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-12 col-xl-10">
+        <div class="row mt-5 justify-content-center">
+            <div class="col-12 col-md-12 col-xl-12">
+                <div class="card row ">
+                    {% if general_settings.show_1 %}
+                    {%if general_settings.advertising_1 %}
+                    {{general_settings.advertising_1|safe}}
+                    {% else %}
+                    <div class="card-body  ">
+                        <h5 class="card-title text-center">Разместим банер</h5>
+                        <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
+                        <div class="row justify-content-center mt-3"><a href="#" class="btn btn-primary "  >Перейти</a></div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-md-5 justify-content-center">
+            <div class="col-11 col-md-7 col-xl-7">
+                <div class="row pl-2 pr-2  ml-md-5 mt-3 justify-content-start">
+
+                    <h2 class="text-left">{{general_settings.title_main}}</h2>
+                    <p class="mt-2 text-left">{{general_settings.description_main}}</p>
+
+                </div>
+                {% if not request.user_agent.is_mobile %}
+                <div class="row ml-md-5  justify-content-start">
+                    <div class="d-flex align-items-center mt-5 pr-5">
+
+                        <i data-feather="check-square" style="width: 50px; height: 50px;" class="mr-2 ml-2 text-primary"></i>
+                        <div>
+                            <h5>{{general_settings.title_icon_1}}</h5>
+                            <p class="">{{general_settings.description_icon_1}}</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-5 pr-5">
+
+                        <i data-feather="check-square" style="width: 50px; height: 50px;" class="mr-2 ml-2  text-primary"></i>
+                        <div>
+                            <h5>{{general_settings.title_icon_2}}</h5>
+                            <p class="">{{general_settings.description_icon_2}}</p>
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-12 col-md-5 col-xl-5">
+
+                <div class="mt-3 owl-carousel owl-theme owl-fadeout">
+                    {% get_images as img_carousel %}
+                    {% for img in img_carousel %}
+                    <div class="item">
+                        <img src="{{img.image.url}}" alt="item-image">
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+            {% if request.user_agent.is_mobile %}
+            <div class="col-11">
+
+                <div class="row ml-md-5  justify-content-start">
+                    <div class="d-flex align-items-center mt-5 pr-5">
+
+                        <i data-feather="check-square" style="width: 50px; height: 50px;" class="mr-2 ml-2 text-primary"></i>
+                        <div>
+                            <h5>{{general_settings.title_icon_1}}</h5>
+                            <p class="">{{general_settings.description_icon_1}}</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-5 pr-5">
+
+                        <i data-feather="check-square" style="width: 50px; height: 50px;" class="mr-2 ml-2  text-primary"></i>
+                        <div>
+                            <h5>{{general_settings.title_icon_2}}</h5>
+                            <p class="">{{general_settings.description_icon_2}}</p>
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
