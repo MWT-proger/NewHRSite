@@ -21,7 +21,7 @@ jobs:
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
     - name: Build the Docker image
-      run: docker build ./etl --file etl/Dockerfile --tag ${{secrets.DOCKER_USER}}/${{secrets.DOCKER_REPOSITORIES}}
+      run: docker build ./config --file config/Dockerfile.prod --tag ${{secrets.DOCKER_USER}}/${{secrets.DOCKER_REPOSITORIES}}
       
     - name: Docker Push
       run: docker push ${{secrets.DOCKER_USER}}/${{secrets.DOCKER_REPOSITORIES}}
