@@ -62,10 +62,12 @@ def checking_my_vacancy_edit(f):
     """Проверяем на наличие уже созданной модели и наша ли она, если нет то выдаём ошибку"""
     def wrap(request, *args, **kwargs):
         model = Vacancy.objects.filter(slug=kwargs['slug'], user=request.user).exclude(status='active')
+
         if model.exists():
             if model[0].status == 'deleted':
                 return HttpResponseRedirect(reverse('my_vacancy'))
         else:
+            print("###############################")
             return HttpResponseRedirect(reverse('my_vacancy_detail', kwargs={'slug': kwargs['slug']}))
         return f(request, *args, **kwargs)
     return wrap

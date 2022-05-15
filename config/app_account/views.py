@@ -13,6 +13,9 @@ from django.urls import reverse_lazy
 
 from django.contrib.auth import login, authenticate, logout
 from django.conf import settings
+from app_main.decorators import checking_user
+
+
 
 
 from .decorators import checking_profile_employer, checking_profile_applicant
@@ -129,6 +132,7 @@ def get_reset_password_form_ajax(request):
     return query_dict
 
 
+@checking_user
 def register(request):
     """Регистрация"""
     if request.method == 'POST':
@@ -169,6 +173,7 @@ def reset_password(request):
     return render(request=request, template_name="app_main/index.html", context={"reset_form": form})
 
 
+@checking_user
 def login_request(request):
     """Вход"""
     if request.method == "POST":
@@ -260,6 +265,14 @@ def validate_token(request):
         username = request.POST.get('signUpNumberPhone', None)
         if not username:
             username = request.POST.get('forgotPasswordNumberPhone', None)
+            name = edit_username(username)
+            if not User.objects.filter(username__iexact=name).exists():
+                response = {
+                    'is_taken': False,
+                    'description': "Пользователь с таким номером телефона не существует"
+                }
+                return JsonResponse(response)
+
             key = request.POST.get('forgotPasswordConfirmKey', None)
         else:
             key = request.POST.get('signUpConfirmKey', None)

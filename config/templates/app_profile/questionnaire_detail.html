@@ -53,6 +53,11 @@ strong{
                     <div class="form-group border-bottom">
                         <label class="text-muted  "><strong>ФИО:</strong> </label>
                         <p class="  text-muted  font-weight-light ">
+                            {% if questionnaire.user.first_name or questionnaire.user.third_name or questionnaire.user.last_name %}
+                            {{questionnaire.user.first_name|default_if_none:""}} {{questionnaire.user.third_name|default_if_none:""}} {{questionnaire.user.last_name|default_if_none:""}}
+                            {% else %}
+                            не указано
+                            {% endif %}
                         </p>
                     </div>
                 </div>
@@ -185,14 +190,31 @@ strong{
 
             <div class="row justify-content-center ">
 {% if request.user not in questionnaire.count_sentence.all %}
-                <button type="button" id="btn-application" class="btn btn-my-outline-blue m-1 btn-icon-text" data-toggle="modal" data-target="#sendApplicationModal" ><i class="btn-icon-append" data-feather="send"></i> Отправить вакансию  </button>
+                <button type="button" id="btn-application" class="btn btn-my-outline-blue m-1 btn-icon-text col-12 col-md-auto" data-toggle="modal" data-target="#sendApplicationModal" ><i class="btn-icon-append" data-feather="send"></i> Отправить вакансию  </button>
 
                 {% endif %}
-                <a type="button" class="btn btn-outline-success m-1 btn-icon-text" data-toggle="collapse" href="#collapsePhone" role="button" aria-expanded="false" aria-controls="collapsePhone"><i class="btn-icon-append" data-feather="phone"></i> Показать номер телефона  </a>
-                <a   href="{{questionnaire.get_chat_url}}"  type="button" class="btn btn-my-outline-purple m-1  btn-icon-text"><i class="btn-icon-append" data-feather="mail"></i> Написать</a>
+                <a type="button" class="btn btn-outline-success m-1 btn-icon-text col-12 col-md-auto" data-toggle="collapse" href="#collapsePhone" role="button" aria-expanded="false" aria-controls="collapsePhone"><i class="btn-icon-append" data-feather="phone"></i> Показать номер телефона  </a>
+                <a   href="{{questionnaire.get_chat_url}}"  type="button" class="btn btn-my-outline-purple m-1  btn-icon-text col-12 col-md-auto"><i class="btn-icon-append" data-feather="mail"></i> Написать</a>
 
             </div>
 
+        </div>
+    </div>
+</div>
+<div class="row justify-content-center mt-1 mb-1">
+    <div class="col-11">
+        <div class="card advertising-card">
+            {% if general_settings.show_4 %}
+            {% if general_settings.advertising_4  %}
+            {{general_settings.advertising_4|safe}}
+            {% else %}
+            <div class="card-body  ">
+                <h5 class="card-title text-center">Разместим банер</h5>
+                <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
+                <div class="row justify-content-center mt-3"><a href="#" class="btn btn-primary "  >Перейти</a></div>
+            </div>
+            {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>
@@ -263,7 +285,7 @@ strong{
         }
 
 		const chatSocket = new WebSocket(
-				'ws://'
+				'wss://'
 				+ window.location.host
 				+ '/ws/chat/'
 				+ url_ws

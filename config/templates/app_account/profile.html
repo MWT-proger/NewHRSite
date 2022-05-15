@@ -70,7 +70,7 @@
                         <form class="file-input" enctype="multipart/form-data" method="post" name="ajax-form-add-image" id="image_form">
 							{% csrf_token %}
 							<input type="file" id="id_image" class="image" name="image" hidden>
-							<label for="id_image" class="btn  btn-icon-text btn-edit-profile mt-2 pt-3">
+							<label for="id_image" class="btn  btn-icon-text btn-edit-profile mt-2 pt-3 my-orange">
 								<i data-feather="edit" class="btn-icon-prepend"></i> Изменить фото
 								<p class="file-name"></p>
 							</label>
@@ -151,7 +151,7 @@
 		</div>
 		<div class="row justify-content-center">
     <div class="col-12 col-md-10 col-xl-10">
-        <div class="card ">
+        <div class="card advertising-card ">
             {% if general_settings.show_3 %}
                     {% if general_settings.advertising_3 %}
                     {{general_settings.advertising_3|safe }}

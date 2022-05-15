@@ -165,7 +165,7 @@
                     <label class="text-muted  "><strong>Просмотров:</strong> {{questionnaire.count_see.count}}</label>
                 </div>
                 <div class="col-md-auto">
-                    <label class="text-muted  "><strong>Предложений:</strong> {{questionnaire.nu}}22</label>
+                    <label class="text-muted  "><strong>Предложений:</strong> {{questionnaire.count_sentence.count}}</label>
                 </div>
             </div>
 
@@ -173,18 +173,18 @@
 
 
                 {% if questionnaire.status == 'removed' %}
-                <button type="button" class="btn btn-my-outline-purple m-1 btn-icon-text" id="ajax-activate-removed" ><i class="btn-icon-append" data-feather="eye"></i> Опубликовать </button>
-                <a  href="{{questionnaire.get_edit_url}}" id="ajax-edit"  type="button" class="btn btn-my-outline-blue m-1 btn-icon-text"><i class="btn-icon-append" data-feather="edit"></i> Редактировать </a>
+                <button type="button" class="btn btn-my-outline-purple m-1 btn-icon-text  col-12 col-md-auto"  id="ajax-activate-removed" ><i class="btn-icon-append" data-feather="eye"></i> Опубликовать </button>
+                <a  href="{{questionnaire.get_edit_url}}" id="ajax-edit"  type="button" class="btn btn-my-outline-blue m-1 btn-icon-text  col-12 col-md-auto"><i class="btn-icon-append" data-feather="edit"></i> Редактировать </a>
                 {% endif %}
                 {% if questionnaire.status == 'active' %}
-                <button type="button" class="btn btn-my-outline-purple m-1 btn-icon-text" id="ajax-activate-removed" ><i class="btn-icon-append" data-feather="eye-off"></i> Снять с публикации </button>
-                <a  href="{{questionnaire.get_edit_url}}" id="ajax-edit"  type="button" class="btn btn-my-outline-blue m-1 btn-icon-text d-none"><i class="btn-icon-append" data-feather="edit"></i> Редактировать </a>
+                <button type="button" class="btn btn-my-outline-purple m-1 btn-icon-text  col-12 col-md-auto" id="ajax-activate-removed" ><i class="btn-icon-append" data-feather="eye-off"></i> Снять с публикации </button>
+                <a  href="{{questionnaire.get_edit_url}}" id="ajax-edit"  type="button" class="btn btn-my-outline-blue m-1 btn-icon-text d-none  col-12 col-md-auto"><i class="btn-icon-append" data-feather="edit"></i> Редактировать </a>
                 {% endif %}
                 {% if questionnaire.status != 'active' and  questionnaire.status != 'removed' %}
                 <a  id="ajax-activate-removed" hidden></a>
                 <a  id="ajax-edit" hidden></a>
                 {% endif %}
-                <button type="button" class="btn btn-outline-danger m-1 btn-icon-text" data-toggle="modal" data-target="#deleteQuestionnaireModal" ><i class="btn-icon-append" data-feather="trash"></i> Удалить  </button>
+                <button type="button" class="btn btn-outline-danger m-1 btn-icon-text col-12 col-md-auto" data-toggle="modal" data-target="#deleteQuestionnaireModal" ><i class="btn-icon-append" data-feather="trash"></i> Удалить  </button>
             </div>
 
         </div>

@@ -2,7 +2,7 @@ import os
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from PIL import Image
+from PIL import Image, ImageOps
 from django.urls import reverse
 
 TYPE = [
@@ -26,7 +26,7 @@ class User(AbstractUser):
     name_company = models.CharField('Название компании', max_length=200, blank=True, null=True)
     third_name = models.CharField('Отчество', max_length=200, blank=True, null=True)
     type = models.CharField('Тип пользователя', max_length=20, default='applicant', choices=TYPE)
-    age = models.PositiveIntegerField("Полных лет", blank=True, null=True)
+    age = models.PositiveIntegerField("Полных лет", blank=True, null=True, default=0)
 
     def save(self, *args, **kwargs):
         # обычное сохранение
@@ -47,6 +47,7 @@ class User(AbstractUser):
             ratio = (base_width / float(width))
             height = int((float(height) * float(ratio)))
             image = Image.open(filepath)
+            image = ImageOps.exif_transpose(image)
             image = image.resize((base_width, height), Image.ANTIALIAS)
             dirname, fname = os.path.split(filepath)
             image.save(filepath)

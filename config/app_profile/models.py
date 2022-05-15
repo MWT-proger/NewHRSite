@@ -85,22 +85,25 @@ class Questionnaire(models.Model):
     public_date = models.DateTimeField(verbose_name="Дата публикации", default=timezone.now)
     status = models.CharField('Статус', max_length=100, default='inspection', choices=STATUS)
     # Информация Которую все видят
-    region = models.ForeignKey(Region, verbose_name="Регион", on_delete=models.PROTECT, null=True)
-    city = models.ForeignKey(City, verbose_name="Город", on_delete=models.PROTECT, null=True)
+    region = models.ForeignKey(Region, verbose_name="Регион проживания", on_delete=models.PROTECT, null=True)
+    city = models.ForeignKey(City, verbose_name="Город проживания (для деревнь и поселков указать районный центр)", on_delete=models.PROTECT, null=True)
 
     phone = models.CharField("Номер телефона", max_length=30)
     health_book = models.BooleanField(verbose_name="Санитарная книжка", default=False)
     vaccinated = models.BooleanField(verbose_name="Наличие прививки от коронавируса", default=False)
     no_profession = models.BooleanField(verbose_name="Нет профессии", default=False)
     not_citizen = models.BooleanField(verbose_name="Не являюсь гражданином РФ", default=False)
-    profession = models.ForeignKey(Profession, verbose_name="Профессия", on_delete=models.PROTECT, null=True, blank=True)
+    profession = models.ForeignKey(Profession, verbose_name="Профессия (Профильное образование)",
+                                   on_delete=models.PROTECT, null=True, blank=True)
     driver_license = models.ManyToManyField(DriverLicense, verbose_name="Водительское удостоверение", blank=True,
-                                            related_name="questionnaire")
-    total_service = models.PositiveIntegerField("Общий стаж", default=0)
+                                            related_name="questionnaire", help_text='выберите все открытые категории')
+    total_service = models.PositiveIntegerField("Общий трудовой стаж", default=0)
     driving_experience = models.PositiveIntegerField("Водительский стаж", default=0)
     self_propelled = models.BooleanField(verbose_name="Права на  управление самоходными машинами", default=False,
                                          help_text='просьба оставить комментарий в поле "Дополнительная информация"')
-    description = models.TextField("Дополнительная информация", null=True, blank=True)
+    description = models.TextField("Дополнительная информация", null=True, blank=True,
+                                   help_text='кратко изложите ваши ключевые навыки, опыт работы, '
+                                             'законченные курсы если таковые имеются')
 
     count_see = models.ManyToManyField(User,
                                        verbose_name="Просмотры", blank=True,
@@ -142,12 +145,12 @@ class Vacancy(models.Model):
                              verbose_name="Работодатель")
     slug = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     public_date = models.DateTimeField(verbose_name="Дата публикации", default=timezone.now)
-    status = models.CharField('Статус', max_length=100, default='inspection', choices=STATUS)
+    status = models.CharField('Статус', max_length=100, default='active', choices=STATUS)
     # Информация Которую все видят
 
     name = models.CharField('Наименование вакансии', max_length=200)
     region = models.ForeignKey(Region, verbose_name="Регион", on_delete=models.PROTECT, null=True)
-    city = models.ForeignKey(City, verbose_name="Город", on_delete=models.PROTECT, null=True)
+    city = models.ForeignKey(City, verbose_name="Город (для деревнь и поселков указать районный центр)", on_delete=models.PROTECT, null=True)
     profession = models.ForeignKey(Profession, verbose_name="Профессия", on_delete=models.PROTECT, null=True,
                                    blank=True)
     work_mode = models.ForeignKey(WorkMode, verbose_name="Режим работы", on_delete=models.PROTECT)

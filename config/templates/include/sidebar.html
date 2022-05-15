@@ -16,12 +16,7 @@
 
 
       <li class="nav-item nav-category">Основное</li>
-      <li class="nav-item">
-        <a href="{% url 'mainUrl' %}" class="nav-link">
-          <i class="link-icon" data-feather="home"></i>
-          <span class="link-title">Главная</span>
-        </a>
-      </li>
+
       {% if request.user.is_authenticated %}
 
       {% if request.user.is_superuser %}
@@ -90,7 +85,7 @@
       <li class="nav-item">
         <a href="{% url 'my_vacancy_list' %}" class="nav-link">
           <i class="link-icon" data-feather="list"></i>
-          <span class="link-title">Мои ваккансии</span>
+          <span class="link-title">Мои вакансии</span>
         </a>
       </li>
       <li class="nav-item">
@@ -128,6 +123,12 @@
 
       {% endif %}
       {% else %}
+      <li class="nav-item">
+        <a href="{% url 'mainUrl' %}" class="nav-link">
+          <i class="link-icon" data-feather="home"></i>
+          <span class="link-title">Главная</span>
+        </a>
+      </li>
       <li class="nav-item  ">
         <a class="nav-link " data-toggle="modal" data-target="#loginModal" > <i class="link-icon" data-feather="log-in"></i>
           <span class="link-title">Войти </span>

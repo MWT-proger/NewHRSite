@@ -16,14 +16,14 @@
 {% if  not request.user.is_authenticated %}
 <ul class="nav justify-content-center">
 
-    <li class="nav-item d-flex align-items-center mr-2 mr-md-5 mt-3">
+    <li class="nav-item d-flex align-items-center mr-2 mr-md-5 mt-3 cursor-pointer">
         <a class="nav-link  "  data-toggle="modal" data-target="#loginModal">
             Войти <i class="link-icon text-primary" data-feather="log-in"></i> </a>
     </li>
     <a class="navbar-brand noble-ui-logo  mt-3"  href="{% url 'mainUrl' %}">
         <img src="{% static 'new_assets/img/logo_new.png' %}" class="img-lg rounded-circle" alt="image">
     </a>
-    <li class="nav-item  d-flex align-items-center ml-2 ml-md-5 mt-3">
+    <li class="nav-item  d-flex align-items-center ml-2 ml-md-5 mt-3 cursor-pointer">
         <a class="nav-link " data-toggle="modal" data-target="#signUpModal" >  Регистрация <i class="link-icon text-primary" data-feather="user-plus"></i></a>
     </li>
 </ul>

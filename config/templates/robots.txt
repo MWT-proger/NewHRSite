@@ -1,0 +1,15 @@
+User-agent: *
+Disallow: /media/
+Disallow: /static/
+Disallow: /admin/
+Disallow: /ckeditor/
+Disallow: /ajax/
+Disallow: /i18n/
+
+Disallow: /login/
+Disallow: /logout/
+Disallow: /signup/
+Disallow: /reset_password/
+Disallow: /dialogs/
+Disallow: /change-password/
+Disallow: /profile/

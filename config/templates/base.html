@@ -130,6 +130,59 @@ h2, .h2 {
     background: #2D2D2D;
 
 }
+
+
+.advertising-card {
+    background: #000000;
+}
+
+.select2-container--default .select2-selection--single, .select2-container--default .select2-dropdown, .select2-container--default .select2-selection--multiple {
+    background: white;
+}
+.profile-page .profile-header .header-links {
+    background: #2D2D2D;
+}
+.profile-page .profile-header  {
+       border: none!important;
+}
+.profile-page .profile-header .header-links ul li a {
+    color: #ED833C;
+
+}
+.my-orange{
+	color: #ED833C;
+}
+.profile-page .profile-header .header-links ul li:hover a, .profile-page .profile-header .header-links ul li.active a {
+    color: #727cf5;
+}
+
+.btn:hover, .fc .fc-button:hover, .swal2-modal .swal2-actions button:hover, .wizard > .actions a:hover {
+    color: #727cf5;
+}
+.form-control:disabled, select:disabled, .email-compose-fields .select2-container--default .select2-selection--multiple:disabled, .select2-container--default .select2-selection--single:disabled, .select2-container--default .select2-selection--single .select2-search__field:disabled, .typeahead:disabled, .tt-query:disabled, .tt-hint:disabled, .form-control[readonly], select[readonly], .email-compose-fields .select2-container--default .select2-selection--multiple[readonly], .select2-container--default .select2-selection--single[readonly], .select2-container--default .select2-selection--single .select2-search__field[readonly], .typeahead[readonly], .tt-query[readonly], .tt-hint[readonly] {
+    background-color: white;
+}
+
+.black_fon{
+	background: #000000;
+}
+.alert-success {
+    color: #ED833C!important;
+    background-color: #2D2D2D!important;
+    border-color: #ED833C!important;
+}
+.alert-success hr {
+    border-top-color: #ED833C!important;
+}
+@media (max-width: 991px){
+.chat-wrapper .chat-content {
+    background: #000000;
+
+}
+}
+		.list-group-item {
+    background-color: #2D2D2D;
+}
 /*#################################################################################################################*/
 
 
@@ -216,6 +269,7 @@ h2, .h2 {
 <body class="overflow-hidden"  style="overflow: visible!important;">
 <div class="main-wrapper ">
 	<!-- partial:partials/_sidebar.html -->
+	{% block content_error %}
 	{% block sidebar_none %}
     {% include 'include/sidebar.html' %}
 		{% endblock sidebar_none %}
@@ -239,12 +293,15 @@ h2, .h2 {
 {% include 'app_account/include/login_modal.html' %}
 {% include 'app_account/include/signup_modal.html' %}
 {% include 'app_account/include/forgot_password_modal.html' %}
+		{% include 'include/modal_cookies.html' %}
 <!-- End modal -->
 		<!-- footer -->
 		{% include 'include/footer.html' %}
 		<!-- end footer -->
 	</div>
+{% endblock content_error %}
 </div>
+
 
 <!-- core:js -->
 <script src="{% static 'assets/vendors/core/core.js' %}"></script>
@@ -264,6 +321,8 @@ h2, .h2 {
 <script src="{% static 'assets/js/inputmask.js' %}"></script>
 {% block javascript_custom %}
 {% endblock javascript_custom %}
+<script type="text/javascript" src="{% static 'new_assets/js/jquery.cookie.js' %}"></script>
+<script type="text/javascript" src="{% static 'new_assets/js/my-cookie.js' %}"></script>
 {% block javascript_web_socket %}
 {% if request.user.is_authenticated %}
 <script src="{% static 'new_assets/js/soundmanager2.js' %}"></script>
@@ -418,7 +477,7 @@ h2, .h2 {
 </script>
 <script type="text/javascript" language="JavaScript">
     // Проверка - существует ли пользователь с таким номером телефона для сброса пароля
-    let phoneForgotPassword = '';
+	let phoneForgotPassword = '';
     let statusForgotPassword = false;
     jQuery.validator.addMethod("validatePhoneForgotPasswordUser", function(value, element) {
         // create an AJAX call

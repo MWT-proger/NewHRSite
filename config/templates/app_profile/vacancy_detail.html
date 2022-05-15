@@ -16,23 +16,23 @@ strong{
 	{% endblock css_link %}
 {% block page_content %}
 {% if user.is_superuser %}
-<div class="d-flex justify-content-end align-items-center flex-wrap grid-margin mt-5">
+<div class="d-flex justify-content-center justify-content-md-end align-items-center flex-wrap grid-margin mt-5">
 
-
-            <a href="{{vacancy.user.get_admin_url}}" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0">
-              <i class="btn-icon-prepend" data-feather="user"></i>
-              Открыть пользователя в Админ Панель
-            </a>
-            <a  href="{{vacancy.get_admin_url}}" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
+            <a  href="{{vacancy.get_admin_url}}" class="btn btn-primary btn-icon-text mr-2 mb-2 mb-md-0 col-12 col-md-auto">
               <i class="btn-icon-prepend" data-feather="list"></i>
               Открыть вакансию в Админ Панель
             </a>
+            <a href="{{vacancy.user.get_admin_url}}" class="btn btn-outline-primary btn-icon-text mr-2 mb-2 mb-md-0 col-12 col-md-auto">
+              <i class="btn-icon-prepend" data-feather="user"></i>
+              Открыть пользователя в Админ Панель
+            </a>
+
     </div>
 {% endif %}
 <div class="row justify-content-center mt-5">
     <div class="col-lg-10 card">
         <div class="card-header">
-            <label class="h4 text-muted">Вакансия работодатедя № {{vacancy.pk}}</label>
+            <label class="h4 text-muted">{{vacancy.user.name_company | title}}</label>
             <a onclick="javascript:history.back(-1); return false;" type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
@@ -142,13 +142,30 @@ strong{
             </div>
             <div class="row justify-content-center ">
                 {% if request.user not in vacancy.count_sentence.all %}
-                                <button type="button" id="btn-application" class="btn btn-my-outline-blue m-1 btn-icon-text" data-toggle="modal" data-target="#sendApplicationModal" ><i class="btn-icon-append" data-feather="check-square"></i> Откликнуться  </button>
+                                <button type="button" id="btn-application" class="btn btn-my-outline-blue m-1 btn-icon-text col-12 col-md-auto" data-toggle="modal" data-target="#sendApplicationModal" ><i class="btn-icon-append" data-feather="check-square"></i> Откликнуться  </button>
 
                 {% endif %}
-                <a   href="{{vacancy.get_chat_url}}"  type="button" class="btn btn-my-outline-purple m-1  btn-icon-text"><i class="btn-icon-append" data-feather="mail"></i> Написать</a>
+                <a   href="{{vacancy.get_chat_url}}"  type="button" class="btn btn-my-outline-purple m-1  btn-icon-text col-12 col-md-auto"><i class="btn-icon-append" data-feather="mail"></i> Написать</a>
 
             </div>
 
+        </div>
+    </div>
+</div>
+<div class="row justify-content-center mt-1 mb-1">
+    <div class="col-11">
+        <div class="card advertising-card">
+            {% if general_settings.show_4 %}
+            {% if general_settings.advertising_4  %}
+            {{general_settings.advertising_4|safe}}
+            {% else %}
+            <div class="card-body  ">
+                <h5 class="card-title text-center">Разместим банер</h5>
+                <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
+                <div class="row justify-content-center mt-3"><a href="#" class="btn btn-primary "  >Перейти</a></div>
+            </div>
+            {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>
@@ -215,7 +232,7 @@ strong{
         }
 
 		const chatSocket = new WebSocket(
-				'ws://'
+				'wss://'
 				+ window.location.host
 				+ '/ws/chat/'
 				+ url_ws

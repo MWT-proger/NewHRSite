@@ -21,7 +21,7 @@
 {% endfor %}
 {% endif %}
 
-<form class="forms-sample mt-2"  method="POST" {% if questionnaire.pk %} Редактировать  анкету № action="{% url 'questionnaire_edit' questionnaire.pk %}" {% else%} action="{% url 'questionnaire_create' %}"{% endif %}  id="CreateQuestionnaireForm" novalidate>
+<form class="forms-sample mt-2"  method="POST" {% if questionnaire.pk %} Редактировать  анкету № action="{{questionnaire.get_edit_url}}" {% else%} action="{% url 'questionnaire_create' %}"{% endif %}  id="CreateQuestionnaireForm" novalidate>
     {% crispy form %}
 </form>
 {% endblock profile_settings %}

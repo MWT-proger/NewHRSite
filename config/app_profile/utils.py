@@ -7,7 +7,6 @@ def set_if_not_none(mapping, key, value):
 def set_if_value(mapping, key, value):
     """Сортировочная функция для фильтра"""
     if value:
-        print(value)
         mapping[key] = value
 
 

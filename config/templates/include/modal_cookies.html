@@ -1,0 +1,25 @@
+{% load static %}
+{% load i18n %}
+<!--"-->
+<button type="button" class="btn btn-primary" style="display: none"  data-toggle="modal" id="button_cookies" data-target="#modalCookie1">Файлы cookie</button>
+<!--Modal: modalCookie-->
+<div class="modal fade top" id="modalCookie1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true" data-backdrop="true">
+  <div class="modal-dialog " style="max-width: 100%!important; margin: 10px!important;" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Body-->
+      <div class="modal-body">
+        <div class="row d-flex justify-content-center align-items-center">
+
+          <p class="pr-2">Мы используем файлы cookie, чтобы улучшить работу вашего веб-сайта!</p>
+
+          <!--<a href="/cookies/" class="btn btn-primary">{% trans "Learn more" %} <i class="fas fa-book ml-1"></i></a>-->
+          <a type="button" class="btn btn-outline-primary waves-effect" data-dismiss="modal">Хорошо, спасибо</a>
+        </div>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+`

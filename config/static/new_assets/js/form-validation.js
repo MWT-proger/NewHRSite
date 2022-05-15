@@ -123,8 +123,7 @@ $(function() {
       rules: {
         forgotPasswordNumberPhone: {
           required: true,
-          checkMaskPhone: true,
-          validatePhoneForgotPasswordUser: true
+          checkMaskPhone: true
         },
         forgotPasswordPassword: {
           required: true,

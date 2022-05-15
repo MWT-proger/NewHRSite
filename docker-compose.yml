@@ -42,7 +42,7 @@ services:
   nginx_dev:
     build: ./nginx_dev
     ports:
-      - 80:80
+      - 90:80
     env_file:
       - ./.env.dev
     depends_on:

@@ -16,4 +16,4 @@ dev_full_upload:
 dev_run:
 	docker-compose -f docker-compose.yml up --build
 dev_create_user:
-	docker-compose -f docker-compose.dev.yml exec web_dev python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'adminpass')"
+	docker-compose -f docker-compose.yml exec web_dev python manage.py shell -c "from app_account.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'adminpass')"

@@ -67,6 +67,7 @@ class QuestionnaireUpdateView(UpdateView):
     model = Questionnaire
     form_class = QuestionnaireUpdateForm
     success_url = reverse_lazy('my_questionnaire_list')
+    slug_field = 'slug'
 
     def form_valid(self, form):
         forms = form.save(commit=False)
@@ -246,7 +247,6 @@ class AllQuestionnaireListView(ListView):
                 .annotate(rank=search_rank).order_by('-rank')
         else:
             queryset = Questionnaire.objects.filter(**sort_params).select_related('user').order_by('-public_date')
-
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -280,10 +280,11 @@ class VacancyUpdateView(UpdateView):
     model = Vacancy
     form_class = VacancyUpdateForm
     success_url = reverse_lazy('my_vacancy_list')
+    slug_field = 'slug'
 
     def form_valid(self, form):
         forms = form.save(commit=False)
-        forms.status = 'inspection'
+        forms.status = 'active'
         forms.save()
         return super().form_valid(form)
 

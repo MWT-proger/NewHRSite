@@ -63,8 +63,8 @@ class UserUpdateForm(forms.ModelForm):
                 Column('email', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
-            Submit('submit', 'Сохранить'),
-            Button('cancel', 'Сменить номер телефона', css_class='btn btn-outline-danger m-1')
+            Submit('submit', 'Сохранить', css_class='btn btn-primary m-1 col-12 col-md-auto'),
+            Button('cancel', 'Сменить номер телефона', css_class='btn btn-outline-danger m-1 col-12 col-md-auto')
         )
 
     class Meta:

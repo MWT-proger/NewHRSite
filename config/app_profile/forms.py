@@ -41,7 +41,7 @@ class QuestionnaireBaseForm(forms.ModelForm):
                                                                             'min': '0',
                                                                             'max': '50'}),
                                             required=False)
-    total_service = forms.IntegerField(label='Общий стаж',
+    total_service = forms.IntegerField(label='Общий трудовой стаж',
                                        widget=forms.NumberInput(attrs={'type': 'range',
                                                                        'step': '1',
                                                                        'value': '0',
@@ -393,8 +393,20 @@ class FilterQuestionnaireForm(forms.ModelForm):
         fields = ('vaccinated', 'age_from',  'age_to', 'regions', 'citys', 'professions', 'driver_licenses', 'search_query',)
 
 
+class MyModelMultipleChoiceField(forms.ModelMultipleChoiceField):
+    to_field_name = "slug"
+
+    def prepare_value(self, value):
+        if hasattr(value, "_meta"):
+            if self.to_field_name:
+                return value.serializable_value(self.to_field_name)
+            else:
+                return value.slug
+        return super().prepare_value(value)
+
+
 class SendVacancyForm(forms.Form):
-    vacancy = forms.ModelMultipleChoiceField(label='Вакансии', required=False, queryset=Vacancy.objects.all())
+    vacancy = MyModelMultipleChoiceField(label='Вакансии', required=False, queryset=Vacancy.objects.all(),)
 
     def __init__(self, *args, **kwargs):
         super(SendVacancyForm, self).__init__(*args, **kwargs)
@@ -418,7 +430,7 @@ class SendVacancyForm(forms.Form):
 
 
 class SendQuestionnaireForm(forms.Form):
-    questionnaire = forms.ModelMultipleChoiceField(label='Анкеты', required=False, queryset=Questionnaire.objects.all())
+    questionnaire = MyModelMultipleChoiceField(label='Анкеты', required=False, queryset=Questionnaire.objects.all())
 
     def __init__(self, *args, **kwargs):
         super(SendQuestionnaireForm, self).__init__(*args, **kwargs)
@@ -426,6 +438,7 @@ class SendQuestionnaireForm(forms.Form):
         self.fields['questionnaire'].widget.attrs.update({'class': 'js-example-basic-single w-100'})
         self.fields['questionnaire'].widget.attrs.update({'data-width': '100%'})
         self.fields['questionnaire'].widget.attrs.update({'multiple': 'multiple'})
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
