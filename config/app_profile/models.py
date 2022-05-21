@@ -86,7 +86,7 @@ class Questionnaire(models.Model):
     status = models.CharField('Статус', max_length=100, default='inspection', choices=STATUS)
     # Информация Которую все видят
     region = models.ForeignKey(Region, verbose_name="Регион проживания", on_delete=models.PROTECT, null=True)
-    city = models.ForeignKey(City, verbose_name="Город проживания (для деревнь и поселков указать районный центр)", on_delete=models.PROTECT, null=True)
+    city = models.ForeignKey(City, verbose_name="Город проживания (Районный центр)", on_delete=models.PROTECT, null=True)
 
     phone = models.CharField("Номер телефона", max_length=30)
     health_book = models.BooleanField(verbose_name="Санитарная книжка", default=False)
@@ -150,7 +150,7 @@ class Vacancy(models.Model):
 
     name = models.CharField('Наименование вакансии', max_length=200)
     region = models.ForeignKey(Region, verbose_name="Регион", on_delete=models.PROTECT, null=True)
-    city = models.ForeignKey(City, verbose_name="Город (для деревнь и поселков указать районный центр)", on_delete=models.PROTECT, null=True)
+    city = models.ForeignKey(City, verbose_name="Город (Районный центр)", on_delete=models.PROTECT, null=True)
     profession = models.ForeignKey(Profession, verbose_name="Профессия", on_delete=models.PROTECT, null=True,
                                    blank=True)
     work_mode = models.ForeignKey(WorkMode, verbose_name="Режим работы", on_delete=models.PROTECT)

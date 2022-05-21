@@ -11,6 +11,7 @@ services:
       - media_volume:/home/app/config/media
     expose:
       - 8111
+    restart: always
     env_file:
       - ./.env.prod
     depends_on:
@@ -22,6 +23,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     expose:
       - 5432
+    restart: always
     env_file:
       - ./.env.prod.db
 
@@ -29,6 +31,7 @@ services:
     build:
       context: config
     command: daphne -b 0.0.0.0 -p 8000 config.asgi:application
+    restart: always
     expose:
       - 8000
     env_file:
@@ -43,6 +46,7 @@ services:
 
   nginx:
     image: nginx:1.21-alpine
+    restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/configs:/etc/nginx/conf.d:ro
