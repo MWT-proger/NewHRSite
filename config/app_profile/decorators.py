@@ -32,6 +32,17 @@ def checking_my_questionnaire_edit(f):
     return wrap
 
 
+def checking_min_one_questionnaire(f):
+    """Проверяет существует ли у пользователя хотя бы одна анкета если нет отправляет заполнить"""
+    def wrap(request, *args, **kwargs):
+        model = Questionnaire.objects.filter(user=request.user)
+        if not model.exists():
+            messages.info(request, 'Для просмотра списка вакансий необходимо добавить минимум одну анкету.')
+            return HttpResponseRedirect(reverse('questionnaire_create'))
+        return f(request, *args, **kwargs)
+    return wrap
+
+
 def checking_my_limit_questionnaire(f):
     """Проверяем на наличие уже предельного колличества анкет"""
     def wrap(request, *args, **kwargs):

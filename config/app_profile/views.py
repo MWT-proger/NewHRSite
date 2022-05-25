@@ -14,7 +14,7 @@ from .forms import QuestionnaireCreateForm, QuestionnaireUpdateForm, Questionnai
     SendQuestionnaireForm
 from .models import Questionnaire, Vacancy
 from .decorators import checking_my_questionnaire, checking_my_questionnaire_edit, checking_my_limit_questionnaire, \
-    checking_my_vacancy_edit, checking_my_vacancy
+    checking_my_vacancy_edit, checking_my_vacancy, checking_min_one_questionnaire
 
 
 @method_decorator(login_required, name='dispatch')
@@ -147,6 +147,7 @@ class MyVacancyListView(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(checking_min_one_questionnaire, name='dispatch')
 class AllVacancyListView(ListView):
     """Список всех вакансий"""
     model = Vacancy
