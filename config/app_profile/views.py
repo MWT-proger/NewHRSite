@@ -71,7 +71,7 @@ class QuestionnaireUpdateView(UpdateView):
 
     def form_valid(self, form):
         forms = form.save(commit=False)
-        forms.status = 'inspection'
+        forms.status = 'active'
         forms.save()
         return super().form_valid(form)
 

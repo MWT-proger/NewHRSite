@@ -83,7 +83,7 @@ class Questionnaire(models.Model):
                              verbose_name="Соискатель")
     slug = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     public_date = models.DateTimeField(verbose_name="Дата публикации", default=timezone.now)
-    status = models.CharField('Статус', max_length=100, default='inspection', choices=STATUS)
+    status = models.CharField('Статус', max_length=100, default='active', choices=STATUS)
     # Информация Которую все видят
     region = models.ForeignKey(Region, verbose_name="Регион проживания", on_delete=models.PROTECT, null=True)
     city = models.ForeignKey(City, verbose_name="Город проживания (Районный центр)", on_delete=models.PROTECT, null=True)
