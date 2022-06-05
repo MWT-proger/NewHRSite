@@ -22,20 +22,20 @@ def get_user(username):
 def add_questionnaire_sentence(id, user):
     model = Questionnaire.objects.get(id=id)
     model.count_sentence.add(user)
-    # context = {"user": model.user,
-    #            'url_chat': user}
-    # to = [get_user_email(model.user)]
-    # settings.EMAIL.notification_questionnaire(context).send(to)
+    context = {"user": model.user,
+               'url_chat': user}
+    to = [get_user_email(model.user)]
+    settings.EMAIL.notification_questionnaire(context).send(to)
 
 
 @database_sync_to_async
 def add_vacancy_sentence(id, user):
     model = Vacancy.objects.get(id=id)
     model.count_sentence.add(user)
-    # context = {"user": model.user,
-    #            'url_chat': user}
-    # to = [get_user_email(model.user)]
-    # settings.EMAIL.notification_vacancy(context).send(to)
+    context = {"user": model.user,
+               'url_chat': user}
+    to = [get_user_email(model.user)]
+    settings.EMAIL.notification_vacancy(context).send(to)
 
 
 @database_sync_to_async

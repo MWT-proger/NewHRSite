@@ -25,8 +25,8 @@ class ObjDict(dict):
 default_settings = {
     "EMAIL": ObjDict(
         {
-            "notification_vacancy": "app_rest_pin_activation.email.VacancySendEmail",
-            "notification_questionnaire": "app_rest_pin_activation.email.QuestionnaireSendEmail",
+            "notification_vacancy": "email_sender.email.VacancySendEmail",
+            "notification_questionnaire": "email_sender.email.QuestionnaireSendEmail",
         })
 }
 

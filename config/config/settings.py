@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'import_export',
     'django_user_agents',
     'email_sender.apps.EmailSenderConfig',
-
 ]
 
 MIDDLEWARE = [
@@ -233,9 +232,9 @@ CHANNEL_LAYERS = {
     },
 }
 
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_HOST_USER = 'account@vprokat.online'
-DEFAULT_FROM_EMAIL = 'account@vprokat.online'
-EMAIL_HOST_PASSWORD = 'asukbynfjbzssyro'
+EMAIL_HOST = 'smtp.jino.ru'
+EMAIL_HOST_USER = 'post@vahtoweek.ru'
+DEFAULT_FROM_EMAIL = 'post@vahtoweek.ru'
+EMAIL_HOST_PASSWORD = 'qwerty123123!'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

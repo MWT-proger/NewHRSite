@@ -12,20 +12,6 @@ services:
     depends_on:
       - db_dev
 
-  daphne_dev:
-    build:
-      context: config
-    command: daphne -b 0.0.0.0 -p 8000 config.asgi:application
-    volumes:
-      - ./config/:/home/config/
-    ports:
-      - 8000:8000
-    env_file:
-      - ./.env.dev
-    depends_on:
-      - db_dev
-      - redis_dev
-
   redis_dev:
     image: redis:alpine
     restart: always
@@ -39,13 +25,6 @@ services:
     ports:
       - 5432:5432
 
-  nginx_dev:
-    build: ./nginx_dev
-    ports:
-      - 90:80
-    env_file:
-      - ./.env.dev
-    depends_on:
-      - daphne_dev
+
 volumes:
   postgres_data_dev:
