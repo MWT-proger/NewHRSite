@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
 
@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'app_main',
     'import_export',
     'django_user_agents',
+    'email_sender.apps.EmailSenderConfig',
 
 ]
 
@@ -231,3 +232,10 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_HOST_USER = 'account@vprokat.online'
+DEFAULT_FROM_EMAIL = 'account@vprokat.online'
+EMAIL_HOST_PASSWORD = 'asukbynfjbzssyro'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

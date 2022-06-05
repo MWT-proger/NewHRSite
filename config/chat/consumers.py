@@ -7,6 +7,9 @@ from .models import Dialog, Message
 from app_profile.models import Vacancy, Questionnaire
 from django.db.models import Q
 
+from email_sender.compat import get_user_email
+from email_sender.conf import settings
+
 
 @database_sync_to_async
 def get_user(username):
@@ -17,12 +20,22 @@ def get_user(username):
 
 @database_sync_to_async
 def add_questionnaire_sentence(id, user):
-    Questionnaire.objects.get(id=id).count_sentence.add(user)
+    model = Questionnaire.objects.get(id=id)
+    model.count_sentence.add(user)
+    context = {"user": model.user,
+               'url_chat': user}
+    to = [get_user_email(model.user)]
+    settings.EMAIL.notification_questionnaire(context).send(to)
 
 
 @database_sync_to_async
 def add_vacancy_sentence(id, user):
-    Vacancy.objects.get(id=id).count_sentence.add(user)
+    model = Vacancy.objects.get(id=id)
+    model.count_sentence.add(user)
+    context = {"user": model.user,
+               'url_chat': user}
+    to = [get_user_email(model.user)]
+    settings.EMAIL.notification_vacancy(context).send(to)
 
 
 @database_sync_to_async

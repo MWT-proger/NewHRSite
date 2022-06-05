@@ -1,0 +1,11 @@
+{% extends "email_sender/email/base.html" %}
+{% load i18n %}
+
+{% block title%} Новое преложение {% endblock title%}
+
+{% block pre_header %} Информирование об активности на сервисе{% endblock pre_header %}
+
+{% block info_1%} Вам предложение на работу по одной из ваших анкет {{site_name}}.
+Перейдите на сервис для обсуждения деталей. {% endblock info_1%}
+{% block buttom_name %} Перейти {% endblock buttom_name %}
+{% block buttom_href %} {{url_chat}} {% endblock buttom_href %}
