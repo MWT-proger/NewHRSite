@@ -438,7 +438,6 @@ class SendQuestionnaireForm(forms.Form):
         self.fields['questionnaire'].widget.attrs.update({'class': 'js-example-basic-single w-100'})
         self.fields['questionnaire'].widget.attrs.update({'data-width': '100%'})
         self.fields['questionnaire'].widget.attrs.update({'multiple': 'multiple'})
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
         self.helper = FormHelper()
         self.helper.layout = Layout(

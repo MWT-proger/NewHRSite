@@ -10,7 +10,6 @@ $(function() {
       rules: {
         loginNumberPhone: {
           required: true,
-          checkMaskPhone: true
 
         },
         loginPassword: {
@@ -21,7 +20,6 @@ $(function() {
       messages: {
         loginNumberPhone: {
           required: "Пожалуйста, введите номер телефона",
-          checkMaskPhone: "Пожалуйста, введите правильный номер телефона",
           minlength: "Пожалуйста, введите правильный номер телефона"
         },
         loginPassword: {
@@ -31,7 +29,7 @@ $(function() {
       },
       errorPlacement: function(label, element) {
         label.addClass('mt-2 text-danger');
-        label.insertAfter(element);
+        label.insertAfter(element.parent());
       },
       highlight: function(element, errorClass) {
         $(element).addClass('is-invalid');

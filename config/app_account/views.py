@@ -16,8 +16,6 @@ from django.conf import settings
 from app_main.decorators import checking_user
 
 
-
-
 from .decorators import checking_profile_employer, checking_profile_applicant
 from .models import TokenSignUp
 from .forms import UserRegistrationForm, UserResetPasswordForm, UserUpdateForm, UserEmployerUpdateForm
@@ -72,7 +70,11 @@ def logout_view(request):
 
 def edit_username(username):
     if username:
-        username = username.replace('(', '').replace(')', '').replace('-', '').replace('+', '')
+        username = username.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ', '')
+        if username[0] == "8":
+            print(username[0])
+            username = username.replace('8', '7', 1)
+        print(username)
     return username
 
 
