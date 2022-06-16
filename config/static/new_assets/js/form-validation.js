@@ -29,7 +29,7 @@ $(function() {
       },
       errorPlacement: function(label, element) {
         label.addClass('mt-2 text-danger');
-        label.insertAfter(element.parent());
+        label.insertAfter(element);
       },
       highlight: function(element, errorClass) {
         $(element).addClass('is-invalid');
@@ -48,7 +48,6 @@ $(function() {
         },
         signUpNumberPhone: {
           required: true,
-          checkMaskPhone: true,
           validatePhoneUser: true
         },
         signUpEmail: {
@@ -121,7 +120,6 @@ $(function() {
       rules: {
         forgotPasswordNumberPhone: {
           required: true,
-          checkMaskPhone: true
         },
         forgotPasswordPassword: {
           required: true,
