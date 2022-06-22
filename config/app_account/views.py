@@ -1,5 +1,6 @@
 import json
 import requests
+from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
@@ -10,6 +11,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.views.generic.edit import UpdateView
 from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
+from django.utils import timezone
 
 from django.contrib.auth import login, authenticate, logout
 from django.conf import settings
@@ -72,9 +74,7 @@ def edit_username(username):
     if username:
         username = username.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ', '')
         if username[0] == "8":
-            print(username[0])
             username = username.replace('8', '7', 1)
-        print(username)
     return username
 
 
@@ -143,13 +143,18 @@ def register(request):
         if user_form.is_valid():
             new_user = user_form.save(commit=False)
             token = request.POST.get('signUpConfirmKey', None)
-            if TokenSignUp.objects.filter(username=new_user.username,
-                                          email=new_user.email,
-                                          key=token).exists():
+            model = TokenSignUp.objects.filter(username=new_user.username,
+                                               email=new_user.email,
+                                               key=token,
+                                               scene="valid")
+            if model.exists():
                 new_user.set_password(user_form.cleaned_data['password'])
                 if user_form.cleaned_data['name_company']:
                     new_user.type = 'employer'
                 new_user.save()
+                model = model[0]
+                model.scene = "close"
+                model.save()
                 login(request, new_user)
                 return redirect("profile")
 
@@ -164,10 +169,14 @@ def reset_password(request):
         form = UserResetPasswordForm(data)
         if form.is_valid():
             token = request.POST.get('forgotPasswordConfirmKey', None)
-            if TokenSignUp.objects.filter(username=form.cleaned_data['username'], key=token).exists():
+            model = TokenSignUp.objects.filter(username=form.cleaned_data['username'], key=token, scene="valid")
+            if model.exists():
                 user = User.objects.get(username=form.cleaned_data['username'])
                 user.set_password(form.cleaned_data['password'])
                 user.save()
+                model = model[0]
+                model.scene = "close"
+                model.save()
                 login(request, user)
                 return redirect("profile")
 
@@ -234,26 +243,20 @@ def call_request(request):
             username = request.POST.get('forgotPasswordNumberPhone', None)
 
         username = edit_username(username)
-        params = {
-            "app_id": settings.TELPHIN_APP_ID,
-            "app_secret": settings.TELPHIN_APP_SECRET,
-            "number": '+' + username
-        }
 
-        result = requests.post(settings.TELPHIN_URL_ONE, data=json.dumps(params), headers=HEADERS)
+        result = requests.get(f"{settings.SMS_RU_URL}?phone={username}&ip=-1&api_id={settings.SMS_RU_APP_ID}")
+
         response_api = result.json()
-
-        if response_api['status'] == "success":
+        if response_api['status'] == "OK":
+            TokenSignUp.objects.create(username=username, key=response_api['code'])
             status = True
             description = False
+        elif response_api['status'] == "ERROR":
+            status = False
+            description = response_api['status_text']
         else:
             status = False
-            if response_api['description'] == 'one_call_for_two_minutes':
-                description = 'Превышен лимит запросов, повторите через 2 минуты'
-            elif response_api['description'] == 'ten_calls_per_day':
-                description = 'На данный номер телефона превышен лимит запросов в сутки'
-            else:
-                description = 'Ошибка сервера, попробуйте ещё раз'
+            description = 'Ошибка сервера, попробуйте ещё раз'
         response = {
             'is_taken': status,
             'description': description
@@ -265,6 +268,7 @@ def validate_token(request):
     """Проверка кода подтверждения пользователя"""
     if request.method == "POST":
         username = request.POST.get('signUpNumberPhone', None)
+
         if not username:
             username = request.POST.get('forgotPasswordNumberPhone', None)
             name = edit_username(username)
@@ -280,33 +284,24 @@ def validate_token(request):
             key = request.POST.get('signUpConfirmKey', None)
         email = request.POST.get('signUpEmail', None)
         username = edit_username(username)
+        model = TokenSignUp.objects.filter(username=username, key=key, scene="create")
+        if model.exists():
 
-        params = {
-            "app_id": settings.TELPHIN_APP_ID,
-            "app_secret": settings.TELPHIN_APP_SECRET,
-            "number": '+' + username,
-            "auth_code": key
-        }
-
-        result = requests.post(settings.TELPHIN_URL_TWO, data=json.dumps(params), headers=HEADERS)
-        response_api = result.json()
-
-        if response_api['status'] == "succes":
-            status = True
-            description = False
-            TokenSignUp.objects.create(username=username, email=email, key=key)
+            limit = timezone.now() - timedelta(minutes=5)
+            model = model[0]
+            if model.created_at < limit:
+                status = False
+                description = 'Время жизни кода подтверждения истекло'
+            else:
+                status = True
+                description = False
+                model.email = email
+                model.scene = "valid"
+                model.save()
         else:
             status = False
-            if response_api['description'] == 'code_lifetime_expired':
-                description = 'Время жизни кода подтверждения истекло'
-            elif response_api['description'] == 'auth_code_does_not_exist':
-                description = 'Для данного номера не существует кода подтверждения'
-            elif response_api['description'] == 'auth_attempts_ended':
-                description = 'Закончились попытки ввода кода подтверждения'
-            elif response_api['description'] == 'invalid_code':
-                description = 'Не верный код подтверждения'
-            else:
-                description = 'Ошибка сервера, попробуйте ещё раз'
+            description = 'Не верный код подтверждения'
+
         response = {
             'is_taken': status,
             'description': description

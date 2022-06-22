@@ -238,3 +238,7 @@ DEFAULT_FROM_EMAIL = 'post@vahtoweek.ru'
 EMAIL_HOST_PASSWORD = 'qwerty123123!'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+
+SMS_RU_APP_ID = os.environ.get('SMS_RU_APP_ID')
+SMS_RU_URL = 'https://sms.ru/code/call'

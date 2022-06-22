@@ -9,6 +9,12 @@ TYPE = [
     ('applicant', 'Соискатель'),
     ('employer', 'Работодатель')
 ]
+
+SCENE = [
+    ('create', 'Создан'),
+    ('valid', 'Проверен'),
+    ('close', 'Закрыт')
+]
 _MAX_SIZE = 200
 
 
@@ -58,9 +64,12 @@ class User(AbstractUser):
 
 class TokenSignUp(models.Model):
     """ Токен регистрации """
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     username = models.CharField("Номер телефона", max_length=20)
     email = models.EmailField("Адрес электронной почты", blank=True, null=True)
     key = models.CharField("Сам ключ", max_length=4)
+    scene = models.CharField('Этап валидации токена', max_length=20, default='create', choices=SCENE)
 
     def __str__(self):
         return self.username
