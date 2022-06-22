@@ -14,9 +14,10 @@
 
                         {% csrf_token %}
                         <div class="form-group">
-                            <label>Номер телефона</label>
+                            <label>Введите полный номер телефона начиная с кода страны</label>
                             <input class="form-control mb-4 mb-md-0 phone-type" type="text" name="loginNumberPhone" data-rule-required="true"
                                    data-inputmask-clearincomplete="true" data-inputmask-alias="(+375 (999)999-999)|(+7 (999)999-9999)|(+996 (999)999999)|(+992 (99)999-9999)|(+998 (99)9999999)"/>
+                            <small  class="form-text text-muted">коды доступных к регистрации стран - Россия +7 , Узбекистан +998, Кыргызстан +996 Таджикистан +992 Казахстан +7 Белоруссия +375</small>
                         </div>
 
                         <div class="form-group">
