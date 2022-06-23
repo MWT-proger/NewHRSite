@@ -1,27 +1,10 @@
 from django.contrib import admin
+
 from .models import Dialog, Message, Distribution
 from app_account.models import User
-from django.db.models import Q
+from chat.utils import get_dialog, add_msg
 
 admin.site.register(Dialog)
-
-
-def get_dialog(user, other_user):
-    dialog = Dialog.objects.filter(
-        Q(owner=user, opponent=other_user) | Q(opponent=user, owner=other_user))
-    if dialog.exists():
-        return dialog[0]
-    else:
-        return Dialog.objects.create(opponent=user, owner=other_user)
-
-
-def add_msg(dialog, sender_user, message):
-    msg = Message.objects.create(
-        dialog=dialog,
-        sender=sender_user,
-        text=message
-    )
-    return msg
 
 
 def body_mass_mailing(recipients, query):

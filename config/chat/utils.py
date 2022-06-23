@@ -1,9 +1,27 @@
 from django.contrib.sessions.models import Session
 from django.contrib.auth import get_user_model
-from .models import Dialog
+from .models import Dialog, Message
 from django.db.models import Q
 import logging
 import sys
+
+
+def get_dialog(user, other_user):
+    dialog = Dialog.objects.filter(
+        Q(owner=user, opponent=other_user) | Q(opponent=user, owner=other_user))
+    if dialog.exists():
+        return dialog[0]
+    else:
+        return Dialog.objects.create(opponent=user, owner=other_user)
+
+
+def add_msg(dialog, sender_user, message):
+    msg = Message.objects.create(
+        dialog=dialog,
+        sender=sender_user,
+        text=message
+    )
+    return msg
 
 
 async def get_user_from_session(session_key):
