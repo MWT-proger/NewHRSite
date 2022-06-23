@@ -9,6 +9,8 @@ from django.utils.translation import ugettext as _
 from django.utils.timezone import localtime
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
+from app_account.models import User
+
 
 class Dialog(TimeStampedModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Dialog owner"), related_name="selfDialogs",
@@ -61,3 +63,40 @@ class Message(TimeStampedModel, SoftDeletableModel):
 
     def __str__(self):
         return self.sender.username + "(" + self.get_formatted_create_datetime() + ")"
+
+
+GROUP_USERS = [
+    ('all', 'Всем'),
+    ('applicant', 'Соискателям'),
+    ('employer', 'Работодателям'),
+    ('choice', 'Выбранным пользователям'),
+
+]
+STATUS = [
+    ('create', 'Создано'),
+    ('ok', 'Успешно отправлено'),
+    ('fail', 'Частично отправлено'),
+    ('error', 'Не отправлено'),
+]
+
+
+class Distribution(models.Model):
+    """Рассылка"""
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Отправитель"),
+                               related_name="distribution_sender",
+                               on_delete=models.PROTECT)
+    status = models.CharField(verbose_name=_("Статус"), max_length=20, default='create', choices=STATUS)
+    group_recipient = models.CharField('Кому отправить', max_length=20, default='all', choices=GROUP_USERS)
+
+    choice_recipients = models.ManyToManyField(User, verbose_name="Выбор пользователей", blank=True,
+                                               related_name="distribution_recipient",
+                                               help_text='Выбор при необходимости')
+
+    text = models.TextField(_("Сообщение"), null=True, blank=True)
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        verbose_name = _("Рассылка")
+        verbose_name_plural = _("Рассылки")

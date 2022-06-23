@@ -13,6 +13,10 @@ dev_full_upload:
 	docker-compose -f docker-compose.yml exec web_dev python manage.py makemigrations
 	docker-compose -f docker-compose.yml exec web_dev python manage.py migrate
 	docker-compose -f docker-compose.yml exec web_dev python manage.py collectstatic --noinput
+dev_full_update:
+	docker-compose -f docker-compose.yml up -d
+	docker-compose -f docker-compose.yml exec web_dev python manage.py makemigrations
+	docker-compose -f docker-compose.yml exec web_dev python manage.py migrate
 dev_run:
 	docker-compose -f docker-compose.yml up --build
 dev_create_user:
