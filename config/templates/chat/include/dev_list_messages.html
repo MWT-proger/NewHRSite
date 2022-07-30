@@ -3,7 +3,7 @@
 
 <ul class="messages" id="list-messages">
     {% if active_dialog %}
-    {% if active_dialog.messages.all.count == 0 %}
+    {% if active_dialog.num_messages == 0 %}
     <li class="alert alert-success" role="alert">
         <h4 class="alert-heading">Начни диалог первым!</h4>
         <p>Сообщений нет. Кто то из вас хотел написать первым, но передумал.</p>
@@ -11,7 +11,7 @@
         <p class="mb-0">Если возникли вопросы, напишите в службу поддержки.</p>
     </li>
     {% else %}
-    {% for msg in active_dialog.get_list_message %}
+    {% for msg in active_dialog.messages.all %}
 
     {% if msg.sender == request.user %}
     {% include 'chat/include/message_in_list.html' with msg_my=True %}

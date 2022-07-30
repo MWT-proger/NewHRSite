@@ -19,24 +19,24 @@
         <div class="d-flex justify-content-between flex-grow border-bottom">
             <div>
                 <p class="text-body font-weight-bold">{% if contact.first_name or contact.last_name %}{{ contact.first_name| title }} {{ contact.last_name| title }} {% else %}{{ contact.username| title }}{% endif %}</p>
-                <p class="text-muted tx-13"><span id="dialog-{{ dialog.id }}-text">{% if dialog.get_message_chat.sender == request.user %}Вы: {% endif %}{{ dialog.get_message_chat.text|slice:20}} </span></p>
+                <p class="text-muted tx-13"><span id="dialog-{{ dialog.id }}-text">{% if dialog.messages.all.0.sender == request.user %}Вы: {% endif %}{{ dialog.messages.all.0.text|slice:20}} </span></p>
             </div>
             <div class="d-flex flex-column align-items-end">
-                <p class="text-muted tx-13 mb-1" id="dialog-{{ dialog.id }}-created">{{ dialog.get_message_chat.get_formatted_create_datetime}}</p>
+                <p class="text-muted tx-13 mb-1" id="dialog-{{ dialog.id }}-created">{{ dialog.messages.all.0.get_formatted_create_datetime}}</p>
                 <div id="dialog-{{ dialog.id }}-container">
                     {% if owner %}
-                    {% if dialog.get_sum_new_messages_owner != 0 %}
-                    <div class="badge badge-pill badge-primary ml-auto"><span id="dialog-{{ dialog.id }}-sum_new_messages">{{ dialog.get_sum_new_messages_owner}}</span></div>
+                    {% if dialog.sum_new_messages != 0 %}
+                    <div class="badge badge-pill badge-primary ml-auto"><span id="dialog-{{ dialog.id }}-sum_new_messages">{{ dialog.sum_new_messages}}</span></div>
                     {% else %}
-                    {% if dialog.get_message_chat.sender != contact and dialog.get_message_chat.read %}
+                    {% if dialog.messages.all.0.sender != contact and dialog.messages.all.0.read %}
                     <div class="text-primary"><i style="width: 15px; height: 15px;" data-feather="check"></i></div>
                     {% endif%}
                     {% endif%}
                     {% else %}
-                    {% if dialog.get_sum_new_messages != 0 %}
-                    <div class="badge badge-pill badge-primary ml-auto"><span id="dialog-{{ dialog.id }}-sum_new_messages">{{ dialog.get_sum_new_messages}}</span></div>
+                    {% if dialog.sum_new_messages != 0 %}
+                    <div class="badge badge-pill badge-primary ml-auto"><span id="dialog-{{ dialog.id }}-sum_new_messages">{{ dialog.sum_new_messages}}</span></div>
                     {% else %}
-                    {% if dialog.get_message_chat.sender != contact and dialog.get_message_chat.read %}
+                    {% if dialog.messages.all.0.sender != contact and dialog.messages.all.0.read %}
                     <div class="text-primary"><i style="width: 15px; height: 15px;" data-feather="check"></i></div>
                     {% endif%}
                     {% endif%}
@@ -47,3 +47,5 @@
         </div>
     </a>
 </li>
+
+

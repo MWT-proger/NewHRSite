@@ -1,7 +1,7 @@
 from django.contrib.sessions.models import Session
 from django.contrib.auth import get_user_model
 from .models import Dialog, Message
-from django.db.models import Q
+from django.db.models import Q, Prefetch, Sum, Case, When, IntegerField, Count
 import logging
 import sys
 
@@ -47,8 +47,20 @@ def get_dialogs_with_user(user_1, user_2):
     :param user_2: the second user in dialog (owner or opponent)
     :return: queryset which include dialog between user_1 and user_2 (queryset can be empty)
     """
-    return Dialog.objects.filter(
+    return Dialog.objects.select_related("owner", "opponent").prefetch_related("messages").filter(
         Q(owner=user_1, opponent=user_2) | Q(opponent=user_1, owner=user_2))
+
+
+def get_dialogs_with_user_first(user_1, user_2):
+    return Dialog.objects \
+        .select_related("owner", "opponent") \
+        .prefetch_related(Prefetch('messages',
+                                   queryset=Message.objects
+                                   .select_related("sender")
+                                   .filter())) \
+        .filter(Q(owner=user_1, opponent=user_2) | Q(opponent=user_1, owner=user_2)) \
+        .annotate(num_messages=Count('messages')) \
+        .first()
 
 
 logging.basicConfig(level=logging.DEBUG,

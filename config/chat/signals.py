@@ -14,8 +14,12 @@ def send_pin_activation_account(sender, instance, created, **kwargs):
     """
     if created:
         text = "Добро пожаловать в сервис VAHTOWEEK! " \
-               "При возникновении вопросов по функционалу сервиса, " \
-               "пишите нам в этот чат, и мы своевременно решим вашу проблему !"
+               "<p class='card-text'>При возникновении вопросов по функционалу сервиса," \
+               "пишите нам в этот чат, и мы своевременно решим вашу проблему!</p>" \
+               "<p class='card-text'>Так же для использования сервиса," \
+               " вы можете установить наше приложение в Google Play</p>" \
+               "<a href='https://play.google.com/store/apps/details?id=com.vahtoweek' " \
+               "class='btn btn-my-outline-orange' >Скачать приложение</a>"
         sender = User.objects.get(username="support")
         dialog = get_dialog(sender, instance)
         add_msg(dialog, sender, text)

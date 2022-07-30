@@ -23,9 +23,7 @@ class Dialog(TimeStampedModel):
         unique_together = ['owner', 'opponent']
         
     def get_message_chat(self):
-        msg = self.messages.filter().order_by('-id')
-        if len(msg) > 0:
-            msg = msg[0]
+        msg = self.messages.first()
         return msg
 
     def get_sum_new_messages(self):

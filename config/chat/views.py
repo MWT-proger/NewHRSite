@@ -11,7 +11,7 @@ from . import models
 from . import utils
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+from django.db.models import Q, Prefetch, Sum, Case, When, IntegerField
 from django.db.models import Max
 
 
@@ -21,7 +21,27 @@ class DialogListView(LoginRequiredMixin, generic.ListView):
     model = models.Dialog
 
     def get_queryset(self):
-        dialogs = models.Dialog.objects.filter(Q(owner=self.request.user) | Q(opponent=self.request.user)).annotate(last_message=Max('messages__created')).order_by('-last_message')
+
+        dialogs = models.Dialog.objects \
+            .select_related("owner", "opponent") \
+            .prefetch_related(Prefetch('messages',
+                                       queryset=models.Message.objects
+                                       .select_related("sender")
+                                       .filter()
+                                       .order_by('-id'))) \
+            .filter(Q(owner=self.request.user) | Q(opponent=self.request.user)) \
+            .annotate(last_message=Max('messages__created')) \
+            .annotate(sum_new_messages=Sum(
+                Case(
+                    When(messages__sender=self.request.user, then=0),
+                    When(messages__read=True, then=0),
+                    default=1,
+                    output_field=IntegerField()
+                )
+            )
+            )\
+            .order_by('-last_message')
+
         return dialogs
 
     def get_context_data(self, **kwargs):
@@ -29,18 +49,16 @@ class DialogListView(LoginRequiredMixin, generic.ListView):
         if self.kwargs.get('username'):
             # TODO: show alert that user is not found instead of 404
             user = get_object_or_404(get_user_model(), username=self.kwargs.get('username'))
-            dialog = utils.get_dialogs_with_user(self.request.user, user)
-            if len(dialog) == 0:
+            dialog = utils.get_dialogs_with_user_first(self.request.user, user)
+            if not dialog:
                 dialog = models.Dialog.objects.create(owner=self.request.user, opponent=user)
-            else:
-                dialog = dialog[0]
             context['active_dialog'] = dialog
         else:
             if len(self.object_list) > 0:
                 context['active_dialog'] = self.object_list[0]
             else:
                 context['active_dialog'] = False
-        if context['active_dialog'] :
+        if context['active_dialog']:
             if self.request.user == context['active_dialog'].owner:
                 context['opponent_username'] = context['active_dialog'].opponent.username
                 context['opponent_user'] = context['active_dialog'].opponent

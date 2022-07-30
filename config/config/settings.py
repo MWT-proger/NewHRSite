@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
 
@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'import_export',
     'django_user_agents',
     'email_sender.apps.EmailSenderConfig',
+
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -43,7 +45,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+"debug_toolbar.middleware.DebugToolbarMiddleware",
     'django_user_agents.middleware.UserAgentMiddleware',
+
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -242,3 +246,10 @@ EMAIL_USE_TLS = True
 
 SMS_RU_APP_ID = os.environ.get('SMS_RU_APP_ID')
 SMS_RU_URL = 'https://sms.ru/code/call'
+
+if DEBUG:
+    def show_toolbar(request):
+        return True
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
+    }
