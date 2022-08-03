@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load page_tag %}
+{% load demo_vacancy %}
 
 {% block sidebar_none %}
 {% if request.user_agent.is_mobile or request.user.is_authenticated  %}
@@ -54,7 +55,40 @@
 {% block page_content %}
 {% include 'include/content_main.html' %}
 
+<div class="row justify-content-center mt-5">
+    <div class="col-12 col-md-8">
+        <div class="col-12">
+            <div class="row pl-2 pr-2  ml-md-5 mt-3 mb-5 justify-content-center">
 
+                    <h2 class="text-left">Вакансии</h2>
+
+                </div>
+            <div class="row ">
+                {% get_demo_vacancy as vacancy_list %}
+                {% for vacancy in vacancy_list %}
+                {% if forloop.counter|divisibleby:"5" %}
+                {% if general_settings.show_5 %}
+                <div class="col-12 col-md-4 p-0">
+                    <div class="card advertising-card ">
+                        {% if general_settings.advertising_5 %}
+                        {{general_settings.advertising_5|safe }}
+                        {% else %}
+                        <div class="card-body  mr-2 mt-2">
+                            <h5 class="card-title text-center">Разместим банер</h5>
+                            <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
+                            <div class="row justify-content-center mt-3"><a href="#" class="btn btn-primary "  >Перейти</a></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+                {% include 'app_profile/include/card_vacancy_or_questionnaire.html' with demo=True %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock page_content %}
 
 {% block javascript_custom %}

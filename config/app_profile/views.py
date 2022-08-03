@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.http import Http404, JsonResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -7,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.search import SearchQuery, SearchVector, SearchRank
 
 from app_account.decorators import checking_profile_employer, checking_profile_applicant
+from app_main.decorators import checking_user
 
 from .utils import set_if_not_none, true_if_not_none, set_if_value
 from .forms import QuestionnaireCreateForm, QuestionnaireUpdateForm, QuestionnaireDeleteForm, VacancyCreateForm, \
@@ -213,6 +215,25 @@ class RecommendedVacancyListView(ListView):
 
         queryset = Vacancy.objects.filter(**sort_params).order_by('-public_date')
 
+        return queryset
+
+
+@method_decorator(checking_user, name='dispatch')
+class DemoVacancyListView(ListView):
+    """Список вакансий для не авторизованных"""
+    model = Vacancy
+    template_name = 'app_profile/demo_vacancy_list.html'
+    paginate_by = 20
+
+    def get_queryset(self):
+        sort_params = {}
+        set_if_not_none(sort_params, 'status', 'active')
+        queryset = Vacancy.objects\
+            .select_related("region", "profession")\
+            .filter(**sort_params)\
+            .annotate(count_sentence_annotate=Count('count_sentence'))\
+            .annotate(count_see_annotate=Count('count_see'))\
+            .order_by('-public_date')
         return queryset
 
 

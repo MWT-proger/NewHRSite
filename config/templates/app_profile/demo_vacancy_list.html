@@ -1,0 +1,50 @@
+{% extends 'app_profile/all_base_list.html' %}
+
+{% block not_form %}
+<div class="row justify-content-center mt-5">
+    <div class="col-12 col-md-10">
+{% endblock not_form %}
+
+
+{% block list_title %}
+
+{% endblock list_title %}
+{% block search_form %}
+
+        {% endblock search_form %}
+{% block list_card %}
+        {% for vacancy in vacancy_list %}
+        {% if forloop.counter|divisibleby:"5" %}
+        {% if general_settings.show_5 %}
+        <div class="col-12 col-md-4 p-0">
+            <div class="card advertising-card ">
+                {% if general_settings.advertising_5 %}
+                {{general_settings.advertising_5|safe }}
+                {% else %}
+                <div class="card-body  mr-2 mt-2">
+                    <h5 class="card-title text-center">Разместим банер</h5>
+                    <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
+                    <div class="row justify-content-center mt-3"><a href="#" class="btn btn-primary "  >Перейти</a></div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% include 'app_profile/include/card_vacancy_or_questionnaire.html' with demo=True %}
+        {% endfor %}
+{% endblock list_card %}
+        {% block recommended_title %}
+<div class="row justify-content-center mt-5">
+            <div class="col-10">
+                <div class="card  ">
+                    <div class="card-body">
+                        <h4 class="page-title ">
+                            Витрина вакансий
+
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock recommended_title %}
