@@ -14,7 +14,10 @@
         {% endblock search_form %}
 {% block list_card %}
         {% for vacancy in vacancy_list %}
-        {% if forloop.counter|divisibleby:"5" %}
+
+
+
+        {% if forloop.counter == 5 %}
         {% if general_settings.show_5 %}
         <div class="col-12 col-md-4 p-0">
             <div class="card advertising-card ">
@@ -31,6 +34,64 @@
         </div>
         {% endif %}
         {% endif %}
+
+        {% if forloop.counter == 10 %}
+        {% if general_settings.show_6 %}
+        <div class="col-12 col-md-4 p-0">
+            <div class="card advertising-card ">
+                {% if general_settings.advertising_6 %}
+                {{general_settings.advertising_6|safe }}
+                {% else %}
+                <div class="card-body  mr-2 mt-2">
+                    <h5 class="card-title text-center">Разместим банер</h5>
+                    <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
+                    <div class="row justify-content-center mt-3"><a href="#" class="btn btn-primary "  >Перейти</a></div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+
+        {% if forloop.counter == 15 %}
+        {% if general_settings.show_7 %}
+        <div class="col-12 col-md-4 p-0">
+            <div class="card advertising-card ">
+                {% if general_settings.advertising_7 %}
+                {{general_settings.advertising_7|safe }}
+                {% else %}
+                <div class="card-body  mr-2 mt-2">
+                    <h5 class="card-title text-center">Разместим банер</h5>
+                    <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
+                    <div class="row justify-content-center mt-3"><a href="#" class="btn btn-primary "  >Перейти</a></div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+
+        {% if forloop.counter == 20 %}
+        {% if general_settings.show_8 %}
+        <div class="col-12 col-md-4 p-0">
+            <div class="card advertising-card ">
+                {% if general_settings.advertising_8 %}
+                {{general_settings.advertising_8|safe }}
+                {% else %}
+                <div class="card-body  mr-2 mt-2">
+                    <h5 class="card-title text-center">Разместим банер</h5>
+                    <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
+                    <div class="row justify-content-center mt-3"><a href="#" class="btn btn-primary "  >Перейти</a></div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+
+
+
+
         {% include 'app_profile/include/card_vacancy_or_questionnaire.html' with demo=True %}
         {% endfor %}
 {% endblock list_card %}

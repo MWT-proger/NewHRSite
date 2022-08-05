@@ -22,6 +22,15 @@ class GeneralSettings(models.Model):
     show_5 = models.BooleanField(verbose_name=_("Показывать рекламу №5"), default=True)
     advertising_5 = models.TextField(_("Реклама № 5"), null=True, blank=True)
 
+    show_6 = models.BooleanField(verbose_name=_("Показывать рекламу №6"), default=True)
+    advertising_6 = models.TextField(_("Реклама № 6"), null=True, blank=True)
+
+    show_7 = models.BooleanField(verbose_name=_("Показывать рекламу №7"), default=True)
+    advertising_7 = models.TextField(_("Реклама № 7"), null=True, blank=True)
+
+    show_8 = models.BooleanField(verbose_name=_("Показывать рекламу №8"), default=True)
+    advertising_8 = models.TextField(_("Реклама № 8"), null=True, blank=True)
+
     title_main = models.CharField(_("Заголовок главной страницы"), max_length=100)
     description_main = models.TextField(_("Описание главной страницы"), null=True, blank=True)
     title_icon_1 = models.CharField(_("Заголовок плюса 1"), max_length=100)

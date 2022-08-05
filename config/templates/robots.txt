@@ -13,3 +13,7 @@ Disallow: /reset_password/
 Disallow: /dialogs/
 Disallow: /change-password/
 Disallow: /profile/
+
+/*do=search
+
+Sitemap: https://vahtoweek.ru/sitemap.xml

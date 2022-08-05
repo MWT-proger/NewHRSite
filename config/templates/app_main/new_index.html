@@ -45,6 +45,14 @@
         width: 100%!important;
         margin-left: 0!important;
     }
+    .btn-outline-primary {
+
+    }
+    .btn-outline-primary:hover {
+    color: #fff!important;
+    background-color: #727cf5;
+    border-color: #727cf5;
+}
 </style>
 {% endif  %}
 
@@ -66,7 +74,9 @@
             <div class="row ">
                 {% get_demo_vacancy as vacancy_list %}
                 {% for vacancy in vacancy_list %}
-                {% if forloop.counter|divisibleby:"5" %}
+
+                {% include 'app_profile/include/card_vacancy_or_questionnaire.html' with demo=True %}
+                {% if forloop.counter == 4 %}
                 {% if general_settings.show_5 %}
                 <div class="col-12 col-md-4 p-0">
                     <div class="card advertising-card ">
@@ -83,9 +93,32 @@
                 </div>
                 {% endif %}
                 {% endif %}
-                {% include 'app_profile/include/card_vacancy_or_questionnaire.html' with demo=True %}
+
+
+                {% if forloop.counter == 8 %}
+                {% if general_settings.show_6 %}
+                <div class="col-12 col-md-4 p-0">
+                    <div class="card advertising-card ">
+                        {% if general_settings.advertising_6 %}
+                        {{general_settings.advertising_6|safe }}
+                        {% else %}
+                        <div class="card-body  mr-2 mt-2">
+                            <h5 class="card-title text-center">Разместим банер</h5>
+                            <p class="card-text  text-center">Реклама, Реклама, Реклама, и ещё раз реклама.</p>
+                            <div class="row justify-content-center mt-3"><a href="#" class="btn btn-primary "  >Перейти</a></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
                 {% endfor %}
+
+
             </div>
+            <div class="row  justify-content-center mt-5">
+            <a href="{% url 'demo_vacancy_list' %}" class="btn btn-outline-primary col-12 col-md-4 ml-4 mr-4 ">Больше вакансий</a>
+        </div>
         </div>
     </div>
 </div>
