@@ -1,5 +1,7 @@
 import json
-import requests
+import logging
+import random
+
 from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
@@ -7,22 +9,24 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from django.http import QueryDict
-from django.contrib.auth.forms import AuthenticationForm
 from django.views.generic.edit import UpdateView
 from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
 from django.utils import timezone
 
-from django.contrib.auth import login, authenticate, logout
-from django.conf import settings
+from django.contrib.auth import login, logout
 from app_main.decorators import checking_user
+from email_sender.conf import settings as email_sender_settings
 
 
 from .decorators import checking_profile_employer, checking_profile_applicant
 from .models import TokenSignUp
-from .forms import UserRegistrationForm, UserResetPasswordForm, UserUpdateForm, UserEmployerUpdateForm
+from .forms import UserRegistrationForm, UserResetPasswordForm, UserUpdateForm, UserEmployerUpdateForm, \
+    UsernameEmailAuthenticationForm
 
 User = get_user_model()
+
+logger = logging.getLogger(__name__)
 
 HEADERS = {'Content-type': 'application/json'}
 
@@ -82,11 +86,12 @@ def get_login_form_ajax(request):
     """Получение - правильной формы для авторизации пользователя из Ajax"""
 
     csrf = request.POST.get('csrfmiddlewaretoken', None)
+    email = request.POST.get('loginEmail', None)
     username = request.POST.get('loginNumberPhone', None)
     password = request.POST.get('loginPassword', None)
 
     username = edit_username(username)
-    ajax_dict = {'csrfmiddlewaretoken': csrf, 'username': username, 'password': password, }
+    ajax_dict = {'csrfmiddlewaretoken': csrf, 'username': username, 'password': password, 'email': email}
     query_dict = QueryDict('', mutable=True)
     query_dict.update(ajax_dict)
     return query_dict
@@ -119,13 +124,12 @@ def get_reset_password_form_ajax(request):
     """Получение - правильной формы для сброса пароля пользователя из Ajax"""
 
     csrf = request.POST.get('csrfmiddlewaretoken', None)
-    username = request.POST.get('forgotPasswordNumberPhone', None)
+    email = request.POST.get('forgotPasswordEmail', None)
     password = request.POST.get('forgotPasswordPassword', None)
     password2 = request.POST.get('forgotPasswordConfirmPassword', None)
 
-    username = edit_username(username)
     ajax_dict = {'csrfmiddlewaretoken': csrf,
-                 'username': username,
+                 'email': email,
                  'password': password,
                  'password2': password2,
                  }
@@ -155,11 +159,11 @@ def register(request):
                 model = model[0]
                 model.scene = "close"
                 model.save()
-                login(request, new_user)
+                login(request, new_user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect("profile")
 
     form = UserRegistrationForm()
-    return render(request=request, template_name="app_main/index.html", context={"signup_form": form})
+    return render(request=request, template_name="app_main/new_index.html", context={"signup_form": form})
 
 
 def reset_password(request):
@@ -169,19 +173,19 @@ def reset_password(request):
         form = UserResetPasswordForm(data)
         if form.is_valid():
             token = request.POST.get('forgotPasswordConfirmKey', None)
-            model = TokenSignUp.objects.filter(username=form.cleaned_data['username'], key=token, scene="valid")
+            model = TokenSignUp.objects.filter(email=form.cleaned_data['email'], key=token, scene="valid")
             if model.exists():
-                user = User.objects.get(username=form.cleaned_data['username'])
+                user = User.objects.get(email=form.cleaned_data['email'])
                 user.set_password(form.cleaned_data['password'])
                 user.save()
                 model = model[0]
                 model.scene = "close"
                 model.save()
-                login(request, user)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect("profile")
 
     form = UserResetPasswordForm()
-    return render(request=request, template_name="app_main/index.html", context={"reset_form": form})
+    return render(request=request, template_name="app_main/new_index.html", context={"reset_form": form})
 
 
 @checking_user
@@ -189,16 +193,16 @@ def login_request(request):
     """Вход"""
     if request.method == "POST":
         data = get_login_form_ajax(request)
-        form = AuthenticationForm(request, data=data)
+        form = UsernameEmailAuthenticationForm(request, data=data)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+            user = form.get_user()
+
             if user is not None:
                 login(request, user)
                 return redirect("profile")
-    form = AuthenticationForm()
-    return render(request=request, template_name="app_main/index.html", context={"login_form": form})
+
+    form = UsernameEmailAuthenticationForm()
+    return render(request=request, template_name="app_main/new_index.html", context={"login_form": form})
 
 
 @login_required
@@ -216,13 +220,13 @@ def validate_username(request):
     return JsonResponse(response)
 
 
-def validate_username_forgot_password(request):
-    """Проверка - существует ли пользователь с таким номером телефона"""
-    username = request.GET.get('forgotPasswordNumberPhone', None)
-    username = edit_username(username)
+def validate_email_forgot_password(request):
+    """Проверка - существует ли пользователь с таким email"""
+    email = request.GET.get('forgotPasswordEmail', None)
     response = {
-        'is_taken': User.objects.filter(username__iexact=username).exists()
+        'is_taken': User.objects.filter(email__iexact=email).exists()
     }
+    logger.debug('validate_email_forgot_password', response)
     return JsonResponse(response)
 
 
@@ -238,25 +242,33 @@ def validate_email(request):
 def call_request(request):
     """Запрос на осуществления звонка пользователю для подтверждения регистрации или сброса пароля"""
     if request.method == "POST":
-        username = request.POST.get('signUpNumberPhone', None)
-        if not username:
-            username = request.POST.get('forgotPasswordNumberPhone', None)
+        error = False
+        forgot = False
+        email = request.POST.get('signUpEmail', None)
+        if not email:
+            email = request.POST.get('forgotPasswordEmail', None)
+            forgot = True
 
-        username = edit_username(username)
+            if not User.objects.filter(email__iexact=email).exists():
+                error = True
+                status = False
+                description = 'Пользователь с таким адресом электронной почты не существует'
 
-        result = requests.get(f"{settings.SMS_RU_URL}?phone={username}&ip=-1&api_id={settings.SMS_RU_APP_ID}")
+        logger.debug("call_request: %s", email)
 
-        response_api = result.json()
-        if response_api['status'] == "OK":
-            TokenSignUp.objects.create(username=username, key=response_api['code'])
+        if not error:
+            key = str(random.randint(1111, 9999))
+            context = {'validate_code': key}
+
+            TokenSignUp.objects.create(email=email, key=key)
             status = True
             description = False
-        elif response_api['status'] == "ERROR":
-            status = False
-            description = response_api['status_text']
-        else:
-            status = False
-            description = 'Ошибка сервера, попробуйте ещё раз'
+
+            if forgot:
+                email_sender_settings.EMAIL.forgot_password(context).send([email])
+            else:
+                email_sender_settings.EMAIL.sign_up(context).send([email])
+
         response = {
             'is_taken': status,
             'description': description
@@ -267,24 +279,25 @@ def call_request(request):
 def validate_token(request):
     """Проверка кода подтверждения пользователя"""
     if request.method == "POST":
-        username = request.POST.get('signUpNumberPhone', None)
+        email = request.POST.get('signUpEmail', None)
 
-        if not username:
-            username = request.POST.get('forgotPasswordNumberPhone', None)
-            name = edit_username(username)
-            if not User.objects.filter(username__iexact=name).exists():
+        if not email:
+            email = request.POST.get('forgotPasswordEmail', None)
+
+            if not User.objects.filter(email__iexact=email).exists():
                 response = {
                     'is_taken': False,
-                    'description': "Пользователь с таким номером телефона не существует"
+                    'description': "Пользователь с таким адресом электронной почты не существует"
                 }
                 return JsonResponse(response)
 
             key = request.POST.get('forgotPasswordConfirmKey', None)
         else:
             key = request.POST.get('signUpConfirmKey', None)
-        email = request.POST.get('signUpEmail', None)
+
+        username = request.POST.get('signUpNumberPhone', None)
         username = edit_username(username)
-        model = TokenSignUp.objects.filter(username=username, key=key, scene="create")
+        model = TokenSignUp.objects.filter(email=email, key=key, scene="create")
         if model.exists():
 
             limit = timezone.now() - timedelta(minutes=5)
@@ -295,7 +308,7 @@ def validate_token(request):
             else:
                 status = True
                 description = False
-                model.email = email
+                model.username = username
                 model.scene = "valid"
                 model.save()
         else:
@@ -314,11 +327,13 @@ def validate_authenticate(request):
     response = {'is_taken': False}
     if request.method == "POST":
         data = get_login_form_ajax(request)
-        form = AuthenticationForm(request, data=data)
+        logger.info(data)
+        form = UsernameEmailAuthenticationForm(request, data=data)
+        logger.info(form.is_valid())
         if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+            user = form.get_user()
+
             if user is not None:
                 response = {'is_taken': True}
+
     return JsonResponse(response)

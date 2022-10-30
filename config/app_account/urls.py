@@ -21,8 +21,8 @@ urlpatterns = [
     ),
 
     path('ajax/validate_username/', views.validate_username, name='validate_username'),
-    path('ajax/validate_username_forgot/', views.validate_username_forgot_password,
-         name='validateUsernameForgotPassword'),
+    path('ajax/validate_email_forgot/', views.validate_email_forgot_password,
+         name='validateEmailForgotPasswordUser'),
     path('ajax/validate_email/', views.validate_email, name='validateEmailUser'),
     path('ajax/validate_authenticate/', views.validate_authenticate, name='validateAuthenticate'),
     path('ajax/call_request/', views.call_request, name='callRequest'),

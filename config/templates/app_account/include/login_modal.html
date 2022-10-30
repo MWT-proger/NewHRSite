@@ -12,12 +12,35 @@
 
                     <fieldset>
 
+                        <ul class="nav nav-tabs mb-2 " id="loginTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="loginByEmailTab" data-toggle="tab" href="#loginByEmailTabContent" role="tab" aria-controls="loginByEmailTabArial" aria-selected="true">По электронной почте</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="loginByPhoneTab" data-toggle="tab" href="#loginByPhoneTabContent" role="tab" aria-controls="loginByPhoneTabArial" aria-selected="false">По номеру телефона</a>
+                            </li>
+
+                        </ul>
+
                         {% csrf_token %}
-                        <div class="form-group">
-                            <label>Введите полный номер телефона начиная с кода страны</label>
-                            <input class="form-control mb-4 mb-md-0 phone-type" type="text" name="loginNumberPhone" data-rule-required="true"
-                                   data-inputmask-clearincomplete="true" data-inputmask-alias="(+375 (999)999-999)|(+7 (999)999-9999)|(+996 (999)999999)|(+992 (99)999-9999)|(+998 (99)9999999)"/>
-                            <small  class="form-text text-muted">коды доступных к регистрации стран - Россия +7 , Узбекистан +998, Кыргызстан +996 Таджикистан +992 Казахстан +7 Белоруссия +375</small>
+
+
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="loginByEmailTabContent" role="tabpanel" aria-labelledby="loginByEmailTab">
+                                 <div class="form-group">
+                                <label>Электронная почта</label>
+                                <input class="form-control mb-4 mb-md-0" type="email" name="loginEmail" />
+                            </div>
+                            </div>
+
+                            <div class="tab-pane" id="loginByPhoneTabContent" role="tabpanel" aria-labelledby="loginByPhoneTab">
+                                <div class="form-group">
+                                    <label>Введите полный номер телефона начиная с кода страны</label>
+                                    <input class="form-control mb-4 mb-md-0 phone-type" type="text" name="loginNumberPhone" data-rule-required="true"
+                                           data-inputmask-clearincomplete="true" data-inputmask-alias="(+375 (999)999-999)|(+7 (999)999-9999)|(+996 (999)999999)|(+992 (99)999-9999)|(+998 (99)9999999)"/>
+                                    <small  class="form-text text-muted">коды доступных к регистрации стран - Россия +7 , Узбекистан +998, Кыргызстан +996 Таджикистан +992 Казахстан +7 Белоруссия +375</small>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group">

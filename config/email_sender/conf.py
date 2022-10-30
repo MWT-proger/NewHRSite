@@ -4,6 +4,7 @@ from django.test.signals import setting_changed
 from django.utils.functional import LazyObject
 from django.utils.module_loading import import_string
 
+
 EMAIL_SENDER_NAMESPACE = "EMAIL_SENDER"
 
 
@@ -27,6 +28,8 @@ default_settings = {
         {
             "notification_vacancy": "email_sender.email.VacancySendEmail",
             "notification_questionnaire": "email_sender.email.QuestionnaireSendEmail",
+            "forgot_password": "email_sender.email.ForgotPasswordSendEmail",
+            "sign_up": "email_sender.email.SignUpSendEmail",
         })
 }
 

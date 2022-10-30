@@ -97,7 +97,7 @@ $(function() {
           minlength: "Код подтверждения должен состоять из 4 символов"
         },
         signUpEmail: {
-          required: "Пожалуйста, адрес электронной почты",
+          required: "Пожалуйста, введите адрес электронной почты",
           email:"Пожалуйста, введите действительный адрес электронной почты",
           validateEmailUser:"Пользователь с таким адресом электронной почтой уже зарегестрирован"
         }
@@ -118,8 +118,9 @@ $(function() {
     // validate signup form on keyup and submit
     $("#forgotPasswordModalForm").validate({
       rules: {
-        forgotPasswordNumberPhone: {
+        forgotPasswordEmail: {
           required: true,
+          email: true
         },
         forgotPasswordPassword: {
           required: true,
@@ -137,11 +138,10 @@ $(function() {
         },
       },
       messages: {
-        forgotPasswordNumberPhone: {
-          required: "Пожалуйста, введите номер телефона",
-          checkMaskPhone: "Пожалуйста, введите правильный номер телефона",
-          validatePhoneForgotPasswordUser: "Пользователь с таким номером телефона не существует",
-          minlength: "Пожалуйста, введите правильный номер телефона"
+
+        signUpEmail: {
+          required: "Пожалуйста, введите адрес электронной почты",
+          email:"Пожалуйста, введите действительный адрес электронной почты"
         },
         forgotPasswordPassword: {
           required: "Пожалуйста, введите пароль",

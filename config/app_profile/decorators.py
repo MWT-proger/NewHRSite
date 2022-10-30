@@ -78,7 +78,6 @@ def checking_my_vacancy_edit(f):
             if model[0].status == 'deleted':
                 return HttpResponseRedirect(reverse('my_vacancy'))
         else:
-            print("###############################")
             return HttpResponseRedirect(reverse('my_vacancy_detail', kwargs={'slug': kwargs['slug']}))
         return f(request, *args, **kwargs)
     return wrap

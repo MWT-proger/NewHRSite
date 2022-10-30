@@ -1,7 +1,9 @@
 from crispy_forms.helper import FormHelper
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django import forms
 from crispy_forms.layout import Layout, Submit, Row, Column, Button
+from django.contrib.auth.forms import AuthenticationForm, UsernameField
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -25,12 +27,16 @@ class UserRegistrationForm(forms.ModelForm):
 
 
 class UserResetPasswordForm(forms.Form):
-    username = forms.CharField(label='Номер телефона')
+    email = forms.EmailField(
+        label="Email",
+        max_length=254,
+        widget=forms.EmailInput(attrs={'autocomplete': 'email'})
+    )
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Пароль ещё раз', widget=forms.PasswordInput)
 
     class Meta:
-        fields = ('username', 'password', 'password2')
+        fields = ('email', 'password', 'password2')
 
     def clean_password2(self):
         cd = self.cleaned_data
@@ -102,3 +108,42 @@ class UserEmployerUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'third_name', 'username', 'email', 'name_company']
+
+
+class UsernameEmailAuthenticationForm(AuthenticationForm):
+    username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True}), required=False)
+
+    email = forms.EmailField(
+        label="Email",
+        max_length=254,
+        widget=forms.EmailInput(attrs={'autocomplete': 'email'}),
+        required=False
+    )
+
+    def clean(self):
+        username = self.cleaned_data.get('username')
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
+
+        if username and password:
+            self.user_cache = authenticate(self.request, username=username, password=password)
+            if self.user_cache is None:
+                raise self.get_invalid_login_error()
+            else:
+                self.confirm_login_allowed(self.user_cache)
+
+        if email and password:
+            self.user_cache = authenticate(self.request, email=email, password=password)
+            if self.user_cache is None:
+                raise self.get_invalid_email_login_error()
+            else:
+                self.confirm_login_allowed(self.user_cache)
+
+        return self.cleaned_data
+
+    def get_invalid_email_login_error(self):
+        return ValidationError(
+            self.error_messages['invalid_login'],
+            code='invalid_login',
+            params={'email': self.username_field.verbose_name},
+        )

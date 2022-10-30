@@ -67,3 +67,13 @@ class QuestionnaireSendEmail(BaseSendEmail):
     """
     template_name_html = "email_sender/email/questionnaire.html"
     subject = Messages.EMAIL_SUBJECT_QUESTIONNAIRE
+
+
+class ForgotPasswordSendEmail(BaseSendEmail):
+    template_name_html = "email_sender/email/email_forgot_password.html"
+    subject = Messages.EMAIL_FORGOT_PASSWORD
+
+
+class SignUpSendEmail(BaseSendEmail):
+    template_name_html = "email_sender/email/email_sign_up.html"
+    subject = Messages.EMAIL_SIGN_UP

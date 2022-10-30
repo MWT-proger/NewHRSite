@@ -28,6 +28,7 @@ def get_image_name(instance, filename):
 
 
 class User(AbstractUser):
+    email = models.EmailField("Адрес электронной почты", unique=True)
     image = models.ImageField('Аватарка', upload_to=get_image_name, blank=True, null=True)
     name_company = models.CharField('Название компании', max_length=200, blank=True, null=True)
     third_name = models.CharField('Отчество', max_length=200, blank=True, null=True)
@@ -66,7 +67,7 @@ class TokenSignUp(models.Model):
     """ Токен регистрации """
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    username = models.CharField("Номер телефона", max_length=20)
+    username = models.CharField("Номер телефона", max_length=20, blank=True, null=True)
     email = models.EmailField("Адрес электронной почты", blank=True, null=True)
     key = models.CharField("Сам ключ", max_length=4)
     scene = models.CharField('Этап валидации токена', max_length=20, default='create', choices=SCENE)

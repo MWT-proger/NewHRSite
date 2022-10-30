@@ -475,21 +475,23 @@ h2, .h2 {
         return true;
     });
 </script>
-<script type="text/javascript" language="JavaScript">
-    // Проверка - существует ли пользователь с таким номером телефона для сброса пароля
-	let phoneForgotPassword = '';
+<script type="text/javascript">
+    // Проверка - существует ли пользователь с таким email для сброса пароля
+	let emailForgotPassword = '';
     let statusForgotPassword = false;
-    jQuery.validator.addMethod("validatePhoneForgotPasswordUser", function(value, element) {
+    jQuery.validator.addMethod("validateEmailForgotPasswordUser", function(value, element) {
         // create an AJAX call
-        if (phoneForgotPassword != value ) {
-            phoneForgotPassword = value;
+
+        if (emailForgotPassword !== value ) {
+            emailForgotPassword = value;
             $.ajax({
 
                 data: $(element).serialize(), // get the form data
-                url: "{% url 'validateUsernameForgotPassword' %}",
+                url: "{% url 'validateEmailForgotPasswordUser' %}",
                 // on success
 
                 success: function (response) {
+
                     if (response.is_taken == true) {
                         statusForgotPassword = true;
                         return true;
